@@ -1,7 +1,7 @@
 package compilation.compiler.regex;
 
-import riscv.instruction.IInstruction;
-import riscv.register.IRegister;
+import assembler.instruction.IInstruction;
+import assembler.register.IRegister;
 
 import java.util.HashMap;
 import java.util.Map;

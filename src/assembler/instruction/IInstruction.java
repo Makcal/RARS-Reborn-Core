@@ -1,4 +1,4 @@
-package riscv.instruction;
+package assembler.instruction;
 
 public interface IInstruction {
     String getName();

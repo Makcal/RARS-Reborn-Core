@@ -1,4 +1,4 @@
-package riscv.register;
+package assembler.register;
 
 import exceptions.compilation.UnknownRegisterException;
 

@@ -1,4 +1,4 @@
-package riscv.register;
+package assembler.register;
 
 public interface IRegister {
     int getNumber();

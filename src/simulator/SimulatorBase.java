@@ -2,8 +2,8 @@ package simulator;
 
 import compilation.compiler.ICompiler;
 import exceptions.compilation.CompilationException;
-import riscv.instruction.IInstruction;
-import riscv.instruction.IInstructionHandler;
+import assembler.instruction.IInstruction;
+import assembler.instruction.IInstructionHandler;
 import exceptions.execution.EndOfExecutionException;
 import exceptions.execution.ExecutionException;
 import exceptions.compilation.UnknownInstructionException;

@@ -1,6 +1,6 @@
 package exceptions.compilation;
 
-import riscv.register.IRegister;
+import assembler.register.IRegister;
 
 public class WrongRegisterTypeException extends CompilationException {
     public WrongRegisterTypeException(Class<? extends IRegister> expected, Class<? extends IRegister> given) {

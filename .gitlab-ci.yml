@@ -10,13 +10,15 @@ assign-reviewers-job:
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && 
            $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
-      when: manual
+      when: always
       changes:
         - src/**/*
   before_script:
     - apk add python3 curl
   script:
     - |
+      echo "Reviewers: ${CI_MERGE_REQUEST_REVIEWERS}"
+
       REVIEWER_ID=echo $(echo $a $RANDOM | python3 -c \
         "e,r=map(int,input().split());a={668, 839, 858, 857, 813, 852};a.discard(e);print(list(a)[r%len(a)])")
       echo "Selected reviewer ID: ${REVIEWER_ID}"

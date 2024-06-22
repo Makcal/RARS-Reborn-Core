@@ -1,0 +1,27 @@
+stages:
+  - set up merge request
+  - build
+  - test
+  - deploy
+
+assign-reviewers-job:
+  stage: set up merge request
+  image: alpine
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && 
+           $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      when: manual
+      changes:
+        - src/**/*
+  before_script:
+    - apk add python3 curl
+  script:
+    - |
+      REVIEWER_ID=echo $(echo $a $RANDOM | python3 -c \
+        "e,r=map(int,input().split());a={668, 839, 858, 857, 813, 852};a.discard(e);print(list(a)[r%len(a)])")
+      echo "Selected reviewer ID: ${REVIEWER_ID}"
+
+      echo "Adding code owners to the reviewers list"
+      curl -X PUT -H "Content-Type: application/json" --data '{ "reviewer_ids": ['${REVIEWER_ID}'] }' \
+        https://gitlab.pg.innopolis.university/api/v4/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}?private_token=${CI_JOB_TOKEN}
+      echo "Curl returned $?"

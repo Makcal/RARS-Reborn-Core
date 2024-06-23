@@ -1,0 +1,36 @@
+stages:
+  - set up merge request
+  - build
+  - test
+  - deploy
+
+assign-reviewers-job:
+  stage: set up merge request
+  image: alpine
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && 
+           $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "develop"'
+      when: always
+  before_script:
+    - apk add python3 curl jq
+  script:
+    - |
+      EVENT=$(curl https://gitlab.pg.innopolis.university/api/v4/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}?private_token=${API_TOKEN})
+      ASSIGNED=$(echo ${EVENT} | jq '.reviewers!=[]')
+      if [ ${ASSIGNED} == "true" ]; then echo "Already assigned"; exit 0; fi
+      AUTHOR_ID=$(echo ${EVENT} | jq .author.id)
+
+      GROUP_ID=2049
+      IDS=$(curl https://gitlab.pg.innopolis.university/api/v4/groups/${GROUP_ID}/members?private_token=${API_TOKEN} | \
+        jq -r '[.[].id] | join(",")')
+      # Or just use IDS=123,456,... if you don't have a group
+
+      REVIEWER_ID=$(echo $AUTHOR_ID $RANDOM | python3 -c \
+        "e,r=map(int,input().split());a={${IDS}};a.discard(e) if len(a)>1 else None;print(list(a)[r%len(a)])")
+      echo "Selected reviewer ID: ${REVIEWER_ID}"
+
+      echo "Adding code owners to the reviewers list"
+      curl -X PUT -H "Content-Type: application/json" --data '{ "reviewer_ids": ['${REVIEWER_ID}'] }' \
+        https://gitlab.pg.innopolis.university/api/v4/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}?private_token=${API_TOKEN} \
+        > curl_response
+      cat curl_response | jq .

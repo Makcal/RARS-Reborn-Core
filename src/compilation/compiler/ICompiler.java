@@ -1,7 +1,7 @@
 package compilation.compiler;
 
 import exceptions.compilation.CompilationException;
-import assembler.instruction.IInstruction;
+import core.instruction.IInstruction;
 
 import java.util.List;
 

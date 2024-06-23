@@ -1,4 +1,4 @@
-package assembler.instruction;
+package core.instruction;
 
 public abstract class IntegerRegisterInstructionHandler<TInstruction extends IIntegerRegisterInstruction>
         implements IInstructionHandler<TInstruction> {

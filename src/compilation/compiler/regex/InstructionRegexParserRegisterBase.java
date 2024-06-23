@@ -1,7 +1,7 @@
 package compilation.compiler.regex;
 
-import assembler.instruction.IInstruction;
-import assembler.register.IRegister;
+import core.instruction.IInstruction;
+import core.register.IRegister;
 
 import java.util.HashMap;
 import java.util.Map;

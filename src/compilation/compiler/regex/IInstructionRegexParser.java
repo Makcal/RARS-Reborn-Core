@@ -1,8 +1,8 @@
 package compilation.compiler.regex;
 
 import exceptions.compilation.CompilationException;
-import assembler.instruction.IInstruction;
-import assembler.register.IRegister;
+import core.instruction.IInstruction;
+import core.register.IRegister;
 
 import java.util.Map;
 

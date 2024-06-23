@@ -4,9 +4,9 @@ import compilation.compiler.ICompiler;
 import compilation.compiler.ICompilerBuilder;
 import exceptions.compilation.CompilationException;
 import exceptions.compilation.UnknownInstructionException;
-import assembler.instruction.IInstruction;
-import assembler.register.IRegister;
-import assembler.register.IRegisterFile;
+import core.instruction.IInstruction;
+import core.register.IRegister;
+import core.register.IRegisterFile;
 
 import java.util.*;
 

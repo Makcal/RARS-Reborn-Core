@@ -2,10 +2,10 @@ package simulator;
 
 import compilation.compiler.ICompiler;
 import exceptions.execution.EndOfExecutionException;
-import assembler.instruction.IInstruction;
-import assembler.instruction.IInstructionHandler;
-import assembler.instruction.IIntegerRegisterInstruction;
-import assembler.register.Register32File;
+import core.instruction.IInstruction;
+import core.instruction.IInstructionHandler;
+import core.instruction.IIntegerRegisterInstruction;
+import core.register.Register32File;
 
 public class Simulator32 extends SimulatorBase {
     protected final Register32File register32File;

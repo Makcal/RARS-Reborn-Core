@@ -1,4 +1,4 @@
-package assembler.register;
+package core.register;
 
 public interface IRegister {
     int getNumber();

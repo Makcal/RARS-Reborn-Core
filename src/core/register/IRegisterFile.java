@@ -1,4 +1,4 @@
-package assembler.register;
+package core.register;
 
 import exceptions.compilation.UnknownRegisterException;
 

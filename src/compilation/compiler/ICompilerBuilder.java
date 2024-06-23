@@ -1,9 +1,9 @@
 package compilation.compiler;
 
 import compilation.compiler.regex.IInstructionRegexParser;
-import assembler.instruction.IInstruction;
-import assembler.register.IRegister;
-import assembler.register.IRegisterFile;
+import core.instruction.IInstruction;
+import core.register.IRegister;
+import core.register.IRegisterFile;
 
 public interface ICompilerBuilder {
     ICompiler build();

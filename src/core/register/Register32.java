@@ -1,4 +1,4 @@
-package assembler.register;
+package core.register;
 
 public class Register32 implements IIntegerRegister {
     private final int number;

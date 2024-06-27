@@ -1,6 +1,7 @@
 package simulator;
 
 import compilation.compiler.ICompiler;
+import compilation.decoder.DecodingResult;
 import compilation.decoder.IBufferedDecoder;
 import core.instruction.IInstruction;
 import core.instruction.IInstructionHandler;
@@ -40,7 +41,6 @@ public class Simulator32 extends SimulatorBase {
             memory.writeBytes(loaderPointer, serialized);
             loaderPointer += serialized.length;
         }
-        memory.setByte(Memory32.TEXT_SECTION_START + 3, (byte) 0x00);
         programLength = loaderPointer - Memory32.TEXT_SECTION_START;
     }
 
@@ -50,9 +50,9 @@ public class Simulator32 extends SimulatorBase {
             throw new EndOfExecutionException();
         }
         try {
-            IInstruction instruction = decoder.decodeNextInstruction(memory, programCounter.getValue());
-            programCounter.setValue(programCounter.getValue() + 4);
-            return instruction;
+            DecodingResult decoded = decoder.decodeNextInstruction(memory, programCounter.getValue());
+            programCounter.setValue(programCounter.getValue() + decoded.bytesConsumed());
+            return decoded.instruction();
         } catch (MemoryAccessException e) {
             throw new RuntimeException(e);
         }

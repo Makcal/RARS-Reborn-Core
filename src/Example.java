@@ -5,6 +5,7 @@ import core.instruction.riscv.formats.RiscVInstructionFormat;
 import core.memory.Memory32;
 import core.register.Register32File;
 import exceptions.compilation.CompilationException;
+import exceptions.compilation.UnknownRegisterException;
 import simulator.Simulator32;
 
 import java.util.Arrays;
@@ -34,6 +35,12 @@ public class Example {
             throw new RuntimeException(e);
         }
         sim.run();
+        try {
+            System.out.printf("t0: %d\n", regs.getRegisterByName("t0").getValue());
+            System.out.printf("t0: %d\n", regs.getRegisterByName("t1").getValue());
+        } catch (UnknownRegisterException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
 

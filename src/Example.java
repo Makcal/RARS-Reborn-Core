@@ -1,6 +1,6 @@
 import compilation.compiler.regex.RegexCompiler;
 import compilation.decoder.riscv.RiscVDecoder;
-import core.instruction.AddImmediate;
+import core.instruction.riscv.instructions.rv32i.AddImmediate;
 import core.instruction.riscv.formats.RiscVInstructionFormat;
 import core.memory.Memory32;
 import core.register.Register32File;

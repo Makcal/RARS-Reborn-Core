@@ -1,6 +1,7 @@
-package core.instruction;
+package core.instruction.riscv.instructions.rv32i;
 
 import compilation.compiler.regex.InstructionRegexParserRegisterBase;
+import core.instruction.IInstructionHandler;
 import core.instruction.riscv.formats.InstructionI;
 import core.register.IRegisterFile;
 import exceptions.compilation.*;

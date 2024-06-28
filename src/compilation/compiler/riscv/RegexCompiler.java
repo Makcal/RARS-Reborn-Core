@@ -6,9 +6,9 @@ import core.instruction.IInstruction;
 import core.register.IRegister;
 import core.register.IRegisterFile;
 import core.riscvprogram.DataBlock;
-import core.riscvprogram.IDataBlock;
-import core.riscvprogram.IProgram;
-import core.riscvprogram.IProgramBuilder;
+import core.program.IDataBlock;
+import core.program.IObjectFile;
+import core.program.IProgramBuilder;
 import exceptions.compilation.CompilationException;
 import exceptions.compilation.SyntaxErrorException;
 import exceptions.compilation.UnknownInstructionException;
@@ -35,7 +35,7 @@ public class RegexCompiler implements ICompiler {
     }
 
     @Override
-    public IProgram compile(String source) throws CompilationException {
+    public IObjectFile compile(String source) throws CompilationException {
         source = source.strip().replaceAll(" *\n+ *", "\n").replaceAll(" +", " ").replaceAll(" ?, ?", ",");
 
         List<IInstruction> instructions = new LinkedList<>();

@@ -1,16 +1,29 @@
 package core.riscvprogram;
 
+import core.program.*;
 import core.instruction.IInstruction;
 
 import java.util.List;
 
-public class RiscVProgram implements IProgram {
+public class RiscVObjectFile implements IObjectFile {
+    ISymbolTable symbolTable = new SymbolTable();
+    IRelocationTable relocationTable = new RelocationTable();
     List<IDataBlock> data;
     List<IInstruction> text;
 
-    public RiscVProgram(List<IDataBlock> data, List<IInstruction> text) {
+    public RiscVObjectFile(List<IDataBlock> data, List<IInstruction> text) {
         this.data = data;
         this.text = text;
+    }
+
+    @Override
+    public ISymbolTable getSymbolTable() {
+        return symbolTable;
+    }
+
+    @Override
+    public IRelocationTable getRelocationTable() {
+        return relocationTable;
     }
 
     @Override
@@ -23,13 +36,13 @@ public class RiscVProgram implements IProgram {
         return text;
     }
 
-    public static class Builder implements IProgramBuilder {
+    public static class ProgramBuilder implements IProgramBuilder {
         private List<IDataBlock> dataBlock;
         private List<IInstruction> instructions;
 
         @Override
-        public IProgram build() {
-            return new RiscVProgram(dataBlock, instructions);
+        public IObjectFile build() {
+            return new RiscVObjectFile(dataBlock, instructions);
         }
 
         @Override

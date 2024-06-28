@@ -4,7 +4,7 @@ import compilation.compiler.riscv.IInstructionRegexParser;
 import core.instruction.IInstruction;
 import core.register.IRegister;
 import core.register.IRegisterFile;
-import core.riscvprogram.IProgramBuilder;
+import core.program.IProgramBuilder;
 
 public interface ICompilerBuilder {
     ICompiler build();

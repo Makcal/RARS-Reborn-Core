@@ -3,13 +3,14 @@ package simulator;
 import compilation.compiler.ICompiler;
 import compilation.decoder.DecodingResult;
 import compilation.decoder.IBufferedDecoder;
+import compilation.linker.ILinker;
 import core.instruction.IInstruction;
 import core.instruction.IInstructionHandler;
 import core.memory.Memory32;
+import core.program.IDataBlock;
+import core.program.IExecutable;
 import core.register.Register32;
 import core.register.Register32File;
-import core.riscvprogram.IDataBlock;
-import core.riscvprogram.IProgram;
 import exceptions.execution.EndOfExecutionException;
 import exceptions.execution.ExecutionException;
 import exceptions.memory.MemoryAccessException;
@@ -25,18 +26,19 @@ public class Simulator32 extends SimulatorBase {
 
     public Simulator32(
             ICompiler compiler,
+            ILinker linker,
             IBufferedDecoder decoder,
             Register32File registerFile,
             Memory32 memory
     ) {
-        super(compiler, decoder);
+        super(compiler, linker, decoder);
         this.register32File = registerFile;
         this.memory = memory;
         this.programCounter = new Register32(32, "pc", Memory32.TEXT_SECTION_START);
     }
 
     @Override
-    protected void loadProgram(IProgram program) {
+    protected void loadProgram(IExecutable program) {
         loadInstructions(program.getText());
         loadData(program.getData());
     }

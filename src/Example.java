@@ -4,7 +4,7 @@ import core.instruction.riscv.instructions.rv32i.AddImmediate;
 import core.instruction.riscv.formats.RiscVInstructionFormat;
 import core.memory.Memory32;
 import core.register.Register32File;
-import core.riscvprogram.RiscVProgram;
+import core.riscvprogram.RiscVObjectFile;
 import exceptions.compilation.CompilationException;
 import exceptions.compilation.UnknownRegisterException;
 import simulator.Simulator32;
@@ -15,7 +15,7 @@ public class Example {
     public static void main(String[] args) {
         var regs = new Register32File(Arrays.asList("t0", "t1"));
         var compiler = new RegexCompiler.RegexCompilerBuilder()
-            .setProgramBuilder(new RiscVProgram.Builder())
+            .setProgramBuilder(new RiscVObjectFile.ProgramBuilder())
             .registerRegistersFromFile(regs)
             .registerInstruction(AddImmediate.NAME, new AddImmediate.Parser())
             .build();

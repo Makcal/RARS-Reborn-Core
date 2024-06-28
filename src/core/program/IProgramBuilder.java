@@ -1,11 +1,11 @@
-package core.riscvprogram;
+package core.program;
 
 import core.instruction.IInstruction;
 
 import java.util.List;
 
 public interface IProgramBuilder {
-    IProgram build();
+    IObjectFile build();
 
     IProgramBuilder addData(List<IDataBlock> dataBlock);
 

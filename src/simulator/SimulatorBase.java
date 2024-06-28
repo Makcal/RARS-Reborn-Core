@@ -2,9 +2,11 @@ package simulator;
 
 import compilation.compiler.ICompiler;
 import compilation.decoder.IBufferedDecoder;
+import compilation.linker.ILinker;
 import core.instruction.IInstruction;
 import core.instruction.IInstructionHandler;
-import core.riscvprogram.IProgram;
+import core.program.IExecutable;
+import core.program.IObjectFile;
 import exceptions.compilation.CompilationException;
 import exceptions.compilation.UnknownInstructionException;
 import exceptions.execution.EndOfExecutionException;
@@ -15,22 +17,26 @@ import java.util.Map;
 
 public abstract class SimulatorBase implements ISimulator {
     protected final ICompiler compiler;
+    protected final ILinker linker;
     protected final IBufferedDecoder decoder;
 
     protected final Map<Class<? extends IInstruction>, IInstructionHandler<?>> handlers
             = new HashMap<>();
 
-    public SimulatorBase(ICompiler compiler, IBufferedDecoder decoder) {
+    public SimulatorBase(ICompiler compiler, ILinker linker, IBufferedDecoder decoder) {
         this.compiler = compiler;
+        this.linker = linker;
         this.decoder = decoder;
     }
 
     @Override
     public void compile(String program) throws CompilationException {
-        loadProgram(compiler.compile(program));
+        IObjectFile objectFile = compiler.compile(program);
+        IExecutable executable = linker.link(objectFile);
+        loadProgram(executable);
     }
 
-    abstract protected void loadProgram(IProgram program);
+    abstract protected void loadProgram(IExecutable program);
 
     @Override
     public void run() {

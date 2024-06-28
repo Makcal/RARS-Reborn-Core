@@ -1,8 +1,8 @@
 package compilation.compiler;
 
-import core.riscvprogram.IProgram;
+import core.program.IObjectFile;
 import exceptions.compilation.CompilationException;
 
 public interface ICompiler {
-    IProgram compile(String source) throws CompilationException;
+    IObjectFile compile(String source) throws CompilationException;
 }

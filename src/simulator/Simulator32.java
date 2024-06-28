@@ -8,6 +8,8 @@ import core.instruction.IInstructionHandler;
 import core.memory.Memory32;
 import core.register.Register32;
 import core.register.Register32File;
+import core.riscvprogram.IDataBlock;
+import core.riscvprogram.IProgram;
 import exceptions.execution.EndOfExecutionException;
 import exceptions.execution.ExecutionException;
 import exceptions.memory.MemoryAccessException;
@@ -34,7 +36,12 @@ public class Simulator32 extends SimulatorBase {
     }
 
     @Override
-    protected void loadProgram(List<IInstruction> instructions) {
+    protected void loadProgram(IProgram program) {
+        loadInstructions(program.getText());
+        loadData(program.getData());
+    }
+
+    private void loadInstructions(List<IInstruction> instructions) {
         long loaderPointer = Memory32.TEXT_SECTION_START;
         for (IInstruction instruction : instructions) {
             byte[] serialized = instruction.serialize();
@@ -42,6 +49,17 @@ public class Simulator32 extends SimulatorBase {
             loaderPointer += serialized.length;
         }
         programLength = loaderPointer - Memory32.TEXT_SECTION_START;
+    }
+
+    protected void loadData(List<IDataBlock> data) {
+        long pointer = Memory32.DATA_SECTION_START;
+        for (IDataBlock block : data) {
+            if (pointer % block.alignment() != 0)
+                pointer += block.alignment() - (pointer % block.alignment());
+            byte[] value = block.value();
+            memory.writeBytes(pointer, value);
+            pointer += value.length;
+        }
     }
 
     @Override

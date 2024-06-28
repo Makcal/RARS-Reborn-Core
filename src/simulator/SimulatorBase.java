@@ -4,13 +4,13 @@ import compilation.compiler.ICompiler;
 import compilation.decoder.IBufferedDecoder;
 import core.instruction.IInstruction;
 import core.instruction.IInstructionHandler;
+import core.riscvprogram.IProgram;
 import exceptions.compilation.CompilationException;
 import exceptions.compilation.UnknownInstructionException;
 import exceptions.execution.EndOfExecutionException;
 import exceptions.execution.ExecutionException;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public abstract class SimulatorBase implements ISimulator {
@@ -30,7 +30,7 @@ public abstract class SimulatorBase implements ISimulator {
         loadProgram(compiler.compile(program));
     }
 
-    abstract protected void loadProgram(List<IInstruction> instructions);
+    abstract protected void loadProgram(IProgram program);
 
     @Override
     public void run() {

@@ -26,4 +26,6 @@ replay_pid*
 
 
 # Custom section
-.idea
+.idea/
+out/
+META-INF/

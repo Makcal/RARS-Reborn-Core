@@ -1,12 +1,13 @@
 package simulator;
 
 import compilation.compiler.ICompiler;
-import exceptions.compilation.CompilationException;
+import compilation.decoder.IBufferedDecoder;
 import core.instruction.IInstruction;
 import core.instruction.IInstructionHandler;
+import exceptions.compilation.CompilationException;
+import exceptions.compilation.UnknownInstructionException;
 import exceptions.execution.EndOfExecutionException;
 import exceptions.execution.ExecutionException;
-import exceptions.compilation.UnknownInstructionException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,20 +15,22 @@ import java.util.Map;
 
 public abstract class SimulatorBase implements ISimulator {
     protected final ICompiler compiler;
+    protected final IBufferedDecoder decoder;
 
     protected final Map<Class<? extends IInstruction>, IInstructionHandler<?>> handlers
             = new HashMap<>();
 
-    protected List<IInstruction> compiledInstructions;
-
-    public SimulatorBase(ICompiler compiler) {
+    public SimulatorBase(ICompiler compiler, IBufferedDecoder decoder) {
         this.compiler = compiler;
+        this.decoder = decoder;
     }
 
     @Override
     public void compile(String program) throws CompilationException {
-        compiledInstructions = compiler.compile(program);
+        loadProgram(compiler.compile(program));
     }
+
+    abstract protected void loadProgram(List<IInstruction> instructions);
 
     @Override
     public void run() {
@@ -54,7 +57,7 @@ public abstract class SimulatorBase implements ISimulator {
         }
     }
 
-    protected abstract IInstruction getNextInstruction() throws EndOfExecutionException;
+    protected abstract IInstruction getNextInstruction() throws ExecutionException;
 
     protected void executeOneInstruction() throws ExecutionException {
         executeInstruction(getNextInstruction());

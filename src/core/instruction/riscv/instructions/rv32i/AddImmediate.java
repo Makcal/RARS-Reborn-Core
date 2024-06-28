@@ -1,6 +1,6 @@
 package core.instruction.riscv.instructions.rv32i;
 
-import compilation.compiler.regex.InstructionRegexParserRegisterBase;
+import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
 import core.instruction.IInstructionHandler;
 import core.instruction.riscv.formats.InstructionI;
 import core.register.IRegisterFile;
@@ -80,7 +80,7 @@ public class AddImmediate extends InstructionI {
             try {
                 return new AddImmediate(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));
             } catch (IllegalArgumentException e) {
-                throw new ConstantTooLargeException(imm);
+                throw new ImmediateTooLargeException(imm);
             }
         }
     }

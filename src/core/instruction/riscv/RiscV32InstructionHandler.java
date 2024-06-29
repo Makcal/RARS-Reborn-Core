@@ -1,8 +1,6 @@
 package core.instruction.riscv;
 
 import core.instruction.IInstruction;
-import core.instruction.IInstructionHandler;
-import core.memory.IMemory;
 import core.register.IRegisterFile;
 import core.register.Register32;
 

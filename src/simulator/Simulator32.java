@@ -35,6 +35,18 @@ public class Simulator32 extends SimulatorBase {
         this.programCounter = programCounter;
     }
 
+    public Register32File getRegisterFile() {
+        return registerFile;
+    }
+
+    public Memory32 getMemory() {
+        return memory;
+    }
+
+    public Register32 getProgramCounter() {
+        return programCounter;
+    }
+
     @Override
     protected void loadProgram(IExecutable program) {
         memory.writeBytes(Memory32.DATA_SECTION_START, program.getData());

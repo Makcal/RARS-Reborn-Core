@@ -29,8 +29,8 @@ public class Example {
         var memory = new Memory32();
         var pc = new Register32(32, "pc", Memory32.TEXT_SECTION_START);
         var sim = new Simulator32(compiler, linker, decoder, regs, pc, memory)
-            .registerHandler(AddImmediate.class, new AddImmediate.Handler(regs))
-            .registerHandler(JumpAndLink.class, new JumpAndLink.Handler(regs, pc));
+            .registerHandler(AddImmediate.class, new AddImmediate.Handler())
+            .registerHandler(JumpAndLink.class, new JumpAndLink.Handler());
         try {
             sim.compile("""
                        .data

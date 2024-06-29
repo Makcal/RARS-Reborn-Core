@@ -5,9 +5,8 @@ import compilation.decoder.DecodingResult;
 import compilation.decoder.IBufferedDecoder;
 import compilation.linker.ILinker;
 import core.instruction.IInstruction;
-import core.instruction.IInstructionHandler;
+import core.instruction.riscv.RiscV32InstructionHandler;
 import core.memory.Memory32;
-import core.program.IDataBlock;
 import core.program.IExecutable;
 import core.register.Register32;
 import core.register.Register32File;
@@ -15,10 +14,8 @@ import exceptions.execution.EndOfExecutionException;
 import exceptions.execution.ExecutionException;
 import exceptions.memory.MemoryAccessException;
 
-import java.util.List;
-
 public class Simulator32 extends SimulatorBase {
-    protected final Register32File register32File;
+    protected final Register32File registerFile;
     protected final Memory32 memory;
     public final Register32 programCounter;
 
@@ -33,7 +30,7 @@ public class Simulator32 extends SimulatorBase {
             Memory32 memory
     ) {
         super(compiler, linker, decoder);
-        this.register32File = registerFile;
+        this.registerFile = registerFile;
         this.memory = memory;
         this.programCounter = programCounter;
     }
@@ -63,8 +60,11 @@ public class Simulator32 extends SimulatorBase {
 
     public <TInstruction extends IInstruction> Simulator32 registerHandler(
             Class<TInstruction> instructionClass,
-            IInstructionHandler<TInstruction> handler
+            RiscV32InstructionHandler<TInstruction> handler
     ) {
+        handler.attachMemory(memory);
+        handler.attachProgramCounter(programCounter);
+        handler.attachRegisters(registerFile);
         super.addHandler(instructionClass, handler);
         return this;
     }

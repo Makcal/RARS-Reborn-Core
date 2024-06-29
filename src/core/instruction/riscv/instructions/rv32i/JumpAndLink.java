@@ -3,6 +3,7 @@ package core.instruction.riscv.instructions.rv32i;
 import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
 import core.instruction.IInstructionHandler;
 import core.instruction.ILinkableInstruction;
+import core.instruction.riscv.RiscV32InstructionHandler;
 import core.instruction.riscv.formats.InstructionJ;
 import core.program.LinkRequest;
 import core.register.IRegisterFile;
@@ -47,15 +48,7 @@ public class JumpAndLink extends InstructionJ implements ILinkableInstruction {
         return NAME;
     }
 
-    public static class Handler implements IInstructionHandler<JumpAndLink> {
-        final IRegisterFile<Register32> registerFile;
-        final Register32 programCounter;
-
-        public Handler(IRegisterFile<Register32> registerFile, Register32 programCounter) {
-            this.registerFile = registerFile;
-            this.programCounter = programCounter;
-        }
-
+    public static class Handler extends RiscV32InstructionHandler<JumpAndLink> {
         @Override
         public void handle(JumpAndLink instruction) {
             instruction.exec(registerFile, programCounter);

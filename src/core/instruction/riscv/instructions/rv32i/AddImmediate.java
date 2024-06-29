@@ -2,6 +2,7 @@ package core.instruction.riscv.instructions.rv32i;
 
 import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
 import core.instruction.IInstructionHandler;
+import core.instruction.riscv.RiscV32InstructionHandler;
 import core.instruction.riscv.formats.InstructionI;
 import core.register.IRegisterFile;
 import core.register.Register32;
@@ -29,13 +30,7 @@ public class AddImmediate extends InstructionI {
         return NAME;
     }
 
-    public static class Handler implements IInstructionHandler<AddImmediate> {
-        final IRegisterFile<Register32> registerFile;
-
-        public Handler(IRegisterFile<Register32> registerFile) {
-            this.registerFile = registerFile;
-        }
-
+    public static class Handler extends RiscV32InstructionHandler<AddImmediate> {
         @Override
         public void handle(AddImmediate instruction) {
             instruction.exec(registerFile);

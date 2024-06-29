@@ -5,6 +5,7 @@ import core.instruction.ILinkableInstruction;
 import core.instruction.riscv.RiscV32InstructionHandler;
 import core.instruction.riscv.formats.InstructionJ;
 import core.program.LinkRequest;
+import core.register.IRegister;
 import core.register.IRegisterFile;
 import core.register.Register32;
 import exceptions.compilation.*;
@@ -57,19 +58,14 @@ public class JumpAndLink extends InstructionJ implements ILinkableInstruction {
     public static class Parser extends InstructionRegexParserRegisterBase<JumpAndLink> {
         @Override
         public JumpAndLink parse(String line) throws CompilationException {
-            String[] split = line.split(",");
-            if (split.length != 2) {
-                throw new WrongNumberOfArgumentsException(NAME, split.length, 2);
-            }
+            String[] split = splitArguments(line, 2, NAME);
 
             Register32 rd;
+            IRegister register = parseRegister(registers, split[0]);
             try {
-                rd = (Register32) registers.get(split[0]);
+                rd = (Register32) register;
             } catch (ClassCastException e) {
-                throw new WrongRegisterTypeException(Register32.class, registers.get(split[0]).getClass());
-            }
-            if (rd == null) {
-                throw new UnknownRegisterException(split[0]);
+                throw new WrongRegisterTypeException(Register32.class, register.getClass());
             }
 
             String label = split[1];

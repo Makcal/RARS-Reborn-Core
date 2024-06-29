@@ -11,8 +11,6 @@ public interface ICompilerBuilder {
 
     ICompilerBuilder setProgramBuilder(IProgramBuilder programBuilder);
 
-    ICompilerBuilder registerRegister(IRegister register);
-
     ICompilerBuilder registerRegistersFromFile(IRegisterFile<?> registerFile);
 
     <TInstruction extends IInstruction> ICompilerBuilder registerInstruction(

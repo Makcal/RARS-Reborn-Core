@@ -168,7 +168,7 @@ public class RegexCompiler implements ICompiler {
     }
 
     public static class RegexCompilerBuilder implements ICompilerBuilder {
-        private final Map<String, IRegister> registers = new HashMap<>();
+        private IRegisterFile<?> registers;
         private final Map<String, IInstructionRegexParser<?>> parsers = new HashMap<>();
         private IProgramBuilder programBuilder;
 
@@ -184,16 +184,8 @@ public class RegexCompiler implements ICompiler {
         }
 
         @Override
-        public RegexCompilerBuilder registerRegister(IRegister register) {
-            registers.put(register.getName(), register);
-            return this;
-        }
-
-        @Override
         public RegexCompilerBuilder registerRegistersFromFile(IRegisterFile<?> registerFile) {
-            for (IRegister register : registerFile.getAllRegisters()) {
-                registerRegister(register);
-            }
+            registers = registerFile;
             return this;
         }
 

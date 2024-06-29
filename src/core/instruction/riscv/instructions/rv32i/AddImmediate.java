@@ -3,6 +3,7 @@ package core.instruction.riscv.instructions.rv32i;
 import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
 import core.instruction.riscv.RiscV32InstructionHandler;
 import core.instruction.riscv.formats.InstructionI;
+import core.register.IRegister;
 import core.register.IRegisterFile;
 import core.register.Register32;
 import exceptions.compilation.*;
@@ -39,29 +40,22 @@ public class AddImmediate extends InstructionI {
     public static class Parser extends InstructionRegexParserRegisterBase<AddImmediate> {
         @Override
         public AddImmediate parse(String line) throws CompilationException {
-            String[] split = line.split(",");
-            if (split.length != 3) {
-                throw new WrongNumberOfArgumentsException(NAME, split.length, 3);
-            }
+            String[] split = splitArguments(line, 3, NAME);
 
             Register32 rd;
+            IRegister register = parseRegister(registers, split[0]);
             try {
-                rd = (Register32) registers.get(split[0]);
+                rd = (Register32) register;
             } catch (ClassCastException e) {
-                throw new WrongRegisterTypeException(Register32.class, registers.get(split[0]).getClass());
-            }
-            if (rd == null) {
-                throw new UnknownRegisterException(split[0]);
+                throw new WrongRegisterTypeException(Register32.class, register.getClass());
             }
 
             Register32 rs1;
+            register = parseRegister(registers, split[1]);
             try {
-                rs1 = (Register32) registers.get(split[1]);
+                rs1 = (Register32) register;
             } catch (ClassCastException e) {
-                throw new WrongRegisterTypeException(Register32.class, registers.get(split[1]).getClass());
-            }
-            if (rs1 == null) {
-                throw new UnknownRegisterException(split[1]);
+                throw new WrongRegisterTypeException(Register32.class, register.getClass());
             }
 
             short imm;

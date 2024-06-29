@@ -7,6 +7,10 @@ public class ArrayBlockStorage implements IMemoryBlockStorage {
         this.data = new byte[(int) length];
     }
 
+    public ArrayBlockStorage(byte[] data) {
+        this.data = data;
+    }
+
     @Override
     public void clear() {
         data = new byte[data.length];

@@ -1,10 +1,8 @@
 package compilation.compiler;
 
+import core.program.IObjectFile;
 import exceptions.compilation.CompilationException;
-import core.instruction.IInstruction;
-
-import java.util.List;
 
 public interface ICompiler {
-    List<IInstruction> compile(String source) throws CompilationException;
+    IObjectFile compile(String source) throws CompilationException;
 }

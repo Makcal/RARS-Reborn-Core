@@ -1,6 +1,5 @@
 package compilation.decoder;
 
-import core.instruction.IInstruction;
 import core.memory.IMemory;
 import exceptions.execution.IllegalInstructionException;
 import exceptions.memory.MemoryAccessException;
@@ -14,5 +13,6 @@ public interface IBufferedDecoder {
      */
     int getBufferSize();
 
-    IInstruction decodeNextInstruction(IMemory memory, long address) throws MemoryAccessException, IllegalInstructionException;
+    DecodingResult decodeNextInstruction(IMemory memory, long address)
+        throws MemoryAccessException, IllegalInstructionException;
 }

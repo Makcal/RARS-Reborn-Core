@@ -1,5 +1,6 @@
 package compilation.decoder.riscv;
 
+import compilation.decoder.DecodingResult;
 import compilation.decoder.IBufferedDecoder;
 import core.instruction.IInstruction;
 import core.instruction.riscv.formats.*;
@@ -27,7 +28,7 @@ public class RiscVDecoder implements IBufferedDecoder {
     }
 
     @Override
-    public IInstruction decodeNextInstruction(IMemory memory, long address)
+    public DecodingResult decodeNextInstruction(IMemory memory, long address)
             throws MemoryAccessException, IllegalInstructionException {
         int encoded = Byte.toUnsignedInt(memory.getByte(address)) << 24
             | Byte.toUnsignedInt(memory.getByte(address + 1)) << 16
@@ -121,7 +122,7 @@ public class RiscVDecoder implements IBufferedDecoder {
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new IllegalInstructionException(address);
         }
-        return instruction;
+        return new DecodingResult(instruction, 4);
     }
 
     private record DoubleFunctInfo(byte opcode, byte funct3, byte funct7) {}

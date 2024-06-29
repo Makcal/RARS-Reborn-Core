@@ -4,7 +4,7 @@ import core.instruction.riscv.RiscVInstruction;
 
 public abstract class InstructionU extends RiscVInstruction {
     protected final byte rd;
-    protected final int imm;
+    protected int imm;
 
     public InstructionU(InstructionUData data) {
         super(data.opcode);

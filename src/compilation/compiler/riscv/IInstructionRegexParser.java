@@ -1,4 +1,4 @@
-package compilation.compiler.regex;
+package compilation.compiler.riscv;
 
 import exceptions.compilation.CompilationException;
 import core.instruction.IInstruction;

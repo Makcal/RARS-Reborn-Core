@@ -1,10 +1,14 @@
 package simulator;
 
 import compilation.compiler.ICompiler;
+import compilation.decoder.DecodingResult;
 import compilation.decoder.IBufferedDecoder;
+import compilation.linker.ILinker;
 import core.instruction.IInstruction;
 import core.instruction.IInstructionHandler;
 import core.memory.Memory32;
+import core.program.IDataBlock;
+import core.program.IExecutable;
 import core.register.Register32;
 import core.register.Register32File;
 import exceptions.execution.EndOfExecutionException;
@@ -16,32 +20,31 @@ import java.util.List;
 public class Simulator32 extends SimulatorBase {
     protected final Register32File register32File;
     protected final Memory32 memory;
-    protected final Register32 programCounter;
+    public final Register32 programCounter;
 
     protected long programLength;
 
     public Simulator32(
             ICompiler compiler,
+            ILinker linker,
             IBufferedDecoder decoder,
             Register32File registerFile,
+            Register32 programCounter,
             Memory32 memory
     ) {
-        super(compiler, decoder);
+        super(compiler, linker, decoder);
         this.register32File = registerFile;
         this.memory = memory;
-        this.programCounter = new Register32(32, "pc", Memory32.TEXT_SECTION_START);
+        this.programCounter = programCounter;
     }
 
     @Override
-    protected void loadProgram(List<IInstruction> instructions) {
-        long loaderPointer = Memory32.TEXT_SECTION_START;
-        for (IInstruction instruction : instructions) {
-            byte[] serialized = instruction.serialize();
-            memory.writeBytes(loaderPointer, serialized);
-            loaderPointer += serialized.length;
-        }
-        memory.setByte(Memory32.TEXT_SECTION_START + 3, (byte) 0x00);
-        programLength = loaderPointer - Memory32.TEXT_SECTION_START;
+    protected void loadProgram(IExecutable program) {
+        memory.writeBytes(Memory32.DATA_SECTION_START, program.getData());
+
+        byte[] programText = program.getText();
+        memory.writeBytes(Memory32.TEXT_SECTION_START, programText);
+        programLength = programText.length;
     }
 
     @Override
@@ -50,9 +53,9 @@ public class Simulator32 extends SimulatorBase {
             throw new EndOfExecutionException();
         }
         try {
-            IInstruction instruction = decoder.decodeNextInstruction(memory, programCounter.getValue());
-            programCounter.setValue(programCounter.getValue() + 4);
-            return instruction;
+            DecodingResult decoded = decoder.decodeNextInstruction(memory, programCounter.getValue());
+            programCounter.setValue(programCounter.getValue() + decoded.bytesConsumed());
+            return decoded.instruction();
         } catch (MemoryAccessException e) {
             throw new RuntimeException(e);
         }

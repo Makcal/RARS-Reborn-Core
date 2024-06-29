@@ -5,8 +5,8 @@ import core.instruction.riscv.RiscVInstruction;
 public abstract class InstructionB extends RiscVInstruction {
     protected final byte rs1;
     protected final byte funct3;
-    private final short imm;
-    private final byte rs2;
+    protected short imm;
+    protected final byte rs2;
 
     public InstructionB(InstructionBData data) {
         super(data.opcode);

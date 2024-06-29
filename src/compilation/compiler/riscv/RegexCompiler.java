@@ -46,7 +46,13 @@ public class RegexCompiler implements ICompiler {
             if (parsingState == ParsingState.TEXT) {
                 Matcher labelMatcher = LABEL_PATTERN.matcher(line);
                 if (labelMatcher.matches()) {
-                    context.symbolTable.addSymbol(labelMatcher.group(1), context.instructions.size());
+                    context.symbolTable.addSymbol(
+                        new Symbol(
+                            SymbolType.INSTRUCTION_LABEL,
+                            labelMatcher.group(1),
+                            context.instructions.size()
+                        )
+                    );
                     continue;
                 }
             }
@@ -88,7 +94,7 @@ public class RegexCompiler implements ICompiler {
             }
         }
         if (block.label() != null) {
-            context.symbolTable.addSymbol(block.label(), context.data.size());
+            context.symbolTable.addSymbol(new Symbol(SymbolType.DATA, block.label(), context.data.size()));
         }
         byte[] blockValue = block.getValue();
         for (byte b : blockValue) {

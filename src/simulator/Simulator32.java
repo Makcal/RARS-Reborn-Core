@@ -20,7 +20,7 @@ import java.util.List;
 public class Simulator32 extends SimulatorBase {
     protected final Register32File register32File;
     protected final Memory32 memory;
-    protected final Register32 programCounter;
+    public final Register32 programCounter;
 
     protected long programLength;
 
@@ -29,12 +29,13 @@ public class Simulator32 extends SimulatorBase {
             ILinker linker,
             IBufferedDecoder decoder,
             Register32File registerFile,
+            Register32 programCounter,
             Memory32 memory
     ) {
         super(compiler, linker, decoder);
         this.register32File = registerFile;
         this.memory = memory;
-        this.programCounter = new Register32(32, "pc", Memory32.TEXT_SECTION_START);
+        this.programCounter = programCounter;
     }
 
     @Override

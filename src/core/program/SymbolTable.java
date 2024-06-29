@@ -1,27 +1,34 @@
 package core.program;
 
 import exceptions.compilation.LabelDuplicateException;
-import exceptions.compilation.LabelNotFoundException;
+import exceptions.linking.LabelNotFoundException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SymbolTable implements ISymbolTable {
-    private final Map<String, Long> symbolTable = new HashMap<>();
+    private final Map<String, Symbol> symbolTable = new HashMap<>();
 
     @Override
-    public void addSymbol(String symbol, long address) throws LabelDuplicateException {
-        if (symbolTable.containsKey(symbol)) {
-            throw new LabelDuplicateException(symbol);
+    public void addSymbol(Symbol symbol) throws LabelDuplicateException {
+        if (symbolTable.containsKey(symbol.name())) {
+            throw new LabelDuplicateException(symbol.name());
         }
-        symbolTable.put(symbol, address);
+        symbolTable.put(symbol.name(), symbol);
     }
 
     @Override
-    public long getSymbol(String symbol) throws LabelNotFoundException {
-        if (!symbolTable.containsKey(symbol)) {
-            throw new LabelNotFoundException(symbol);
+    public Symbol getSymbol(String name) throws LabelNotFoundException {
+        if (!symbolTable.containsKey(name)) {
+            throw new LabelNotFoundException(name);
         }
-        return symbolTable.get(symbol);
+        return symbolTable.get(name);
+    }
+
+    @Override
+    public List<Symbol> getAllSymbols() {
+        return new ArrayList<>(symbolTable.values());
     }
 }

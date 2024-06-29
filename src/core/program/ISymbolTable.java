@@ -1,10 +1,14 @@
 package core.program;
 
 import exceptions.compilation.LabelDuplicateException;
-import exceptions.compilation.LabelNotFoundException;
+import exceptions.linking.LabelNotFoundException;
+
+import java.util.List;
 
 public interface ISymbolTable {
-    void addSymbol(String symbol, long address) throws LabelDuplicateException;
+    void addSymbol(Symbol symbol) throws LabelDuplicateException;
 
-    long getSymbol(String symbol) throws LabelNotFoundException;
+    Symbol getSymbol(String name) throws LabelNotFoundException;
+
+    List<Symbol> getAllSymbols();
 }

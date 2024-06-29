@@ -11,6 +11,7 @@ import exceptions.compilation.CompilationException;
 import exceptions.compilation.UnknownInstructionException;
 import exceptions.execution.EndOfExecutionException;
 import exceptions.execution.ExecutionException;
+import exceptions.linking.LinkingException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ public abstract class SimulatorBase implements ISimulator {
     }
 
     @Override
-    public void compile(String program) throws CompilationException {
+    public void compile(String program) throws CompilationException, LinkingException {
         IObjectFile objectFile = compiler.compile(program);
         IExecutable executable = linker.link(objectFile);
         loadProgram(executable);
@@ -69,7 +70,7 @@ public abstract class SimulatorBase implements ISimulator {
         executeInstruction(getNextInstruction());
     }
 
-    protected void executeInstruction(IInstruction instruction) {
+    protected void executeInstruction(IInstruction instruction) throws ExecutionException {
         // This cast should always work due to the fact that handles are registered exceptionally for the corresponding
         // type of instruction
         //noinspection unchecked

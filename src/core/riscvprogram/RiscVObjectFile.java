@@ -1,17 +1,16 @@
 package core.riscvprogram;
 
 import core.program.*;
-import core.instruction.IInstruction;
-
-import java.util.List;
 
 public class RiscVObjectFile implements IObjectFile {
-    ISymbolTable symbolTable = new SymbolTable();
-    IRelocationTable relocationTable = new RelocationTable();
-    List<IDataBlock> data;
-    List<IInstruction> text;
+    private final ISymbolTable symbolTable;
+    private final IRelocationTable relocationTable;
+    private final byte[] data;
+    private final byte[] text;
 
-    public RiscVObjectFile(List<IDataBlock> data, List<IInstruction> text) {
+    public RiscVObjectFile(ISymbolTable symbolTable, IRelocationTable relocationTable, byte[] data, byte[] text) {
+        this.symbolTable = symbolTable;
+        this.relocationTable = relocationTable;
         this.data = data;
         this.text = text;
     }
@@ -27,33 +26,47 @@ public class RiscVObjectFile implements IObjectFile {
     }
 
     @Override
-    public List<IDataBlock> getData() {
+    public byte[] getData() {
         return data;
     }
 
     @Override
-    public List<IInstruction> getText() {
+    public byte[] getText() {
         return text;
     }
 
     public static class ProgramBuilder implements IProgramBuilder {
-        private List<IDataBlock> dataBlock;
-        private List<IInstruction> instructions;
+        private ISymbolTable symbolTable;
+        private IRelocationTable relocationTable;
+        private byte[] dataBlock;
+        private byte[] instructions;
 
         @Override
         public IObjectFile build() {
-            return new RiscVObjectFile(dataBlock, instructions);
+            return new RiscVObjectFile(symbolTable, relocationTable, dataBlock, instructions);
         }
 
         @Override
-        public IProgramBuilder addData(List<IDataBlock> dataBlock) {
+        public IProgramBuilder addData(byte[] dataBlock) {
             this.dataBlock = dataBlock;
             return this;
         }
 
         @Override
-        public IProgramBuilder addInstructions(List<IInstruction> instructions) {
+        public IProgramBuilder addInstructions(byte[] instructions) {
             this.instructions = instructions;
+            return this;
+        }
+
+        @Override
+        public IProgramBuilder addSymbolTable(ISymbolTable symbolTable) {
+            this.symbolTable = symbolTable;
+            return this;
+        }
+
+        @Override
+        public IProgramBuilder addRelocationTable(IRelocationTable relocationTable) {
+            this.relocationTable = relocationTable;
             return this;
         }
     }

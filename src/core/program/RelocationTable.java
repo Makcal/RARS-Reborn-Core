@@ -4,15 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class RelocationTable implements IRelocationTable {
-    private final List<LinkRequest> relocationTable = new LinkedList<>();
+    private final List<RelocationRecord> relocationTable = new LinkedList<>();
 
     @Override
-    public void requestLinking(LinkRequest request) {
-        relocationTable.add(request);
+    public void addRequest(long offset, LinkRequest request) {
+        relocationTable.add(new RelocationRecord(offset, request.label()));
     }
 
     @Override
-    public List<LinkRequest> getLinkRequests() {
+    public List<RelocationRecord> getRecords() {
         return relocationTable;
     }
 }

@@ -1,13 +1,13 @@
 package core.program;
 
-import core.instruction.IInstruction;
-
-import java.util.List;
-
 public interface IProgramBuilder {
     IObjectFile build();
 
-    IProgramBuilder addData(List<IDataBlock> dataBlock);
+    IProgramBuilder addData(byte[] dataBlock);
 
-    IProgramBuilder addInstructions(List<IInstruction> instructions);
+    IProgramBuilder addInstructions(byte[] instructions);
+
+    IProgramBuilder addSymbolTable(ISymbolTable symbolTable);
+
+    IProgramBuilder addRelocationTable(IRelocationTable relocationTable);
 }

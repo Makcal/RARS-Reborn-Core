@@ -1,11 +1,7 @@
 package core.program;
 
-import core.instruction.IInstruction;
-
-import java.util.List;
-
 public interface IExecutable {
-    List<IDataBlock> getData();
+    byte[] getData();
 
-    List<IInstruction> getText();
+    byte[] getText();
 }

@@ -4,8 +4,8 @@ import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
 import core.instruction.IInstructionHandler;
 import core.instruction.riscv.formats.InstructionI;
 import core.register.IRegisterFile;
-import exceptions.compilation.*;
 import core.register.Register32;
+import exceptions.compilation.*;
 
 public class AddImmediate extends InstructionI {
     public static final String NAME = "addi";

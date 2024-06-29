@@ -39,29 +39,11 @@ public class Simulator32 extends SimulatorBase {
 
     @Override
     protected void loadProgram(IExecutable program) {
-        loadInstructions(program.getText());
-        loadData(program.getData());
-    }
+        memory.writeBytes(Memory32.DATA_SECTION_START, program.getData());
 
-    private void loadInstructions(List<IInstruction> instructions) {
-        long loaderPointer = Memory32.TEXT_SECTION_START;
-        for (IInstruction instruction : instructions) {
-            byte[] serialized = instruction.serialize();
-            memory.writeBytes(loaderPointer, serialized);
-            loaderPointer += serialized.length;
-        }
-        programLength = loaderPointer - Memory32.TEXT_SECTION_START;
-    }
-
-    protected void loadData(List<IDataBlock> data) {
-        long pointer = Memory32.DATA_SECTION_START;
-        for (IDataBlock block : data) {
-            if (pointer % block.alignment() != 0)
-                pointer += block.alignment() - (pointer % block.alignment());
-            byte[] value = block.value();
-            memory.writeBytes(pointer, value);
-            pointer += value.length;
-        }
+        byte[] programText = program.getText();
+        memory.writeBytes(Memory32.TEXT_SECTION_START, programText);
+        programLength = programText.length;
     }
 
     @Override

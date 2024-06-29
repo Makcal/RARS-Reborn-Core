@@ -24,8 +24,9 @@ public class Example {
                 AddImmediate.OPCODE, AddImmediate.FUNCT_3, RiscVInstructionFormat.I, AddImmediate.class
             )
             .build();
+//        var linker = new
         var memory = new Memory32();
-        var sim = new Simulator32(compiler, decoder, regs, memory)
+        var sim = new Simulator32(compiler, null, decoder, regs, memory)
             .registerHandler(AddImmediate.class, new AddImmediate.Handler(regs));
         try {
             sim.compile("""

@@ -1,20 +1,15 @@
 package core.riscvprogram;
 
-import core.instruction.IInstruction;
-import core.program.IDataBlock;
 import core.program.IExecutable;
 
-import java.util.List;
-
-public class RiscVExecutable implements IExecutable {
-
+public record RiscVExecutable(byte[] data, byte[] text) implements IExecutable {
     @Override
-    public List<IDataBlock> getData() {
-        return List.of();
+    public byte[] getData() {
+        return data;
     }
 
     @Override
-    public List<IInstruction> getText() {
-        return List.of();
+    public byte[] getText() {
+        return text;
     }
 }

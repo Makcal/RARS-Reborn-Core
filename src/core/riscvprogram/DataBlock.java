@@ -2,7 +2,7 @@ package core.riscvprogram;
 
 import core.program.IDataBlock;
 
-public record DataBlock(int size, byte alignment, byte[] value) implements IDataBlock {
+public record DataBlock(int size, byte alignment, byte[] value, String label) implements IDataBlock {
     @Override
     public int getSize() {
         return size;

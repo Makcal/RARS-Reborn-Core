@@ -3,7 +3,7 @@ package core.program;
 import java.util.List;
 
 public interface IRelocationTable {
-    void requestLinking(LinkRequest request);
+    void addRequest(long offset, LinkRequest request);
 
-    List<LinkRequest> getLinkRequests();
+    List<RelocationRecord> getRecords();
 }

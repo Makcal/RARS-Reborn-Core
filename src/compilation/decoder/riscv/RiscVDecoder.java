@@ -180,10 +180,9 @@ public class RiscVDecoder implements IBufferedDecoder {
             byte opcode,
             byte funct3,
             byte funct7,
-            RiscVInstructionFormat format,
             Class<? extends InstructionR> instructionClass
         ) {
-            opcodesToFormats.put(opcode, format);
+            opcodesToFormats.put(opcode, RiscVInstructionFormat.R);
             rInstructions.put(new DoubleFunctInfo(opcode, funct3, funct7), instructionClass);
             return this;
         }
@@ -191,21 +190,19 @@ public class RiscVDecoder implements IBufferedDecoder {
         public RiscVDecoderBuilder registerIInstruction(
             byte opcode,
             byte funct3,
-            RiscVInstructionFormat format,
             Class<? extends InstructionI> instructionClass
         ) {
-            opcodesToFormats.put(opcode, format);
+            opcodesToFormats.put(opcode, RiscVInstructionFormat.I);
             iInstructions.put(new SingleFunctInfo(opcode, funct3), instructionClass);
             return this;
         }
 
-        public RiscVDecoderBuilder registerInstruction(
+        public RiscVDecoderBuilder registerSInstruction(
             byte opcode,
             byte funct3,
-            RiscVInstructionFormat format,
             Class<? extends InstructionS> instructionClass
         ) {
-            opcodesToFormats.put(opcode, format);
+            opcodesToFormats.put(opcode, RiscVInstructionFormat.S);
             sInstructions.put(new SingleFunctInfo(opcode, funct3), instructionClass);
             return this;
         }
@@ -213,30 +210,27 @@ public class RiscVDecoder implements IBufferedDecoder {
         public RiscVDecoderBuilder registerBInstruction(
             byte opcode,
             byte funct3,
-            RiscVInstructionFormat format,
             Class<? extends InstructionB> instructionClass
         ) {
-            opcodesToFormats.put(opcode, format);
+            opcodesToFormats.put(opcode, RiscVInstructionFormat.B);
             bInstructions.put(new SingleFunctInfo(opcode, funct3), instructionClass);
             return this;
         }
 
         public RiscVDecoderBuilder registerUInstruction(
             byte opcode,
-            RiscVInstructionFormat format,
             Class<? extends InstructionU> instructionClass
         ) {
-            opcodesToFormats.put(opcode, format);
+            opcodesToFormats.put(opcode, RiscVInstructionFormat.U);
             uInstructions.put(new OpcodeInfo(opcode), instructionClass);
             return this;
         }
 
         public RiscVDecoderBuilder registerJInstruction(
             byte opcode,
-            RiscVInstructionFormat format,
             Class<? extends InstructionJ> instructionClass
         ) {
-            opcodesToFormats.put(opcode, format);
+            opcodesToFormats.put(opcode, RiscVInstructionFormat.J);
             jInstructions.put(new OpcodeInfo(opcode), instructionClass);
             return this;
         }

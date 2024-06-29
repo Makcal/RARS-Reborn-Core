@@ -1,7 +1,6 @@
 import compilation.compiler.riscv.RegexCompiler;
 import compilation.decoder.riscv.RiscVDecoder;
 import compilation.linker.RiscVLinker;
-import core.instruction.riscv.formats.RiscVInstructionFormat;
 import core.instruction.riscv.instructions.rv32i.AddImmediate;
 import core.instruction.riscv.instructions.rv32i.JumpAndLink;
 import core.memory.Memory32;
@@ -23,12 +22,8 @@ public class Example {
             .registerInstruction(JumpAndLink.NAME, new JumpAndLink.Parser())
             .build();
         var decoder = new RiscVDecoder.RiscVDecoderBuilder()
-            .registerIInstruction(
-                AddImmediate.OPCODE, AddImmediate.FUNCT_3, RiscVInstructionFormat.I, AddImmediate.class
-            )
-            .registerJInstruction(
-                JumpAndLink.OPCODE, RiscVInstructionFormat.J, JumpAndLink.class
-            )
+            .registerIInstruction(AddImmediate.OPCODE, AddImmediate.FUNCT_3, AddImmediate.class)
+            .registerJInstruction(JumpAndLink.OPCODE, JumpAndLink.class)
             .build();
         var linker = new RiscVLinker(decoder);
         var memory = new Memory32();

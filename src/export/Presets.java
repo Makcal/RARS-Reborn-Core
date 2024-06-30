@@ -1,3 +1,5 @@
+package export;
+
 import compilation.compiler.ICompiler;
 import compilation.compiler.riscv.RegexCompiler;
 import compilation.decoder.riscv.RiscVDecoder;

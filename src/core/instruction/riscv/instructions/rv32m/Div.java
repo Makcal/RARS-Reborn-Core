@@ -1,7 +1,7 @@
 package core.instruction.riscv.instructions.rv32m;
 
 import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
-import core.instruction.IInstructionHandler;
+import core.instruction.riscv.RiscV32InstructionHandler;
 import core.instruction.riscv.formats.InstructionR;
 import core.register.IRegisterFile;
 import exceptions.compilation.*;
@@ -33,13 +33,7 @@ public class Div extends InstructionR {
         return NAME;
     }
 
-    public static class Handler implements IInstructionHandler<Div> {
-        final IRegisterFile<Register32> registerFile;
-
-        public Handler(IRegisterFile<Register32> registerFile) {
-            this.registerFile = registerFile;
-        }
-
+    public static class Handler extends RiscV32InstructionHandler<Div> {
         @Override
         public void handle(Div instruction) {
             instruction.exec(registerFile);

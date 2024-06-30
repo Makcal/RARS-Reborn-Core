@@ -103,9 +103,10 @@ public class RegexCompiler implements ICompiler {
 
     protected void loadInstruction(CompilingContext context, IInstruction instruction) {
         if (instruction instanceof ILinkableInstruction) {
+            LinkRequest linkRequest = ((ILinkableInstruction) instruction).getLinkRequest();
             context.relocationTable.addRequest(
                 context.instructions.size(),
-                ((ILinkableInstruction) instruction).getLinkRequest()
+                linkRequest
             );
         }
         for (byte b : instruction.serialize()) {

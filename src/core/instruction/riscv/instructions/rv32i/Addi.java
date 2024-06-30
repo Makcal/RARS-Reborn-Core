@@ -1,16 +1,22 @@
 package core.instruction.riscv.instructions.rv32i;
 
 import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
+import core.instruction.ILinkableInstruction;
 import core.instruction.riscv.RiscV32InstructionHandler;
 import core.instruction.riscv.formats.InstructionI;
+import core.program.LinkRequest;
 import core.register.IRegisterFile;
 import core.register.Register32;
-import exceptions.compilation.*;
+import exceptions.compilation.CompilationException;
+import exceptions.compilation.ImmediateTooLargeException;
+import exceptions.compilation.UnknownRegisterException;
 
-public class Addi extends InstructionI {
+public class Addi extends InstructionI implements ILinkableInstruction {
     public static final String NAME = "addi";
     public static final byte OPCODE = 0b0010011;
     public static final byte FUNCT_3 = 0x0;
+
+    protected LinkRequest linkRequest = null;
 
     public Addi(InstructionIParams data) {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
@@ -22,6 +28,16 @@ public class Addi extends InstructionI {
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void link(long address) {
+        imm = (short) (address & 0b1111_1111_1111);
+    }
+
+    @Override
+    public LinkRequest getLinkRequest() {
+        return linkRequest;
     }
 
     @Override
@@ -43,7 +59,6 @@ public class Addi extends InstructionI {
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
             Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
-
             short imm = parseShort(split[2]);
 
             try {

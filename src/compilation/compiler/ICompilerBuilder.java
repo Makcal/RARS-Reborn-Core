@@ -2,7 +2,6 @@ package compilation.compiler;
 
 import compilation.compiler.riscv.IInstructionRegexParser;
 import core.instruction.IInstruction;
-import core.register.IRegister;
 import core.register.IRegisterFile;
 import core.program.IProgramBuilder;
 
@@ -10,8 +9,6 @@ public interface ICompilerBuilder {
     ICompiler build();
 
     ICompilerBuilder setProgramBuilder(IProgramBuilder programBuilder);
-
-    ICompilerBuilder registerRegister(IRegister register);
 
     ICompilerBuilder registerRegistersFromFile(IRegisterFile<?> registerFile);
 

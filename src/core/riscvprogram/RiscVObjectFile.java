@@ -2,6 +2,7 @@ package core.riscvprogram;
 
 import core.program.*;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class RiscVObjectFile implements IObjectFile {
     private final ISymbolTable symbolTable;
     private final IRelocationTable relocationTable;

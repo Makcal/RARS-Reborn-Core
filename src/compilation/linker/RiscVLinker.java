@@ -33,16 +33,16 @@ public class RiscVLinker implements ILinker {
         }
 
         byte[] text = listToArray(context.text);
-        MemoryBlock memoryBlock = new MemoryBlock(0, new ArrayBlockStorage(text));
+        MemoryBlock memoryWrapper = new MemoryBlock(0, new ArrayBlockStorage(text));
         try {
             for (IObjectFile objectFile : objectFiles) {
                 for (RelocationRecord relocationRecord : objectFile.getRelocationTable().getRecords()) {
                     ILinkableInstruction instruction = (ILinkableInstruction) decoder.decodeNextInstruction(
-                        memoryBlock,
+                        memoryWrapper,
                         relocationRecord.offset()
                     ).instruction();
                     instruction.link(context.symbolTable.getSymbol(relocationRecord.symbol()).address());
-                    memoryBlock.writeBytes(relocationRecord.offset(), instruction.serialize());
+                    memoryWrapper.writeBytes(relocationRecord.offset(), instruction.serialize());
                 }
             }
         } catch (IllegalInstructionException | MemoryAccessException e) {
@@ -60,7 +60,7 @@ public class RiscVLinker implements ILinker {
     }
 
     protected void addData(IObjectFile objectFile, LinkingContext context) throws SymbolDuplicateException {
-        relocateSection(
+        addSection(
             context.data,
             objectFile.getData(),
             context.symbolTable,
@@ -71,8 +71,8 @@ public class RiscVLinker implements ILinker {
     }
 
     protected void addText(IObjectFile objectFile, LinkingContext context) throws SymbolDuplicateException {
-        context.textOffsets.put(objectFile, (long) context.text.size());
-        relocateSection(
+        context.textSectionOffsets.put(objectFile, (long) context.text.size());
+        addSection(
             context.text,
             objectFile.getText(),
             context.symbolTable,
@@ -82,7 +82,7 @@ public class RiscVLinker implements ILinker {
         );
     }
 
-    protected void relocateSection(
+    protected void addSection(
             ArrayList<Byte> target,
             byte[] source,
             ISymbolTable totalTable,
@@ -116,7 +116,7 @@ public class RiscVLinker implements ILinker {
 
     protected record LinkingContext(
             ISymbolTable symbolTable,
-            Map<IObjectFile, Long> textOffsets,
+            Map<IObjectFile, Long> textSectionOffsets,
             ArrayList<Byte> data,
             ArrayList<Byte> text
     ) {

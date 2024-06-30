@@ -32,7 +32,7 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
     public void link(long address) throws TargetAddressTooLargeException {
         address ^= address & 0b1;
         if ((address ^ (address & 0b1111_1111_1111_1111_1110)) != 0) {
-            throw new TargetAddressTooLargeException(linkRequest.label());
+            throw new TargetAddressTooLargeException(address);
         }
         imm = (int) (address & 0b1111_1111_1111_1111_1110);
     }

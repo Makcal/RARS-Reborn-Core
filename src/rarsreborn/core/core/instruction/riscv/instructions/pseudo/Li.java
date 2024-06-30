@@ -9,7 +9,7 @@ import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 
 public class Li implements IInstruction {
-    public static String NAME = "li";
+    public static final String NAME = "li";
 
     private final Addi base;
 

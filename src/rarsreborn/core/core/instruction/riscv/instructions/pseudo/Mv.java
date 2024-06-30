@@ -8,7 +8,7 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 
 public class Mv implements IInstruction {
-    public static String NAME = "mv";
+    public static final String NAME = "mv";
 
     private final Add base;
 

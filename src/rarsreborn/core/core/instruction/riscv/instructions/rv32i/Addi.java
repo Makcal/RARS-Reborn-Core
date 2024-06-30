@@ -16,8 +16,6 @@ public class Addi extends InstructionI implements ILinkableInstruction {
     public static final byte OPCODE = 0b0010011;
     public static final byte FUNCT_3 = 0x0;
 
-    protected LinkRequest linkRequest = null;
-
     public Addi(InstructionIParams data) {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
@@ -37,7 +35,7 @@ public class Addi extends InstructionI implements ILinkableInstruction {
 
     @Override
     public LinkRequest getLinkRequest() {
-        return linkRequest;
+        return null;
     }
 
     @Override

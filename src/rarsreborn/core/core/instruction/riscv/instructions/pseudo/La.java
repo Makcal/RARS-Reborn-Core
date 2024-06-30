@@ -12,7 +12,7 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 
 public class La implements IInstruction, ILinkableInstruction {
-    public static String NAME = "la";
+    public static final String NAME = "la";
 
     private final Auipc firstBase;
     private final Addi secondBase;

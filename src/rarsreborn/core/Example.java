@@ -25,11 +25,12 @@ public class Example {
                             li t4, 4
                         l:
                             li t5, 5
+                            la t1, h
             """);
             simulator.run();
 
             System.out.printf("t0: 0x%x\n", registers.getRegisterByName("t0").getValue());
-            System.out.printf("t1: %d\n", registers.getRegisterByName("t1").getValue());
+            System.out.printf("t1: 0x%x\n", registers.getRegisterByName("t1").getValue());
             System.out.printf("t2: %d\n", registers.getRegisterByName("t2").getValue());
             System.out.printf("t3: %d\n", registers.getRegisterByName("t3").getValue());
             System.out.printf("t4: %d\n", registers.getRegisterByName("t4").getValue());

@@ -4,8 +4,8 @@ import compilation.compiler.ICompiler;
 import compilation.compiler.riscv.RegexCompiler;
 import compilation.decoder.riscv.RiscVDecoder;
 import compilation.linker.RiscVLinker;
-import core.instruction.riscv.instructions.rv32i.AddImmediate;
-import core.instruction.riscv.instructions.rv32i.JumpAndLink;
+import core.instruction.riscv.instructions.rv32i.Addi;
+import core.instruction.riscv.instructions.rv32i.Jal;
 import core.memory.Memory32;
 import core.register.Register32;
 import core.register.Register32File;
@@ -37,13 +37,13 @@ public class Presets {
             ICompiler compiler = new RegexCompiler.RegexCompilerBuilder()
                 .setProgramBuilder(new RiscVObjectFile.ProgramBuilder())
                 .registerRegistersFromFile(registers)
-                .registerInstruction(AddImmediate.NAME, new AddImmediate.Parser())
-                .registerInstruction(JumpAndLink.NAME, new JumpAndLink.Parser())
+                .registerInstruction(Addi.NAME, new Addi.Parser())
+                .registerInstruction(Jal.NAME, new Jal.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
-                .registerIInstruction(AddImmediate.OPCODE, AddImmediate.FUNCT_3, AddImmediate.class)
-                .registerJInstruction(JumpAndLink.OPCODE, JumpAndLink.class)
+                .registerIInstruction(Addi.OPCODE, Addi.FUNCT_3, Addi.class)
+                .registerJInstruction(Jal.OPCODE, Jal.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder);
@@ -53,8 +53,8 @@ public class Presets {
             Register32 programCounter = new Register32(32, "pc", Memory32.TEXT_SECTION_START);
 
             classical = new Simulator32(compiler, linker, decoder, registers, programCounter, memory)
-                .registerHandler(AddImmediate.class, new AddImmediate.Handler())
-                .registerHandler(JumpAndLink.class, new JumpAndLink.Handler());
+                .registerHandler(Addi.class, new Addi.Handler())
+                .registerHandler(Jal.class, new Jal.Handler());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

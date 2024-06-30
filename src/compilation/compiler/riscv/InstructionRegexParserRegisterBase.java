@@ -4,12 +4,7 @@ import core.instruction.IInstruction;
 import core.register.IRegister;
 import core.register.IRegisterFile;
 import core.register.Register32;
-import exceptions.compilation.UnknownRegisterException;
-import exceptions.compilation.WrongNumberOfArgumentsException;
-import exceptions.compilation.WrongRegisterTypeException;
-
-import java.util.HashMap;
-import java.util.Map;
+import exceptions.compilation.*;
 
 public abstract class InstructionRegexParserRegisterBase
         <TInstruction extends IInstruction>
@@ -41,5 +36,25 @@ public abstract class InstructionRegexParserRegisterBase
             throw new UnknownRegisterException(s);
         }
         return register;
+    }
+
+    protected static Register32 castToRegister32(IRegister register) throws WrongRegisterTypeException {
+        try {
+            return (Register32) register;
+        } catch (ClassCastException e) {
+            throw new WrongRegisterTypeException(Register32.class, register.getClass());
+        }
+    }
+
+    protected static short parseShort(String s) throws CompilationException {
+        try {
+            long l = Long.parseLong(s);
+            if (l >>> 16 != 0) {
+                throw new ImmediateTooLargeException(l);
+            }
+            return (short) l;
+        } catch (NumberFormatException e) {
+            throw new ExpectedIntegerException(s);
+        }
     }
 }

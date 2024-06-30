@@ -49,40 +49,11 @@ public class Or extends InstructionR {
     public static class Parser extends InstructionRegexParserRegisterBase<Or> {
         @Override
         public Or parse(String line) throws CompilationException {
-            String[] split = line.split(",");
-            if (split.length != 3) {
-                throw new WrongNumberOfArgumentsException(NAME, split.length, 3);
-            }
+            String[] split = splitArguments(line, 3, NAME);
 
-            Register32 rd;
-            try {
-                rd = (Register32) registers.get(split[0]);
-            } catch (ClassCastException e) {
-                throw new WrongRegisterTypeException(Register32.class, registers.get(split[0]).getClass());
-            }
-            if (rd == null) {
-                throw new UnknownRegisterException(split[0]);
-            }
-
-            Register32 rs1;
-            try {
-                rs1 = (Register32) registers.get(split[1]);
-            } catch (ClassCastException e) {
-                throw new WrongRegisterTypeException(Register32.class, registers.get(split[1]).getClass());
-            }
-            if (rs1 == null) {
-                throw new UnknownRegisterException(split[1]);
-            }
-
-            Register32 rs2;
-            try {
-                rs2 = (Register32) registers.get(split[2]);
-            } catch (ClassCastException e) {
-                throw new WrongRegisterTypeException(Register32.class, registers.get(split[1]).getClass());
-            }
-            if (rs2 == null) {
-                throw new UnknownRegisterException(split[2]);
-            }
+            Register32 rd = castToRegister32(parseRegister(registers, split[0]));
+            Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
+            Register32 rs2 = castToRegister32(parseRegister(registers, split[2]));
 
             return new Or(
                 new InstructionRParams(

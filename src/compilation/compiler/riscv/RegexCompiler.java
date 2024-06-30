@@ -5,7 +5,6 @@ import compilation.compiler.ICompilerBuilder;
 import core.instruction.IInstruction;
 import core.instruction.ILinkableInstruction;
 import core.program.*;
-import core.register.IRegister;
 import core.register.IRegisterFile;
 import core.riscvprogram.DataBlock;
 import exceptions.compilation.*;

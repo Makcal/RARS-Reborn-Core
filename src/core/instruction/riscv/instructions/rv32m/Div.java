@@ -1,4 +1,4 @@
-package core.instruction.riscv.instructions.rv32i;
+package core.instruction.riscv.instructions.rv32m;
 
 import compilation.compiler.riscv.InstructionRegexParserRegisterBase;
 import core.instruction.IInstructionHandler;
@@ -7,13 +7,13 @@ import core.register.IRegisterFile;
 import exceptions.compilation.*;
 import core.register.Register32;
 
-public class Xor extends InstructionR {
-    public static final String NAME = "xor";
+public class Div extends InstructionR {
+    public static final String NAME = "div";
     public static final byte OPCODE = 0b0110011;
     public static final byte FUNCT_3 = 0x04;
-    public static final byte FUNCT_7 = 0x0;
+    public static final byte FUNCT_7 = 0x01;
 
-    public Xor(InstructionRParams data) {
+    public Div(InstructionRParams data) {
         super(new InstructionRData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.rs2(), FUNCT_7));
     }
 
@@ -21,7 +21,7 @@ public class Xor extends InstructionR {
         try {
             registerFile.getRegisterByNumber(rd).setValue(
                 registerFile.getRegisterByNumber(rs1).getValue()
-                ^ registerFile.getRegisterByNumber(rs2).getValue()
+                / registerFile.getRegisterByNumber(rs2).getValue()
             );
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
@@ -33,7 +33,7 @@ public class Xor extends InstructionR {
         return NAME;
     }
 
-    public static class Handler implements IInstructionHandler<Xor> {
+    public static class Handler implements IInstructionHandler<Div> {
         final IRegisterFile<Register32> registerFile;
 
         public Handler(IRegisterFile<Register32> registerFile) {
@@ -41,21 +41,21 @@ public class Xor extends InstructionR {
         }
 
         @Override
-        public void handle(Xor instruction) {
+        public void handle(Div instruction) {
             instruction.exec(registerFile);
         }
     }
 
-    public static class Parser extends InstructionRegexParserRegisterBase<Xor> {
+    public static class Parser extends InstructionRegexParserRegisterBase<Div> {
         @Override
-        public Xor parse(String line) throws CompilationException {
+        public Div parse(String line) throws CompilationException {
             String[] split = splitArguments(line, 3, NAME);
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
             Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
             Register32 rs2 = castToRegister32(parseRegister(registers, split[2]));
 
-            return new Xor(
+            return new Div(
                 new InstructionRParams(
                     (byte) rd.getNumber(),
                     (byte) rs1.getNumber(),

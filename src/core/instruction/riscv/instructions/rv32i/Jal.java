@@ -5,18 +5,17 @@ import core.instruction.ILinkableInstruction;
 import core.instruction.riscv.RiscV32InstructionHandler;
 import core.instruction.riscv.formats.InstructionJ;
 import core.program.LinkRequest;
-import core.register.IRegister;
 import core.register.IRegisterFile;
 import core.register.Register32;
 import exceptions.compilation.*;
 import exceptions.linking.TargetAddressTooLargeException;
 
-public class JumpAndLink extends InstructionJ implements ILinkableInstruction {
+public class Jal extends InstructionJ implements ILinkableInstruction {
     public static final String NAME = "jal";
     public static final byte OPCODE = 0b1101111;
     protected LinkRequest linkRequest = null;
 
-    public JumpAndLink(InstructionJParams data) {
+    public Jal(InstructionJParams data) {
         super(new InstructionJData(OPCODE, data.rd(), data.imm()));
     }
 
@@ -48,28 +47,22 @@ public class JumpAndLink extends InstructionJ implements ILinkableInstruction {
         return NAME;
     }
 
-    public static class Handler extends RiscV32InstructionHandler<JumpAndLink> {
+    public static class Handler extends RiscV32InstructionHandler<Jal> {
         @Override
-        public void handle(JumpAndLink instruction) {
+        public void handle(Jal instruction) {
             instruction.exec(registerFile, programCounter);
         }
     }
 
-    public static class Parser extends InstructionRegexParserRegisterBase<JumpAndLink> {
+    public static class Parser extends InstructionRegexParserRegisterBase<Jal> {
         @Override
-        public JumpAndLink parse(String line) throws CompilationException {
+        public Jal parse(String line) throws CompilationException {
             String[] split = splitArguments(line, 2, NAME);
 
-            Register32 rd;
-            IRegister register = parseRegister(registers, split[0]);
-            try {
-                rd = (Register32) register;
-            } catch (ClassCastException e) {
-                throw new WrongRegisterTypeException(Register32.class, register.getClass());
-            }
+            Register32 rd = castToRegister32(parseRegister(registers, split[0]));
 
             String label = split[1];
-            JumpAndLink instruction = new JumpAndLink(new InstructionJParams((byte) rd.getNumber(), 0));
+            Jal instruction = new Jal(new InstructionJParams((byte) rd.getNumber(), 0));
             instruction.linkRequest = new LinkRequest(label);
 
             return instruction;

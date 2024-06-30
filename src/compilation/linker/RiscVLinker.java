@@ -10,6 +10,7 @@ import exceptions.compilation.LabelDuplicateException;
 import exceptions.execution.IllegalInstructionException;
 import exceptions.linking.LinkingException;
 import exceptions.linking.SymbolDuplicateException;
+import exceptions.linking.TargetAddressTooLargeException;
 import exceptions.memory.MemoryAccessException;
 
 import java.util.ArrayList;
@@ -18,9 +19,13 @@ import java.util.Map;
 
 public class RiscVLinker implements ILinker {
     protected final IBufferedDecoder decoder;
+    protected final long dataSectionStart;
+    protected final long textSectionStart;
 
-    public RiscVLinker(IBufferedDecoder decoder) {
+    public RiscVLinker(IBufferedDecoder decoder, long dataSectionStart, long textSectionStart) {
         this.decoder = decoder;
+        this.dataSectionStart = dataSectionStart;
+        this.textSectionStart = textSectionStart;
     }
 
     @Override
@@ -41,7 +46,14 @@ public class RiscVLinker implements ILinker {
                         memoryWrapper,
                         relocationRecord.offset()
                     ).instruction();
-                    instruction.link(context.symbolTable.getSymbol(relocationRecord.symbol()).address());
+                    try {
+                        instruction.link(
+                            context.symbolTable.getSymbol(relocationRecord.symbol()).address()
+                            - (textSectionStart + relocationRecord.offset())
+                        );
+                    } catch (TargetAddressTooLargeException e) {
+                        throw new TargetAddressTooLargeException(relocationRecord.symbol());
+                    }
                     memoryWrapper.writeBytes(relocationRecord.offset(), instruction.serialize());
                 }
             }
@@ -66,6 +78,7 @@ public class RiscVLinker implements ILinker {
             context.symbolTable,
             objectFile.getSymbolTable(),
             SymbolType.DATA,
+            dataSectionStart,
             (byte) 4
         );
     }
@@ -78,6 +91,7 @@ public class RiscVLinker implements ILinker {
             context.symbolTable,
             objectFile.getSymbolTable(),
             SymbolType.INSTRUCTION_LABEL,
+            textSectionStart,
             (byte) 1
         );
     }
@@ -88,6 +102,7 @@ public class RiscVLinker implements ILinker {
             ISymbolTable totalTable,
             ISymbolTable sourceSymbolTable,
             SymbolType type,
+            long baseAddress,
             byte alignment
     ) throws SymbolDuplicateException {
         long offset = target.size();
@@ -100,7 +115,7 @@ public class RiscVLinker implements ILinker {
                 if (symbol.type() != type)
                     continue;
                 totalTable.addSymbol(
-                    new Symbol(symbol.type(), symbol.name(), symbol.address() + offset)
+                    new Symbol(symbol.type(), symbol.name(), baseAddress + offset + symbol.address())
                 );
             }
         } catch (LabelDuplicateException e) {

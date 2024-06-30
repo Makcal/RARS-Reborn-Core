@@ -70,7 +70,7 @@ public class Presets {
                 .registerJInstruction(Jal.OPCODE, Jal.class)
                 .build();
 
-            RiscVLinker linker = new RiscVLinker(decoder);
+            RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
 
             Memory32 memory = new Memory32();
 

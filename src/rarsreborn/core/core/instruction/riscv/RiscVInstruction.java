@@ -15,7 +15,8 @@ public abstract class RiscVInstruction implements IInstruction {
     }
 
     protected boolean fieldOutOfBounds(int field, int bitSize, int offset) {
-        return (field & (-1 << (bitSize + offset))) != 0 || (field & ((1 << offset) - 1)) != 0;
+        return (field & (-1 << (bitSize + offset))) != 0 && bitSize + offset < 32
+            || (field & ((1 << offset) - 1)) != 0;
     }
 
     protected void checkFieldSize(int field, int bitSize) {

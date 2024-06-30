@@ -20,6 +20,8 @@ public class Simulator32 extends SimulatorBase {
     protected final Register32 programCounter;
 
     protected long programLength;
+    protected byte lastInstructionSize;
+    protected long lastPcPosition;
 
     public Simulator32(
             ICompiler compiler,
@@ -69,11 +71,19 @@ public class Simulator32 extends SimulatorBase {
         }
         try {
             DecodingResult decoded = decoder.decodeNextInstruction(memory, programCounter.getValue());
-            programCounter.setValue(programCounter.getValue() + decoded.bytesConsumed());
+            lastInstructionSize = decoded.bytesConsumed();
+            lastPcPosition = programCounter.getValue();
             return decoded.instruction();
         } catch (MemoryAccessException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    protected void executeOneInstruction() throws ExecutionException {
+        super.executeOneInstruction();
+        if (lastPcPosition == programCounter.getValue())
+            programCounter.setValue(programCounter.getValue() + lastInstructionSize);
     }
 
     public <TInstruction extends IInstruction> Simulator32 registerHandler(

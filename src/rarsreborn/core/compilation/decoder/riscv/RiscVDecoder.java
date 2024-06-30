@@ -122,7 +122,7 @@ public class RiscVDecoder implements IBufferedDecoder {
         } catch (IllegalArgumentException | NullPointerException e) {
             throw new IllegalInstructionException(address);
         }
-        return new DecodingResult(instruction, 4);
+        return new DecodingResult(instruction, (byte) 4);
     }
 
     private record DoubleFunctInfo(byte opcode, byte funct3, byte funct7) {}

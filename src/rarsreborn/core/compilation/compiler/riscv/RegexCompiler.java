@@ -30,7 +30,12 @@ public class RegexCompiler implements ICompiler {
 
     @Override
     public IObjectFile compile(String source) throws CompilationException {
-        source = source.strip().replaceAll(" *\n+ *", "\n").replaceAll(" +", " ").replaceAll(" ?, ?", ",");
+        source = source
+            .strip()
+            .replaceAll("\t", " ")
+            .replaceAll(" *\n+ *", "\n")
+            .replaceAll(" +", " ")
+            .replaceAll(" ?, ?", ",");
 
         CompilingContext context = new CompilingContext();
 

@@ -32,4 +32,9 @@ public class Register32 implements IIntegerRegister {
     public void setValue(int value) {
         this.value = value;
     }
+
+    @Override
+    public void reset() {
+        setValue(0);
+    }
 }

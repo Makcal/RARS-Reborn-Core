@@ -9,4 +9,6 @@ public interface ISimulator {
     void run();
 
     void runSteps(int n);
+
+    void reset();
 }

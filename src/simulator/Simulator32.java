@@ -17,7 +17,7 @@ import exceptions.memory.MemoryAccessException;
 public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Memory32 memory;
-    public final Register32 programCounter;
+    protected final Register32 programCounter;
 
     protected long programLength;
 
@@ -45,6 +45,12 @@ public class Simulator32 extends SimulatorBase {
 
     public Register32 getProgramCounter() {
         return programCounter;
+    }
+
+    @Override
+    public void reset() {
+        memory.reset();
+        registerFile.reset();
     }
 
     @Override

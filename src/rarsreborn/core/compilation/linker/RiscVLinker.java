@@ -42,13 +42,15 @@ public class RiscVLinker implements ILinker {
         try {
             for (IObjectFile objectFile : objectFiles) {
                 for (RelocationRecord relocationRecord : objectFile.getRelocationTable().getRecords()) {
+                    long localInstructionAddress = context.textSectionOffsets.get(objectFile)
+                        + relocationRecord.offset();
                     ILinkableInstruction instruction = (ILinkableInstruction) decoder.decodeNextInstruction(
                         memoryWrapper,
-                        relocationRecord.offset()
+                        localInstructionAddress
                     ).instruction();
                     try {
                         long pcPosition = textSectionStart
-                            + relocationRecord.offset()
+                            + localInstructionAddress
                             - relocationRecord.extraCompensation();
                         instruction.link(
                             context.symbolTable.getSymbol(relocationRecord.symbol()).address() - pcPosition
@@ -56,7 +58,7 @@ public class RiscVLinker implements ILinker {
                     } catch (TargetAddressTooLargeException e) {
                         throw new TargetAddressTooLargeException(relocationRecord.symbol(), e);
                     }
-                    memoryWrapper.writeBytes(relocationRecord.offset(), instruction.serialize());
+                    memoryWrapper.writeBytes(localInstructionAddress, instruction.serialize());
                 }
             }
         } catch (IllegalInstructionException | MemoryAccessException e) {

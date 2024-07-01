@@ -8,4 +8,8 @@ public abstract class CompilationException extends CoreException {
     public CompilationException(String message) {
         super(message);
     }
+
+    public CompilationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -5,7 +5,9 @@ import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.simulator.Simulator32;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Example {
     public static void main(String[] args) {
@@ -14,21 +16,8 @@ public class Example {
             Register32File registers = simulator.getRegisterFile();
             IMemory memory = simulator.getMemory();
 
-            simulator.compile("""
-                        .data
-                            h: .string "123\\n"
-                        .text
-                            li t1, 1
-                            li t2, 2
-                            jal x0, l
-                            li t3, 3
-                            li t4, 4
-                        l:
-                            li t5, 5
-                            la a0, h
-                            li a7, 0
-                            ecall
-            """);
+            String content = new Scanner(new File("src/rarsreborn/core/example.s")).useDelimiter("\\Z").next();
+            simulator.compile(content);
             simulator.run();
 
             System.out.printf("t0: 0x%x\n", registers.getRegisterByName("t0").getValue());

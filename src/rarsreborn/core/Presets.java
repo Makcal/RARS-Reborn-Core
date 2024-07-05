@@ -37,7 +37,8 @@ public class Presets {
             Register32File registers = new Register32File();
             registers.addRegister(new ZeroRegister32(0, "zero"));
             registers.createRegistersFromNames(registerNames);
-            registers.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);
+
+            Register32 programCounter = new Register32(32, "pc");
 
             ICompiler compiler = new RegexCompiler.RegexCompilerBuilder()
                 .setProgramBuilder(new RiscVObjectFile.ProgramBuilder())
@@ -74,7 +75,6 @@ public class Presets {
 
             Memory32 memory = new Memory32();
 
-            Register32 programCounter = new Register32(32, "pc", Memory32.TEXT_SECTION_START);
 
             classical = new Simulator32(compiler, linker, decoder, registers, programCounter, memory)
                 .registerHandler(Add.class, new Add.Handler())

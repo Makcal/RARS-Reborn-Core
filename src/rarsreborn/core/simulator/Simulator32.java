@@ -10,12 +10,14 @@ import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
+    protected final Register32 programCounter;
     protected final Memory32 memory;
     protected final Register32 programCounter;
 
@@ -53,6 +55,16 @@ public class Simulator32 extends SimulatorBase {
     public void reset() {
         memory.reset();
         registerFile.reset();
+    }
+
+    @Override
+    protected void onStartSetup() {
+        programCounter.setValue(Memory32.TEXT_SECTION_START);
+        try {
+            registerFile.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);
+        } catch (UnknownRegisterException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

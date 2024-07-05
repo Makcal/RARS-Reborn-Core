@@ -1,8 +1,8 @@
 package rarsreborn.core.exceptions.memory;
 
-import rarsreborn.core.exceptions.CoreException;
+import rarsreborn.core.exceptions.execution.ExecutionException;
 
-public abstract class MemoryAccessException extends CoreException {
+public abstract class MemoryAccessException extends ExecutionException {
     public MemoryAccessException() {
         super();
     }

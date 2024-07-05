@@ -4,6 +4,8 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.compiler.riscv.RegexCompiler;
 import rarsreborn.core.compilation.decoder.riscv.RiscVDecoder;
 import rarsreborn.core.compilation.linker.RiscVLinker;
+import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
+import rarsreborn.core.core.environment.riscv.ecalls.PrintEcall;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
@@ -56,6 +58,7 @@ public class Presets {
                 .registerInstruction(And.NAME, new And.Parser())
                 .registerInstruction(Or.NAME, new Or.Parser())
                 .registerInstruction(Xor.NAME, new Xor.Parser())
+                .registerInstruction(Ecall.NAME, new Ecall.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -69,14 +72,23 @@ public class Presets {
                 .registerIInstruction(Addi.OPCODE, Addi.FUNCT_3, Addi.class)
                 .registerUInstruction(Auipc.OPCODE, Auipc.class)
                 .registerJInstruction(Jal.OPCODE, Jal.class)
+                .registerIInstruction(Ecall.OPCODE, Ecall.FUNCT3, Ecall.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
 
             Memory32 memory = new Memory32();
 
+            RiscV32ExecutionEnvironment executionEnvironment = new RiscV32ExecutionEnvironment.Builder()
+                .setRegisters(registers)
+                .setProgramCounter(programCounter)
+                .setMemory(memory)
+                .addHandler(0, new PrintEcall())
+                .build();
 
-            classical = new Simulator32(compiler, linker, decoder, registers, programCounter, memory)
+            classical = new Simulator32(
+                compiler, linker, decoder, registers, programCounter, memory, executionEnvironment
+            )
                 .registerHandler(Add.class, new Add.Handler())
                 .registerHandler(Sub.class, new Sub.Handler())
                 .registerHandler(Mul.class, new Mul.Handler())
@@ -86,7 +98,8 @@ public class Presets {
                 .registerHandler(Xor.class, new Xor.Handler())
                 .registerHandler(Addi.class, new Addi.Handler())
                 .registerHandler(Jal.class, new Jal.Handler())
-                .registerHandler(Auipc.class, new Auipc.Handler());
+                .registerHandler(Auipc.class, new Auipc.Handler())
+                .registerHandler(Ecall.class, new Ecall.Handler());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

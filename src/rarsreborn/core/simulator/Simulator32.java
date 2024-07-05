@@ -4,6 +4,7 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.decoder.DecodingResult;
 import rarsreborn.core.compilation.decoder.IBufferedDecoder;
 import rarsreborn.core.compilation.linker.ILinker;
+import rarsreborn.core.core.environment.IExecutionEnvironment;
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.memory.Memory32;
@@ -19,24 +20,26 @@ public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
     protected final Memory32 memory;
-    protected final Register32 programCounter;
+    protected final IExecutionEnvironment executionEnvironment;
 
     protected long programLength;
     protected byte lastInstructionSize;
     protected long lastPcPosition;
 
     public Simulator32(
-            ICompiler compiler,
-            ILinker linker,
-            IBufferedDecoder decoder,
-            Register32File registerFile,
-            Register32 programCounter,
-            Memory32 memory
+        ICompiler compiler,
+        ILinker linker,
+        IBufferedDecoder decoder,
+        Register32File registerFile,
+        Register32 programCounter,
+        Memory32 memory,
+        IExecutionEnvironment executionEnvironment
     ) {
         super(compiler, linker, decoder);
         this.registerFile = registerFile;
         this.memory = memory;
         this.programCounter = programCounter;
+        this.executionEnvironment = executionEnvironment;
     }
 
     public Register32File getRegisterFile() {
@@ -105,6 +108,7 @@ public class Simulator32 extends SimulatorBase {
         handler.attachMemory(memory);
         handler.attachProgramCounter(programCounter);
         handler.attachRegisters(registerFile);
+        handler.attachExecutionEnvironment(executionEnvironment);
         super.addHandler(instructionClass, handler);
         return this;
     }

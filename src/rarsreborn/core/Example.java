@@ -16,7 +16,7 @@ public class Example {
 
             simulator.compile("""
                         .data
-                            h: .string "123"
+                            h: .string "123\\n"
                         .text
                             li t1, 1
                             li t2, 2
@@ -25,7 +25,9 @@ public class Example {
                             li t4, 4
                         l:
                             li t5, 5
-                            la t1, h
+                            la a0, h
+                            li a7, 0
+                            ecall
             """);
             simulator.run();
 

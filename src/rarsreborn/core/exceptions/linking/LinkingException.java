@@ -8,4 +8,8 @@ public class LinkingException extends CoreException {
     public LinkingException(String message) {
         super(message);
     }
+
+    public LinkingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

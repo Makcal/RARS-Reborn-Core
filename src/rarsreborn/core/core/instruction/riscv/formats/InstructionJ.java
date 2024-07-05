@@ -11,7 +11,7 @@ public abstract class InstructionJ extends RiscVInstruction {
         checkFieldSize(data.rd, 5);
         checkFieldSize(data.imm, 20, 1);
         this.rd = data.rd;
-        this.imm = data.imm;
+        this.imm = data.imm | ((data.imm >> 20 & 0b1) == 1 ? -1 << 21 : 0);
     }
 
     @Override

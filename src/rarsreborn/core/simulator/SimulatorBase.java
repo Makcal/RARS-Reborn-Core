@@ -32,6 +32,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
 
     @Override
     public void compile(String program) throws CompilationException, LinkingException {
+        reset();
         IObjectFile objectFile = compiler.compile(program);
         IExecutable executable = linker.link(objectFile);
         loadProgram(executable);
@@ -39,6 +40,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
 
     @Override
     public void compile(String ...programs) throws CompilationException, LinkingException {
+        reset();
         IObjectFile[] objectFiles = new IObjectFile[programs.length];
         for (int i = 0; i < programs.length; i++) {
             objectFiles[i] = compiler.compile(programs[i]);
@@ -49,8 +51,11 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
 
     abstract protected void loadProgram(IExecutable program);
 
+    protected void onStartSetup() {}
+
     @Override
     public void run() {
+        onStartSetup();
         try {
             //noinspection InfiniteLoopStatement
             while (true) {

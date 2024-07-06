@@ -6,6 +6,7 @@ import rarsreborn.core.compilation.decoder.riscv.RiscVDecoder;
 import rarsreborn.core.compilation.linker.RiscVLinker;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.environment.riscv.ecalls.PrintEcall;
+import rarsreborn.core.core.environment.riscv.ecalls.ReadEcall;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
@@ -84,6 +85,7 @@ public class Presets {
                 .setProgramCounter(programCounter)
                 .setMemory(memory)
                 .addHandler(0, new PrintEcall())
+                .addHandler(1, new ReadEcall())
                 .build();
 
             classical = new Simulator32(

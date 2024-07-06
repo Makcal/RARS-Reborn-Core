@@ -55,7 +55,7 @@ public class Simulator32 extends SimulatorBase {
         return programCounter;
     }
 
-    public <TEvent> void subscribeEvent(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+    public <TEvent> void subscribeToEvent(Class<TEvent> eventClass, IObserver<TEvent> observer) {
         executionEnvironment.addObserver(eventClass, observer);
     }
 

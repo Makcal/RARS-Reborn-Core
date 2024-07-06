@@ -22,7 +22,7 @@ public class Example {
                     return s.length() <= count ? s : s.substring(0, count);
                 }
             });
-            simulator.subscribeEvent(
+            simulator.subscribeToEvent(
                 ConsolePrintEvent.class,
                 consolePrintEvent -> System.out.print(consolePrintEvent.text())
             );

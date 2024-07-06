@@ -4,6 +4,7 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.compiler.riscv.RegexCompiler;
 import rarsreborn.core.compilation.decoder.riscv.RiscVDecoder;
 import rarsreborn.core.compilation.linker.RiscVLinker;
+import rarsreborn.core.core.environment.IInputDevice;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.environment.riscv.ecalls.PrintEcall;
 import rarsreborn.core.core.environment.riscv.ecalls.ReadEcall;
@@ -18,16 +19,11 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.ZeroRegister32;
 import rarsreborn.core.core.riscvprogram.RiscVObjectFile;
+import rarsreborn.core.events.ObservableImplementation;
 import rarsreborn.core.simulator.Simulator32;
 
 public class Presets {
-    public static Simulator32 classical = null;
-
-    static {
-        initRiscVSimulator();
-    }
-
-    private static void initRiscVSimulator() {
+    public static Simulator32 getClassicalRiscVSimulator(IInputDevice consoleReader) {
         try {
             String[] registerNames = new String[] {
                 "ra", "sp", "gp", "tp",
@@ -84,11 +80,13 @@ public class Presets {
                 .setRegisters(registers)
                 .setProgramCounter(programCounter)
                 .setMemory(memory)
+                .setObservableImplementation(new ObservableImplementation())
+                .setConsoleReader(consoleReader)
                 .addHandler(0, new PrintEcall())
                 .addHandler(1, new ReadEcall())
                 .build();
 
-            classical = new Simulator32(
+            return new Simulator32(
                 compiler, linker, decoder, registers, programCounter, memory, executionEnvironment
             )
                 .registerHandler(Add.class, new Add.Handler())

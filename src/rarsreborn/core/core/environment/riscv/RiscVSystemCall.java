@@ -7,18 +7,29 @@ import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 
 public abstract class RiscVSystemCall implements ISystemCall {
+    protected RiscV32ExecutionEnvironment executionEnvironment;
     protected Register32File registers;
     protected Register32 programCounter;
     protected IMemory memory;
 
     public RiscVSystemCall() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
-    public RiscVSystemCall(Register32File registers, IMemory memory, Register32 programCounter) {
+    public RiscVSystemCall(
+            RiscV32ExecutionEnvironment executionEnvironment,
+            Register32File registers,
+            IMemory memory,
+            Register32 programCounter
+    ) {
+        this.executionEnvironment = executionEnvironment;
         this.registers = registers;
         this.memory = memory;
         this.programCounter = programCounter;
+    }
+
+    public void setExecutionEnvironment(RiscV32ExecutionEnvironment executionEnvironment) {
+        this.executionEnvironment = executionEnvironment;
     }
 
     public void setRegisters(Register32File registers) {

@@ -4,13 +4,14 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.decoder.DecodingResult;
 import rarsreborn.core.compilation.decoder.IBufferedDecoder;
 import rarsreborn.core.compilation.linker.ILinker;
-import rarsreborn.core.core.environment.IExecutionEnvironment;
+import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.events.IObserver;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
@@ -20,7 +21,7 @@ public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
     protected final Memory32 memory;
-    protected final IExecutionEnvironment executionEnvironment;
+    protected final RiscV32ExecutionEnvironment executionEnvironment;
 
     protected long programLength;
     protected byte lastInstructionSize;
@@ -33,7 +34,7 @@ public class Simulator32 extends SimulatorBase {
         Register32File registerFile,
         Register32 programCounter,
         Memory32 memory,
-        IExecutionEnvironment executionEnvironment
+        RiscV32ExecutionEnvironment executionEnvironment
     ) {
         super(compiler, linker, decoder);
         this.registerFile = registerFile;
@@ -52,6 +53,10 @@ public class Simulator32 extends SimulatorBase {
 
     public Register32 getProgramCounter() {
         return programCounter;
+    }
+
+    public <TEvent> void subscribeEvent(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+        executionEnvironment.addObserver(eventClass, observer);
     }
 
     @Override

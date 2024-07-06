@@ -1,8 +1,11 @@
 package rarsreborn.core;
 
+import rarsreborn.core.core.environment.StringInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.events.ConsolePrintEvent;
+import rarsreborn.core.events.IObserver;
 import rarsreborn.core.simulator.Simulator32;
 
 import java.io.File;
@@ -12,7 +15,15 @@ import java.util.Scanner;
 public class Example {
     public static void main(String[] args) {
         try {
-            Simulator32 simulator = Presets.classical;
+            Simulator32 simulator = Presets.getClassicalRiscVSimulator(new StringInputDevice() {
+                @Override
+                public String requestString(int count) {
+                    Scanner scanner = new Scanner(System.in);
+                    String s = scanner.nextLine();
+                    return s.length() <= count ? s : s.substring(0, count);
+                }
+            });
+            simulator.subscribeEvent(ConsolePrintEvent.class, consolePrintEvent -> System.out.println(consolePrintEvent.text()));
             Register32File registers = simulator.getRegisterFile();
             IMemory memory = simulator.getMemory();
 

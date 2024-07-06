@@ -1,13 +1,15 @@
 .data
     h: .space 20
+    t: .string "Enter:\n"
 .text
-    li t1, 1
-    li t2, 2
     jal x0, l
-    li t3, 3
-    li t4, 4
 l:
     li t5, 5
+
+    la a0, t
+    li a1, 0
+    ecall
+
     la a0, h
     li a1, 4
     li a7, 1

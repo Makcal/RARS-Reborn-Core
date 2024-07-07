@@ -13,7 +13,7 @@ import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 
 public class Xori extends InstructionI implements ILinkableInstruction {
     public static final String NAME = "xori";
-    public static final byte OPCODE = 0010011;
+    public static final byte OPCODE = 0b0010011;
     public static final byte FUNCT_3 = 0x4;
 
     public Xori(InstructionIParams data) {

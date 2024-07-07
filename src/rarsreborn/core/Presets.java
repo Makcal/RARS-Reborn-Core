@@ -58,7 +58,7 @@ public class Presets {
                 .registerInstruction(Andi.NAME, new Andi.Parser())
                 .registerInstruction(Slli.NAME, new Slli.Parser())
                 .registerInstruction(Srli.NAME, new Srli.Parser())
-                .registerInstruction(Srai.NAME, new Srai.Parser())
+//                .registerInstruction(Srai.NAME, new Srai.Parser())
                 // Load/store
 
                 // Branches
@@ -94,7 +94,7 @@ public class Presets {
                 .registerIInstruction(Andi.OPCODE, Andi.FUNCT_3, Andi.class)
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
                 .registerIInstruction(Srli.OPCODE, Srli.FUNCT_3, Srli.class)
-                .registerIInstruction(Srai.OPCODE, Srai.FUNCT_3, Srai.class)
+//                .registerIInstruction(Srai.OPCODE, Srai.FUNCT_3, Srai.class)
                 // Load/store
 
                 // Branches
@@ -142,7 +142,7 @@ public class Presets {
                 .registerHandler(Andi.class, new Andi.Handler())
                 .registerHandler(Slli.class, new Slli.Handler())
                 .registerHandler(Srli.class, new Srli.Handler())
-                .registerHandler(Srai.class, new Srai.Handler())
+//                .registerHandler(Srai.class, new Srai.Handler())
                 // Load/store
 
                 // Branches

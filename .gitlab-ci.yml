@@ -1,9 +1,11 @@
+#file: noinspection SpellCheckingInspection
 stages:
   - set up merge request
   - build
   - test
   - deploy
 
+# <<< MERGE REQUESTS >>>
 assign-reviewers-job:
   stage: set up merge request
   image: alpine
@@ -34,3 +36,37 @@ assign-reviewers-job:
         https://gitlab.pg.innopolis.university/api/v4/projects/${CI_PROJECT_ID}/merge_requests/${CI_MERGE_REQUEST_IID}?private_token=${API_TOKEN} \
         > curl_response
       cat curl_response | jq .
+
+
+# <<< MAVEN >>>
+variables:
+  MAVEN_OPTS: >-
+    -Dhttps.protocols=TLSv1.2
+    -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository
+    -Dorg.slf4j.simpleLogger.showDateTime=true
+    -Djava.awt.headless=true
+
+  MAVEN_CLI_OPTS: >-
+    --batch-mode
+    --errors
+    --fail-at-end
+    --show-version
+    --no-transfer-progress
+    -DinstallAtEnd=true
+    -DdeployAtEnd=true
+
+cache:
+  paths:
+    - .m2/repository
+
+build:
+  stage: deploy
+  image: maven:3.9.8-eclipse-temurin-21
+  script:
+    - |
+      mvn $MAVEN_CLI_OPTS package
+      if [ $? -ne 0 ]; then cat out/surefire-reports/*.txt; fi
+  artifacts:
+    name: "RARS-Reborn-Core"
+    paths:
+      - "out/RARS_Reborn_Core-*.jar"

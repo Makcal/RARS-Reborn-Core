@@ -1,17 +1,15 @@
 package rarsreborn.core.core.instruction.riscv.instructions.rv32i;
 
 import rarsreborn.core.compilation.compiler.riscv.InstructionRegexParserRegisterBase;
-import rarsreborn.core.core.instruction.ILinkableInstruction;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
-import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 
-public class Srli extends InstructionI implements ILinkableInstruction {
+public class Srli extends InstructionI {
     public static final String NAME = "srli";
     public static final byte OPCODE = 0b0010011;
     public static final byte FUNCT_3 = 0x5;
@@ -26,16 +24,6 @@ public class Srli extends InstructionI implements ILinkableInstruction {
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public void link(long address) {
-        imm = (short) (address & 0b1111_1111_1111);
-    }
-
-    @Override
-    public LinkRequest getLinkRequest() {
-        return null;
     }
 
     @Override

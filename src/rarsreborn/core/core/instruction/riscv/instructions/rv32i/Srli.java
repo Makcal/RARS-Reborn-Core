@@ -20,7 +20,9 @@ public class Srli extends InstructionI {
 
     private void exec(IRegisterFile<Register32> registerFile) {
         try {
-            registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() >>> imm);
+            registerFile.getRegisterByNumber(rd).setValue(
+                registerFile.getRegisterByNumber(rs1).getValue() >>> (imm & 0b1_1111)
+            );
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }

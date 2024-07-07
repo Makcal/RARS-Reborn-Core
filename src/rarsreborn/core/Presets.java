@@ -50,6 +50,7 @@ public class Presets {
                 .registerInstruction(And.NAME, new And.Parser())
                 .registerInstruction(Sll.NAME, new Sll.Parser())
                 .registerInstruction(Srl.NAME, new Srl.Parser())
+                .registerInstruction(Sra.NAME, new Sra.Parser())
                 // Immediate
                 .registerInstruction(Addi.NAME, new Addi.Parser())
                 .registerInstruction(Xori.NAME, new Xori.Parser())
@@ -57,6 +58,7 @@ public class Presets {
                 .registerInstruction(Andi.NAME, new Andi.Parser())
                 .registerInstruction(Slli.NAME, new Slli.Parser())
                 .registerInstruction(Srli.NAME, new Srli.Parser())
+                .registerInstruction(Srai.NAME, new Srai.Parser())
                 // Load/store
 
                 // Branches
@@ -84,6 +86,7 @@ public class Presets {
                 .registerRInstruction(And.OPCODE, And.FUNCT_3, And.FUNCT_7, And.class)
                 .registerRInstruction(Sll.OPCODE, Sll.FUNCT_3, Sll.FUNCT_7, Sll.class)
                 .registerRInstruction(Srl.OPCODE, Srl.FUNCT_3, Srl.FUNCT_7, Srl.class)
+                .registerRInstruction(Sra.OPCODE, Sra.FUNCT_3, Sra.FUNCT_7, Sra.class)
                 // Immediate
                 .registerIInstruction(Addi.OPCODE, Addi.FUNCT_3, Addi.class)
                 .registerIInstruction(Xori.OPCODE, Xori.FUNCT_3, Xori.class)
@@ -91,6 +94,7 @@ public class Presets {
                 .registerIInstruction(Andi.OPCODE, Andi.FUNCT_3, Andi.class)
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
                 .registerIInstruction(Srli.OPCODE, Srli.FUNCT_3, Srli.class)
+                .registerIInstruction(Srai.OPCODE, Srai.FUNCT_3, Srai.class)
                 // Load/store
 
                 // Branches
@@ -130,6 +134,7 @@ public class Presets {
                 .registerHandler(And.class, new And.Handler())
                 .registerHandler(Sll.class, new Sll.Handler())
                 .registerHandler(Srl.class, new Srl.Handler())
+                .registerHandler(Sra.class, new Sra.Handler())
                 // Immediate
                 .registerHandler(Addi.class, new Addi.Handler())
                 .registerHandler(Xori.class, new Xori.Handler())
@@ -137,6 +142,7 @@ public class Presets {
                 .registerHandler(Andi.class, new Andi.Handler())
                 .registerHandler(Slli.class, new Slli.Handler())
                 .registerHandler(Srli.class, new Srli.Handler())
+                .registerHandler(Srai.class, new Srai.Handler())
                 // Load/store
 
                 // Branches

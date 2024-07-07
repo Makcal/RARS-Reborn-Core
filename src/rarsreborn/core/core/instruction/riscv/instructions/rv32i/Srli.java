@@ -22,7 +22,7 @@ public class Srli extends InstructionI implements ILinkableInstruction {
 
     private void exec(IRegisterFile<Register32> registerFile) {
         try {
-            registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() >> imm);
+            registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() >>> imm);
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }

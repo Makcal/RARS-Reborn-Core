@@ -21,7 +21,7 @@ public class Srl extends InstructionR {
         try {
             registerFile.getRegisterByNumber(rd).setValue(
                 registerFile.getRegisterByNumber(rs1).getValue()
-                >> registerFile.getRegisterByNumber(rs2).getValue()
+                >>> registerFile.getRegisterByNumber(rs2).getValue()
             );
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);

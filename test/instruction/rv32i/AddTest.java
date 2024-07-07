@@ -1,4 +1,4 @@
-package instruction;
+package instruction.rv32i;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;

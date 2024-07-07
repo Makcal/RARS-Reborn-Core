@@ -61,7 +61,9 @@ cache:
 
 build:
   stage: deploy
-  image: maven:3.9.8-eclipse-temurin-21
+  image:
+    name: maven:3.9.8-eclipse-temurin-21
+    pull_policy: if-not-present
   script:
     - |
       mvn $MAVEN_CLI_OPTS package

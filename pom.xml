@@ -18,10 +18,12 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <manifestVersion>1.0</manifestVersion>
                             <addClasspath>true</addClasspath>
                             <mainClass>rarsreborn.core.Example</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Manifest-Version>1.0</Manifest-Version>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>

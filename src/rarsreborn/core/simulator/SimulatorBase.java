@@ -16,7 +16,7 @@ import rarsreborn.core.exceptions.linking.LinkingException;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class SimulatorBase implements ISimulator {
+public abstract class SimulatorBase implements IMultiFileSimulator {
     protected final ICompiler compiler;
     protected final ILinker linker;
     protected final IBufferedDecoder decoder;
@@ -32,15 +32,30 @@ public abstract class SimulatorBase implements ISimulator {
 
     @Override
     public void compile(String program) throws CompilationException, LinkingException {
+        reset();
         IObjectFile objectFile = compiler.compile(program);
         IExecutable executable = linker.link(objectFile);
         loadProgram(executable);
     }
 
+    @Override
+    public void compile(String ...programs) throws CompilationException, LinkingException {
+        reset();
+        IObjectFile[] objectFiles = new IObjectFile[programs.length];
+        for (int i = 0; i < programs.length; i++) {
+            objectFiles[i] = compiler.compile(programs[i]);
+        }
+        IExecutable executable = linker.link(objectFiles);
+        loadProgram(executable);
+    }
+
     abstract protected void loadProgram(IExecutable program);
+
+    protected void onStartSetup() {}
 
     @Override
     public void run() {
+        onStartSetup();
         try {
             //noinspection InfiniteLoopStatement
             while (true) {

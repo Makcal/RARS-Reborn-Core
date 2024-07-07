@@ -8,4 +8,8 @@ public class TargetAddressTooLargeException extends LinkingException {
     public TargetAddressTooLargeException(long address) {
         super("Target address 0x%x is too large".formatted(address));
     }
+
+    public TargetAddressTooLargeException(String label, Throwable cause) {
+        super("Target address for label \"" + label + "\" is too large", cause);
+    }
 }

@@ -59,9 +59,14 @@ cache:
   paths:
     - .m2/repository
 
+.maven:
+  image: alpine
+  before_script:
+    - apk add openjdk21 maven
+
 build:
+  extends: .maven
   stage: deploy
-  image: maven:3.9.8-eclipse-temurin-21
   script:
     - |
       mvn $MAVEN_CLI_OPTS package

@@ -24,5 +24,5 @@ of the simulator and some presets.
     and `java -jar out/RARS_Reborn_Core-1.0.jar`
 
 ## Usage
-See [Example.java](src/rarsreborn/core/Example.java) to learn how to setup 
+See [Example.java](src/rarsreborn/core/Example.java) to learn how to set up 
 the simulator and retrieve data.

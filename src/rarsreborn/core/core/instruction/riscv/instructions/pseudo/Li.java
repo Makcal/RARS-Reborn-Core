@@ -8,6 +8,8 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 
+import static rarsreborn.core.core.instruction.riscv.RiscVInstruction.truncateNegative;
+
 public class Li implements IInstruction {
     public static final String NAME = "li";
 
@@ -33,7 +35,7 @@ public class Li implements IInstruction {
             String[] split = splitArguments(line, 2, NAME);
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
-            short imm = parseShort(split[1]);
+            short imm = (short) truncateNegative(parseShort(split[1]), 12);
 
             try {
                 return new Li((byte) rd.getNumber(), imm);

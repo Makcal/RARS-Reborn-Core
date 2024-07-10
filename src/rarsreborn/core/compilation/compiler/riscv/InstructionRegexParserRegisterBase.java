@@ -46,10 +46,22 @@ public abstract class InstructionRegexParserRegisterBase
         }
     }
 
+    protected static int parseShortMaybeUnsigned(String s) throws CompilationException {
+        try {
+            long l = Long.parseLong(s);
+            if (l < Short.MIN_VALUE || 0xffff < l) {
+                throw new ImmediateTooLargeException(l);
+            }
+            return (int) l;
+        } catch (NumberFormatException e) {
+            throw new ExpectedIntegerException(s);
+        }
+    }
+
     protected static short parseShort(String s) throws CompilationException {
         try {
             long l = Long.parseLong(s);
-            if (l >>> 16 != 0) {
+            if (l < Short.MIN_VALUE || Short.MAX_VALUE < l) {
                 throw new ImmediateTooLargeException(l);
             }
             return (short) l;

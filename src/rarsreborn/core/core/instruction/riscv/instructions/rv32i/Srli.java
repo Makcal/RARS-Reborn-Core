@@ -50,6 +50,7 @@ public class Srli extends InstructionI {
             short imm = parseShort(split[2]);
 
             try {
+                checkFieldSize(imm, 5);
                 return new Srli(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));
             } catch (IllegalArgumentException e) {
                 throw new ImmediateTooLargeException(imm);

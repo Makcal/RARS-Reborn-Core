@@ -17,7 +17,7 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 public class Bltu extends InstructionB implements ILinkableInstruction {
     public static final String NAME = "bltu";
     public static final byte OPCODE = 0b1100011;
-    public static final byte FUNCT3 = 0x5;
+    public static final byte FUNCT3 = 0x6;
     protected LinkRequest linkRequest;
 
     public Bltu(InstructionBParams params) {
@@ -26,7 +26,8 @@ public class Bltu extends InstructionB implements ILinkableInstruction {
 
     public void exec(IRegisterFile<Register32> registers, Register32 programCounter) {
         try {
-            if (Integer.toUnsignedLong(registers.getRegisterByNumber(rs1).getValue()) < Integer.toUnsignedLong(registers.getRegisterByNumber(rs2).getValue())) {
+            if (Integer.toUnsignedLong(registers.getRegisterByNumber(rs1).getValue()) <
+                Integer.toUnsignedLong(registers.getRegisterByNumber(rs2).getValue())) {
                 programCounter.setValue(programCounter.getValue() + asNegative(imm, 13));
             }
         } catch (UnknownRegisterException e) {

@@ -2,7 +2,6 @@ package instruction.rv32i;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.RiscVInstruction;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;

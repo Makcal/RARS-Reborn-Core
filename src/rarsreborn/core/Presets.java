@@ -60,7 +60,7 @@ public class Presets {
                 .registerInstruction(Srli.NAME, new Srli.Parser())
 //                .registerInstruction(Srai.NAME, new Srai.Parser())
                 // Load/store
-
+                .registerInstruction(Lw.NAME, new Lw.Parser())
                 // Branches
 
                 // Jumps
@@ -96,7 +96,7 @@ public class Presets {
                 .registerIInstruction(Srli.OPCODE, Srli.FUNCT_3, Srli.class)
 //                .registerIInstruction(Srai.OPCODE, Srai.FUNCT_3, Srai.class)
                 // Load/store
-
+                .registerIInstruction(Lw.OPCODE, Lw.FUNCT3, Lw.class)
                 // Branches
 
                 // Jumps
@@ -144,7 +144,7 @@ public class Presets {
                 .registerHandler(Srli.class, new Srli.Handler())
 //                .registerHandler(Srai.class, new Srai.Handler())
                 // Load/store
-
+                .registerHandler(Lw.class, new Lw.Handler())
                 // Branches
 
                 // Jumps

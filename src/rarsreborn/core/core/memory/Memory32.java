@@ -55,8 +55,8 @@ public class Memory32 implements IMemory {
     }
 
     @Override
-    public long getMultiple(long address, int size) {
-        return getSection(address).getMultiple(address, size);
+    public long getMultiple(long address, int bytes) {
+        return getSection(address).getMultiple(address, bytes);
     }
 
     @Override

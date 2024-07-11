@@ -11,10 +11,10 @@ public interface IMemory {
 
     /**
      * @param address The address to read from
-     * @param size The size in bytes of the value to read (usually 1, 2, 4 or 8)
+     * @param bytes The size in bytes of the value to read (usually 1, 2, 4 or 8)
      * @return The read number
      */
-    long getMultiple(long address, int size) throws MemoryAccessException;
+    long getMultiple(long address, int bytes) throws MemoryAccessException;
 
     void setMultiple(long address, long value, int size) throws MemoryAccessException;
 

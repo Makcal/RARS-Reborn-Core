@@ -31,10 +31,10 @@ public class MemoryBlock implements IMemory {
     }
 
     @Override
-    public long getMultiple(long address, int size) {
+    public long getMultiple(long address, int bytes) {
         long value = 0;
-        for (int i = 0; i < size; i++) {
-            int shift = isLittleEndian ? i : size - i - 1;
+        for (int i = 0; i < bytes; i++) {
+            int shift = isLittleEndian ? i : bytes - i - 1;
             value |= Byte.toUnsignedLong(getByte(address + i)) << (shift * 8);
         }
         return value;

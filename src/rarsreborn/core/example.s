@@ -4,7 +4,7 @@
 .text
     jal x0, l
 l:
-    li t5, 5
+    li t5, -1
 
     la a0, t
     li a1, 0

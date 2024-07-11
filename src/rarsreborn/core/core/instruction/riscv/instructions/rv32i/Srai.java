@@ -53,6 +53,7 @@ public class Srai extends InstructionI {
             short imm = parseShort(split[2]);
 
             try {
+                checkFieldSize(imm, 5);
                 return new Srai(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));
             } catch (IllegalArgumentException e) {
                 throw new ImmediateTooLargeException(imm);

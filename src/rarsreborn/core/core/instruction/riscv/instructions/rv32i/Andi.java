@@ -45,7 +45,7 @@ public class Andi extends InstructionI {
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
             Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
-            short imm = parseShort(split[2]);
+            short imm = (short) truncateNegative(parseShort(split[2]), 12);
 
             try {
                 return new Andi(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));

@@ -28,8 +28,11 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long address) {
-        imm = (int) (address ^ (address & 0b1111_1111_1111));
+    public void link(long offset) {
+        if ((offset & 0b1000_0000_0000) != 0) {
+            offset += 0b1_0000_0000_0000;
+        }
+        imm = (int) (offset ^ (offset & 0b1111_1111_1111));
     }
 
     @Override

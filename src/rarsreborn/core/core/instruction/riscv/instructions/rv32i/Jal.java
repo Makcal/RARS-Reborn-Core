@@ -22,26 +22,20 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
     protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
         try {
             registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue());
-            programCounter.setValue(programCounter.getValue() + imm);
+            programCounter.setValue(programCounter.getValue() + asNegative(imm, 21));
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void link(long address) throws TargetAddressTooLargeException {
-        address ^= address & 0b1;
-        boolean negative = ((address >> 20) & 1) == 1;
-        if (negative && (address | 0b1_1111_1111_1111_1111_1111) != -1) {
-            throw new TargetAddressTooLargeException(address);
+    public void link(long offset) throws TargetAddressTooLargeException {
+        offset ^= offset & 0b1;
+        try {
+            imm = (int) truncateNegative(offset, 21);
+        } catch (ImmediateTooLargeException e) {
+            throw new TargetAddressTooLargeException(offset);
         }
-        else if (negative) {
-            address &= 0b1_1111_1111_1111_1111_1111;
-        }
-        if ((address ^ (address & 0b1_1111_1111_1111_1111_1110)) != 0) {
-            throw new TargetAddressTooLargeException(address);
-        }
-        imm = (int) (address & 0b1_1111_1111_1111_1111_1110 | (negative ? -1 << 20 : 0));
     }
 
     @Override

@@ -22,15 +22,17 @@ public class Addi extends InstructionI implements ILinkableInstruction {
 
     private void exec(IRegisterFile<Register32> registerFile) {
         try {
-            registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() + imm);
+            registerFile.getRegisterByNumber(rd).setValue(
+                registerFile.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12)
+            );
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void link(long address) {
-        imm = (short) (address & 0b1111_1111_1111);
+    public void link(long offset) {
+        imm = (short) (offset & 0b1111_1111_1111);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class Addi extends InstructionI implements ILinkableInstruction {
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
             Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
-            short imm = parseShort(split[2]);
+            short imm = (short) truncateNegative(parseShort(split[2]), 12);
 
             try {
                 return new Addi(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));

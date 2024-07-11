@@ -40,7 +40,7 @@ public class RegexCompiler implements ICompiler {
         CompilingContext context = new CompilingContext();
 
         for (String line : source.split("\n")) {
-            if (line.isEmpty()) continue;
+            if (line.isEmpty() || line.charAt(0) == '#') continue;
 
             if (line.charAt(0) == '.') {
                 processDirective(line);

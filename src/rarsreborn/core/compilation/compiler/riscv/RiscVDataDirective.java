@@ -33,25 +33,25 @@ public enum RiscVDataDirective {
         String parsedString;
         switch (this) {
             case BYTE:
-                n = parseInteger(s);
-                if ((n & 0xFF) == 0) {
+                n = parseLongInteger(s);
+                if ((n ^ (n & 0xFF)) == 0) {
                     return new byte[] {(byte) n};
                 }
                 throw new SyntaxErrorException(s);
             case HALF:
-                n = parseInteger(s);
-                if ((n & 0xFFFF) == 0) {
+                n = parseLongInteger(s);
+                if ((n ^ (n & 0xFFFF)) == 0) {
                     return new byte[] {(byte) n, (byte) (n >> 8)};
                 }
                 throw new SyntaxErrorException(s);
             case WORD:
-                n = parseInteger(s);
-                if ((n & 0xFFFFFFFFL) == 0) {
+                n = parseLongInteger(s);
+                if ((n ^ (n & 0xFFFFFFFFL)) == 0) {
                     return new byte[] {(byte) n, (byte) (n >> 8), (byte) (n >> 16), (byte) (n >> 24)};
                 }
                 throw new SyntaxErrorException(s);
             case DWORD:
-                n = parseInteger(s);
+                n = parseLongInteger(s);
                 return longToBytes(n);
             case FLOAT:
                 int floatBits;
@@ -115,7 +115,7 @@ public enum RiscVDataDirective {
         };
     }
 
-    private static long parseInteger(String s) throws SyntaxErrorException {
+    private static long parseLongInteger(String s) throws SyntaxErrorException {
         if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
             String middle = s.substring(1, s.length() - 1);
             if (middle.charAt(0) == '\\') {

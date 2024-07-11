@@ -11,8 +11,8 @@ import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 
 public class Jalr extends InstructionI {
     public static final String NAME = "jalr";
-    public static final byte OPCODE = 0b0010011;
-    public static final byte FUNCT_3 = 0x7;
+    public static final byte OPCODE = 0b1100111;
+    public static final byte FUNCT_3 = 0x0;
 
     public Jalr(InstructionIParams data) {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));

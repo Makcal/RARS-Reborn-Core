@@ -62,7 +62,7 @@ public class Presets {
                 // Load/store
                 .registerInstruction(Lw.NAME, new Lw.Parser())
                 // Branches
-
+                .registerInstruction(Beq.NAME, new Beq.Parser())
                 // Jumps
                 .registerInstruction(Jal.NAME, new Jal.Parser())
                 .registerInstruction(Auipc.NAME, new Auipc.Parser())
@@ -98,7 +98,7 @@ public class Presets {
                 // Load/store
                 .registerIInstruction(Lw.OPCODE, Lw.FUNCT3, Lw.class)
                 // Branches
-
+                .registerBInstruction(Beq.OPCODE, Beq.FUNCT3, Beq.class)
                 // Jumps
                 .registerJInstruction(Jal.OPCODE, Jal.class)
                 .registerUInstruction(Auipc.OPCODE, Auipc.class)
@@ -146,7 +146,7 @@ public class Presets {
                 // Load/store
                 .registerHandler(Lw.class, new Lw.Handler())
                 // Branches
-
+                .registerHandler(Beq.class, new Beq.Handler())
                 // Jumps
                 .registerHandler(Jal.class, new Jal.Handler())
                 .registerHandler(Auipc.class, new Auipc.Handler())

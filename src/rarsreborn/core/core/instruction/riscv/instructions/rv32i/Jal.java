@@ -29,12 +29,12 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long address) throws TargetAddressTooLargeException {
-        address ^= address & 0b1;
+    public void link(long offset) throws TargetAddressTooLargeException {
+        offset ^= offset & 0b1;
         try {
-            imm = (int) truncateNegative(address, 21);
+            imm = (int) truncateNegative(offset, 21);
         } catch (ImmediateTooLargeException e) {
-            throw new TargetAddressTooLargeException(address);
+            throw new TargetAddressTooLargeException(offset);
         }
     }
 

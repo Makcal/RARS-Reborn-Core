@@ -31,8 +31,8 @@ public class Addi extends InstructionI implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long address) {
-        imm = (short) (address & 0b1111_1111_1111);
+    public void link(long offset) {
+        imm = (short) (offset & 0b1111_1111_1111);
     }
 
     @Override

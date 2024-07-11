@@ -63,8 +63,14 @@ public class Presets {
                 .registerInstruction(Lw.NAME, new Lw.Parser())
                 // Branches
                 .registerInstruction(Beq.NAME, new Beq.Parser())
+                .registerInstruction(Bne.NAME, new Bne.Parser())
+                .registerInstruction(Blt.NAME, new Blt.Parser())
+                .registerInstruction(Bge.NAME, new Bge.Parser())
+                .registerInstruction(Bltu.NAME, new Bltu.Parser())
+                .registerInstruction(Bgeu.NAME, new Bgeu.Parser())
                 // Jumps
                 .registerInstruction(Jal.NAME, new Jal.Parser())
+                .registerInstruction(Jalr.NAME, new Jalr.Parser())
                 .registerInstruction(Auipc.NAME, new Auipc.Parser())
                 // Other
                 .registerInstruction(Ecall.NAME, new Ecall.Parser())
@@ -99,8 +105,14 @@ public class Presets {
                 .registerIInstruction(Lw.OPCODE, Lw.FUNCT3, Lw.class)
                 // Branches
                 .registerBInstruction(Beq.OPCODE, Beq.FUNCT3, Beq.class)
+                .registerBInstruction(Bne.OPCODE, Bne.FUNCT3, Bne.class)
+                .registerBInstruction(Blt.OPCODE, Blt.FUNCT3, Blt.class)
+                .registerBInstruction(Bge.OPCODE, Bge.FUNCT3, Bge.class)
+                .registerBInstruction(Bltu.OPCODE, Bltu.FUNCT3, Bltu.class)
+                .registerBInstruction(Bgeu.OPCODE, Bgeu.FUNCT3, Bgeu.class)
                 // Jumps
                 .registerJInstruction(Jal.OPCODE, Jal.class)
+                .registerIInstruction(Jalr.OPCODE, Jalr.FUNCT3, Jalr.class)
                 .registerUInstruction(Auipc.OPCODE, Auipc.class)
                 // Other
                 .registerIInstruction(Ecall.OPCODE, Ecall.FUNCT3, Ecall.class)
@@ -147,8 +159,14 @@ public class Presets {
                 .registerHandler(Lw.class, new Lw.Handler())
                 // Branches
                 .registerHandler(Beq.class, new Beq.Handler())
+                .registerHandler(Bne.class, new Bne.Handler())
+                .registerHandler(Blt.class, new Blt.Handler())
+                .registerHandler(Bge.class, new Bge.Handler())
+                .registerHandler(Bltu.class, new Bltu.Handler())
+                .registerHandler(Bgeu.class, new Bgeu.Handler())
                 // Jumps
                 .registerHandler(Jal.class, new Jal.Handler())
+                .registerHandler(Jalr.class, new Jalr.Handler())
                 .registerHandler(Auipc.class, new Auipc.Handler())
                 // Other
                 .registerHandler(Ecall.class, new Ecall.Handler())

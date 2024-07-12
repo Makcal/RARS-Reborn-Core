@@ -132,7 +132,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
             synchronized (lock) {
                 if (isRunning) return;
                 isRunning = true;
-                instructionsToRun = -1;
+                instructionsToRun = runImmediately ? -1 : 0;
                 isPaused = !runImmediately;
             }
             onStartSetup();
@@ -195,6 +195,18 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
                 isRunning = false;
                 isPaused = true;
                 instructionsToRun = 0;
+            }
+        }
+
+        public boolean isPaused() {
+            synchronized (lock) {
+                return isPaused;
+            }
+        }
+
+        public boolean isRunning() {
+            synchronized (lock) {
+                return isRunning;
             }
         }
     }

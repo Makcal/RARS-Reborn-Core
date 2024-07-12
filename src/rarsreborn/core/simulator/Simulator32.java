@@ -63,10 +63,6 @@ public class Simulator32 extends SimulatorBase {
     public void reset() {
         memory.reset();
         registerFile.reset();
-    }
-
-    @Override
-    protected void onStartSetup() {
         programCounter.setValue(Memory32.TEXT_SECTION_START);
         try {
             registerFile.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);

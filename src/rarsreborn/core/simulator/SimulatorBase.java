@@ -20,9 +20,10 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
     protected final ICompiler compiler;
     protected final ILinker linker;
     protected final IBufferedDecoder decoder;
-
     protected final Map<Class<? extends IInstruction>, IInstructionHandler<?>> handlers
             = new HashMap<>();
+
+    protected IExecutable executable;
 
     protected final Worker worker = new Worker();
 
@@ -34,26 +35,24 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
 
     @Override
     public void compile(String program) throws CompilationException, LinkingException {
-        reset();
-        IObjectFile objectFile = compiler.compile(program);
-        IExecutable executable = linker.link(objectFile);
-        loadProgram(executable);
+        compile(new String[] { program });
     }
 
     @Override
     public void compile(String ...programs) throws CompilationException, LinkingException {
-        reset();
         IObjectFile[] objectFiles = new IObjectFile[programs.length];
         for (int i = 0; i < programs.length; i++) {
             objectFiles[i] = compiler.compile(programs[i]);
         }
-        IExecutable executable = linker.link(objectFiles);
-        loadProgram(executable);
+        executable = linker.link(objectFiles);
     }
 
     abstract protected void loadProgram(IExecutable program);
 
-    protected void onStartSetup() {}
+    protected void onStartSetup() {
+        reset();
+        loadProgram(executable);
+    }
 
     /**
      * Initializes an execution loop, but does not start execution itself. Better run in a separate thread.
@@ -64,26 +63,23 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
     }
 
     public void startWorkerAndRun() throws ExecutionException {
-        onStartSetup();
         worker.start(true);
     }
 
     /**
-     * Starts infinite execution.
+     * Starts infinite execution in a worker.
      */
     @Override
     public void run() {
-        onStartSetup();
         worker.run();
     }
 
     /**
-     * Execute a limited number of instructions.
+     * Execute a limited number of instructions in a worker.
      * @param n the number of steps
      */
     @Override
     public void runSteps(int n) {
-        onStartSetup();
         worker.runSteps(n);
     }
 
@@ -139,6 +135,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
                 instructionsToRun = -1;
                 isPaused = !runImmediately;
             }
+            onStartSetup();
             while (isRunning) {
                 synchronized (lock) {
                     while (isPaused || instructionsToRun == 0) {

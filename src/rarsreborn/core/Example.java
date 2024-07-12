@@ -4,7 +4,7 @@ import rarsreborn.core.core.environment.StringInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.events.ConsolePrintEvent;
+import rarsreborn.core.core.environment.ConsolePrintEvent;
 import rarsreborn.core.simulator.Simulator32;
 
 import java.io.File;

@@ -1,7 +1,7 @@
 package rarsreborn.core.core.environment.riscv.ecalls;
 
 import rarsreborn.core.core.environment.riscv.RiscVSystemCall;
-import rarsreborn.core.events.ConsolePrintEvent;
+import rarsreborn.core.core.environment.ConsolePrintEvent;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 public class PrintEcall extends RiscVSystemCall {

@@ -1,4 +1,4 @@
-package rarsreborn.core.events;
+package rarsreborn.core.event;
 
 public class EmptyObservable implements IObservable {
     @Override

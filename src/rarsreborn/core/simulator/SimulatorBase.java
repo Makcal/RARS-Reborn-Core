@@ -24,6 +24,8 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
     protected final Map<Class<? extends IInstruction>, IInstructionHandler<?>> handlers
             = new HashMap<>();
 
+    protected final Worker worker = new Worker();
+
     public SimulatorBase(ICompiler compiler, ILinker linker, IBufferedDecoder decoder) {
         this.compiler = compiler;
         this.linker = linker;
@@ -53,30 +55,46 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
 
     protected void onStartSetup() {}
 
+    /**
+     * Initializes an execution loop, but does not start execution itself. Better run in a separate thread.
+     * @throws ExecutionException any exception during execution
+     */
+    public void startWorker() throws ExecutionException {
+        worker.start();
+    }
+
+    public void startWorkerAndRun() throws ExecutionException {
+        onStartSetup();
+        worker.start(true);
+    }
+
+    /**
+     * Starts infinite execution.
+     */
     @Override
     public void run() {
         onStartSetup();
-        try {
-            //noinspection InfiniteLoopStatement
-            while (true) {
-                executeOneInstruction();
-            }
-        } catch (EndOfExecutionException ignored) {
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        worker.run();
+    }
+
+    /**
+     * Execute a limited number of instructions.
+     * @param n the number of steps
+     */
+    @Override
+    public void runSteps(int n) {
+        onStartSetup();
+        worker.runSteps(n);
     }
 
     @Override
-    public void runSteps(int n) {
-        try {
-            for (int i = 0; i < n; i++) {
-                executeOneInstruction();
-            }
-        } catch (EndOfExecutionException ignored) {
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+    public void pause() {
+        worker.pause();
+    }
+
+    @Override
+    public void stop() {
+        worker.stop();
     }
 
     protected abstract IInstruction getNextInstruction() throws ExecutionException;
@@ -102,5 +120,85 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
             IInstructionHandler<TInstruction> handler
     ) {
         handlers.put(instructionClass, handler);
+    }
+
+    protected class Worker {
+        protected final Object lock = new Object();
+        protected boolean isRunning = false;
+        protected boolean isPaused = true;
+        protected int instructionsToRun = 0;
+
+        public void start() throws ExecutionException {
+            start(false);
+        }
+
+        public void start(boolean runImmediately) throws ExecutionException {
+            synchronized (lock) {
+                if (isRunning) return;
+                isRunning = true;
+                instructionsToRun = -1;
+                isPaused = !runImmediately;
+            }
+            while (isRunning) {
+                synchronized (lock) {
+                    while (isPaused || instructionsToRun == 0) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+                try {
+                    executeOneInstruction();
+                    instructionsToRun--;
+                    if (instructionsToRun == 0) {
+                        pause();
+                    }
+                } catch (EndOfExecutionException ignored) {
+                    stop();
+                    return;
+                }
+            }
+
+            synchronized (lock) {
+                isPaused = true;
+            }
+        }
+
+        public void pause() {
+            synchronized (lock) {
+                isPaused = true;
+            }
+        }
+
+        public void run() {
+            synchronized (lock) {
+                if (!isRunning) throw new RuntimeException("The worker has not been initialized");
+                isPaused = false;
+                instructionsToRun = -1;
+                lock.notifyAll();
+            }
+        }
+
+        public void runSteps(int n) {
+            synchronized (lock) {
+                if (!isRunning) throw new RuntimeException("The worker has not been initialized");
+                if (instructionsToRun == -1) return;
+                isPaused = false;
+                instructionsToRun += n;
+                lock.notifyAll();
+            }
+        }
+
+        public void stop() {
+            synchronized (lock) {
+                isRunning = false;
+                isPaused = true;
+                instructionsToRun = 0;
+            }
+        }
     }
 }

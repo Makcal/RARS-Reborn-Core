@@ -60,7 +60,7 @@ public class Memory32 implements IMemory, IObservable {
         MemoryBlock section = getSection(address);
         byte oldValue = section.getByte(address);
         section.setByte(address, value);
-        notifyObservers(new Memory32ChangeEvent(address, new byte[] {oldValue}, new byte[] {value}));
+        notifyObservers(new MemoryChangeEvent(address, new byte[] {oldValue}, new byte[] {value}));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class Memory32 implements IMemory, IObservable {
         MemoryBlock section = getSection(address);
         byte[] oldValue = section.readBytes(address, size);
         section.setMultiple(address, value, size);
-        notifyObservers(new Memory32ChangeEvent(address, oldValue, section.readBytes(address, size)));
+        notifyObservers(new MemoryChangeEvent(address, oldValue, section.readBytes(address, size)));
     }
 
     @Override
@@ -86,7 +86,7 @@ public class Memory32 implements IMemory, IObservable {
         MemoryBlock section = getSection(address);
         byte[] oldBytes = section.readBytes(address, bytes.length);
         section.writeBytes(address, bytes);
-        notifyObservers(new Memory32ChangeEvent(address, oldBytes, section.readBytes(address, bytes.length)));
+        notifyObservers(new MemoryChangeEvent(address, oldBytes, section.readBytes(address, bytes.length)));
     }
 
     @Override

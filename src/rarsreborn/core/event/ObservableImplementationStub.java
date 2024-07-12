@@ -1,6 +1,6 @@
 package rarsreborn.core.event;
 
-public class EmptyObservable implements IObservable {
+public class ObservableImplementationStub implements IObservable {
     @Override
     public <TEvent> void addObserver(Class<TEvent> eventClass, IObserver<TEvent> observer) {}
 

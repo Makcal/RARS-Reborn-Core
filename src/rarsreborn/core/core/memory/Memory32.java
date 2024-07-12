@@ -25,7 +25,7 @@ public class Memory32 implements IMemory, IObservable {
     protected MemoryBlock dataSection, textSection, stackSection, heapSection, other;
     protected List<MemoryBlock> sections;
 
-    protected ObservableImplementation observableImplementation = new ObservableImplementation();
+    protected final ObservableImplementation observableImplementation = new ObservableImplementation();
 
     public Memory32() {
         reset();

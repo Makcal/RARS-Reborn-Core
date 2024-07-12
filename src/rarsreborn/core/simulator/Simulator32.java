@@ -8,13 +8,21 @@ import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.memory.Memory32;
+import rarsreborn.core.core.memory.MemoryChangeEvent;
 import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.register.Register32;
+import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
+import rarsreborn.core.simulator.backstepper.IBackStepper;
+import rarsreborn.core.simulator.backstepper.MemoryChange;
+import rarsreborn.core.simulator.backstepper.Register32Change;
+
+import java.util.HashMap;
 
 public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
@@ -26,6 +34,9 @@ public class Simulator32 extends SimulatorBase {
     protected byte lastInstructionSize;
     protected long lastPcPosition;
 
+    protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
+    protected HashMap<Register32, IObserver<Register32ChangeEvent>> registerBackStepperObservers = new HashMap<>();
+
     public Simulator32(
         ICompiler compiler,
         ILinker linker,
@@ -35,7 +46,20 @@ public class Simulator32 extends SimulatorBase {
         Memory32 memory,
         RiscV32ExecutionEnvironment executionEnvironment
     ) {
-        super(compiler, linker, decoder);
+        this(compiler, linker, decoder, registerFile, programCounter, memory, executionEnvironment, null);
+    }
+
+    public Simulator32(
+        ICompiler compiler,
+        ILinker linker,
+        IBufferedDecoder decoder,
+        Register32File registerFile,
+        Register32 programCounter,
+        Memory32 memory,
+        RiscV32ExecutionEnvironment executionEnvironment,
+        IBackStepper backStepper
+    ) {
+        super(compiler, linker, decoder, backStepper);
         this.registerFile = registerFile;
         this.memory = memory;
         this.programCounter = programCounter;
@@ -60,6 +84,15 @@ public class Simulator32 extends SimulatorBase {
 
     @Override
     public void reset() {
+        if (memoryBackStepperObserver != null) {
+            memory.removeObserver(MemoryChangeEvent.class, memoryBackStepperObserver);
+        }
+        registerBackStepperObservers.forEach(
+            (register, observer) -> register.removeObserver(Register32ChangeEvent.class, observer)
+        );
+        registerBackStepperObservers.clear();
+
+        backStepper.reset();
         memory.reset();
         registerFile.reset();
         programCounter.setValue(Memory32.TEXT_SECTION_START);
@@ -68,6 +101,25 @@ public class Simulator32 extends SimulatorBase {
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
+        loadProgram(executable);
+
+        this.memory.addObserver(
+            MemoryChangeEvent.class,
+            memoryBackStepperObserver = event -> this.backStepper.addChange(new MemoryChange(this.memory, event))
+        );
+        IObserver<Register32ChangeEvent> observer = event -> this.backStepper.addChange(new Register32Change(event));
+        for (Register32 register : registerFile.getAllRegisters()) {
+            register.addObserver(
+                Register32ChangeEvent.class,
+                observer
+            );
+            registerBackStepperObservers.put(register, observer);
+        }
+        programCounter.addObserver(
+            Register32ChangeEvent.class,
+            observer
+        );
+        registerBackStepperObservers.put(programCounter, observer);
     }
 
     @Override

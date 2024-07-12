@@ -21,6 +21,7 @@ import rarsreborn.core.core.register.ZeroRegister32;
 import rarsreborn.core.core.riscvprogram.RiscVObjectFile;
 import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.simulator.Simulator32;
+import rarsreborn.core.simulator.backstepper.BackStepper;
 
 public class Presets {
     public static Simulator32 getClassicalRiscVSimulator(IInputDevice consoleReader) {
@@ -136,7 +137,14 @@ public class Presets {
                 .build();
 
             return new Simulator32(
-                    compiler, linker, decoder, registers, programCounter, memory, executionEnvironment
+                compiler,
+                linker,
+                decoder,
+                registers,
+                programCounter,
+                memory,
+                executionEnvironment,
+                new BackStepper(200)
             )
                 // Arithmetic and logic
                 .registerHandler(Add.class, new Add.Handler())

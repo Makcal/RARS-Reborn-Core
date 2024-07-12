@@ -11,7 +11,6 @@ import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
@@ -55,8 +54,8 @@ public class Simulator32 extends SimulatorBase {
         return programCounter;
     }
 
-    public <TEvent> void subscribeToEvent(Class<TEvent> eventClass, IObserver<TEvent> observer) {
-        executionEnvironment.addObserver(eventClass, observer);
+    public RiscV32ExecutionEnvironment getExecutionEnvironment() {
+        return executionEnvironment;
     }
 
     @Override

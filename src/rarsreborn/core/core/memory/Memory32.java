@@ -1,12 +1,11 @@
 package rarsreborn.core.core.memory;
 
-import rarsreborn.core.event.IObservable;
 import rarsreborn.core.event.IObserver;
 import rarsreborn.core.event.ObservableImplementation;
 
 import java.util.List;
 
-public class Memory32 implements IMemory, IObservable {
+public class Memory32 implements IMemory {
     private final static int SIZE = 0x7fffffff;
 
     // Derived from RARS
@@ -57,10 +56,14 @@ public class Memory32 implements IMemory, IObservable {
 
     @Override
     public void setByte(long address, byte value) {
-        MemoryBlock section = getSection(address);
-        byte oldValue = section.getByte(address);
-        section.setByte(address, value);
+        byte oldValue = getSection(address).getByte(address);
+        setByteSilently(address, value);
         notifyObservers(new MemoryChangeEvent(address, new byte[] {oldValue}, new byte[] {value}));
+    }
+
+    @Override
+    public void setByteSilently(long address, byte value) {
+        getSection(address).setByte(address, value);
     }
 
     @Override
@@ -72,8 +75,13 @@ public class Memory32 implements IMemory, IObservable {
     public void setMultiple(long address, long value, int size) {
         MemoryBlock section = getSection(address);
         byte[] oldValue = section.readBytes(address, size);
-        section.setMultiple(address, value, size);
+        setMultipleSilently(address, value, size);
         notifyObservers(new MemoryChangeEvent(address, oldValue, section.readBytes(address, size)));
+    }
+
+    @Override
+    public void setMultipleSilently(long address, long value, int size) {
+        getSection(address).setMultiple(address, value, size);
     }
 
     @Override
@@ -85,8 +93,13 @@ public class Memory32 implements IMemory, IObservable {
     public void writeBytes(long address, byte[] bytes) {
         MemoryBlock section = getSection(address);
         byte[] oldBytes = section.readBytes(address, bytes.length);
-        section.writeBytes(address, bytes);
+        writeBytesSilently(address, bytes);
         notifyObservers(new MemoryChangeEvent(address, oldBytes, section.readBytes(address, bytes.length)));
+    }
+
+    @Override
+    public void writeBytesSilently(long address, byte[] bytes) {
+        getSection(address).writeBytes(address, bytes);
     }
 
     @Override

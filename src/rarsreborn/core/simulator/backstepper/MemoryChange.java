@@ -15,6 +15,6 @@ public class MemoryChange implements IRevertible {
 
     @Override
     public void revert() throws MemoryAccessException {
-        memory.writeBytes(event.address(), event.oldSpan());
+        memory.writeBytesSilently(event.address(), event.oldSpan());
     }
 }

@@ -11,6 +11,6 @@ public class Register32Change implements IRevertible {
 
     @Override
     public void revert() {
-        event.register().setValue(event.oldValue());
+        event.register().setValueSilently(event.oldValue());
     }
 }

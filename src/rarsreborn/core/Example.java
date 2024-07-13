@@ -1,10 +1,10 @@
 package rarsreborn.core;
 
+import rarsreborn.core.core.environment.ConsolePrintEvent;
 import rarsreborn.core.core.environment.StringInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.core.environment.ConsolePrintEvent;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.Simulator32;
 

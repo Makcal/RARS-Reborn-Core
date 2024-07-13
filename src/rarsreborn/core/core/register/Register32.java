@@ -37,8 +37,12 @@ public class Register32 implements IIntegerRegister, IObservable {
 
     public void setValue(int value) {
         int oldValue = this.value;
-        this.value = value;
+        setValueSilently(value);
         notifyObservers(new Register32ChangeEvent(this, oldValue, value));
+    }
+
+    public void setValueSilently(int value) {
+        this.value = value;
     }
 
     @Override

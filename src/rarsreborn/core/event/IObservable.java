@@ -1,4 +1,4 @@
-package rarsreborn.core.events;
+package rarsreborn.core.event;
 
 public interface IObservable {
     <TEvent> void addObserver(Class<TEvent> eventClass, IObserver<TEvent> observer);

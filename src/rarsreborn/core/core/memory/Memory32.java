@@ -1,5 +1,8 @@
 package rarsreborn.core.core.memory;
 
+import rarsreborn.core.event.IObserver;
+import rarsreborn.core.event.ObservableImplementation;
+
 import java.util.List;
 
 public class Memory32 implements IMemory {
@@ -19,7 +22,9 @@ public class Memory32 implements IMemory {
     public static final int INITIAL_STACK_POINTER = STACK_SECTION_START + STACK_SECTION_SIZE - 4;
 
     protected MemoryBlock dataSection, textSection, stackSection, heapSection, other;
-    private List<MemoryBlock> sections;
+    protected List<MemoryBlock> sections;
+
+    protected final ObservableImplementation observableImplementation = new ObservableImplementation();
 
     public Memory32() {
         reset();
@@ -51,6 +56,13 @@ public class Memory32 implements IMemory {
 
     @Override
     public void setByte(long address, byte value) {
+        byte oldValue = getSection(address).getByte(address);
+        setByteSilently(address, value);
+        notifyObservers(new MemoryChangeEvent(address, new byte[] {oldValue}, new byte[] {value}));
+    }
+
+    @Override
+    public void setByteSilently(long address, byte value) {
         getSection(address).setByte(address, value);
     }
 
@@ -61,6 +73,14 @@ public class Memory32 implements IMemory {
 
     @Override
     public void setMultiple(long address, long value, int size) {
+        MemoryBlock section = getSection(address);
+        byte[] oldValue = section.readBytes(address, size);
+        setMultipleSilently(address, value, size);
+        notifyObservers(new MemoryChangeEvent(address, oldValue, section.readBytes(address, size)));
+    }
+
+    @Override
+    public void setMultipleSilently(long address, long value, int size) {
         getSection(address).setMultiple(address, value, size);
     }
 
@@ -71,6 +91,14 @@ public class Memory32 implements IMemory {
 
     @Override
     public void writeBytes(long address, byte[] bytes) {
+        MemoryBlock section = getSection(address);
+        byte[] oldBytes = section.readBytes(address, bytes.length);
+        writeBytesSilently(address, bytes);
+        notifyObservers(new MemoryChangeEvent(address, oldBytes, section.readBytes(address, bytes.length)));
+    }
+
+    @Override
+    public void writeBytesSilently(long address, byte[] bytes) {
         getSection(address).writeBytes(address, bytes);
     }
 
@@ -82,6 +110,21 @@ public class Memory32 implements IMemory {
     @Override
     public boolean isLittleEndian() {
         return true;
+    }
+
+    @Override
+    public <TEvent> void addObserver(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+        observableImplementation.addObserver(eventClass, observer);
+    }
+
+    @Override
+    public <TEvent> void removeObserver(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+        observableImplementation.removeObserver(eventClass, observer);
+    }
+
+    @Override
+    public <TEvent> void notifyObservers(TEvent event) {
+        observableImplementation.notifyObservers(event);
     }
 }
 

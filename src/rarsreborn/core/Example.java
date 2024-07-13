@@ -32,7 +32,7 @@ public class Example {
 
             String content = new Scanner(new File("src/rarsreborn/core/example.s")).useDelimiter("\\Z").next();
             simulator.compile(content);
-            simulator.run();
+            simulator.startWorkerAndRun();
 
             System.out.printf("t0: 0x%x\n", registers.getRegisterByName("t0").getValue());
             System.out.printf("t1: 0x%x\n", registers.getRegisterByName("t1").getValue());

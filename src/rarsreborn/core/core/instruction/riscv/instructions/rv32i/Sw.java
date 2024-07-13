@@ -11,7 +11,7 @@ import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
-public class Sw extends InstructionS{
+public class Sw extends InstructionS {
     public static final String NAME = "sw";
     public static final byte OPCODE = 0b0100011;
     public static final byte FUNCT3 = 0x2;
@@ -22,9 +22,11 @@ public class Sw extends InstructionS{
 
     public void exec(IRegisterFile<Register32> registers, IMemory memory) throws MemoryAccessException {
         try {
-                memory.setMultiple(registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12), 
+            memory.setMultiple(
+                registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
                 registers.getRegisterByNumber(rs2).getValue(), 
-                4);
+                4
+            );
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
@@ -51,13 +53,8 @@ public class Sw extends InstructionS{
             Register32 rs2 = castToRegister32(parseRegister(registers, split[1]));
             short imm = (short) truncateNegative(parseShort(split[2]), 12);
 
-            Sw instruction = new Sw(new InstructionSParams(
-                (byte) rs1.getNumber(),
-                (byte) rs2.getNumber(),
-                (short) imm
-            ));
             try {
-                return instruction;
+                return new Sw(new InstructionSParams((byte) rs1.getNumber(), (byte) rs2.getNumber(), imm));
             } catch (IllegalArgumentException e) {
                 throw new ImmediateTooLargeException(imm);
             }

@@ -23,8 +23,8 @@ public class Lbu extends InstructionI {
     public void exec(IRegisterFile<Register32> registers, IMemory memory) throws MemoryAccessException {
         try {
             registers.getRegisterByNumber(rd).setValue(
-                (byte) memory.getMultiple(
-                    Integer.toUnsignedLong(registers.getRegisterByNumber(rs1).getValue()) + asNegative(imm, 12),
+                (int) memory.getMultiple(
+                    registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
                     1
                 )
             );

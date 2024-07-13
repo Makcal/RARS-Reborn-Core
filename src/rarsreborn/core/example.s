@@ -6,7 +6,11 @@
     la t4, w
     lw t4, t4, 0
     jal x0, l
+    li t3, -2
 l:
+    la a0, t
+    li a1, 0
+    ecall
     li t0, 1
     li t1, 1
     beq t0, t1, skip

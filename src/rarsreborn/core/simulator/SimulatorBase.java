@@ -7,11 +7,14 @@ import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.IInstructionHandler;
 import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.program.IObjectFile;
+import rarsreborn.core.exceptions.NoBackStepsLeftException;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.linking.LinkingException;
+import rarsreborn.core.simulator.backstepper.BackStepperStub;
+import rarsreborn.core.simulator.backstepper.IBackStepper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,15 +25,30 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
     protected final IBufferedDecoder decoder;
     protected final Map<Class<? extends IInstruction>, IInstructionHandler<?>> handlers
             = new HashMap<>();
+    protected final IBackStepper backStepper;
 
     protected IExecutable executable;
 
     protected final Worker worker = new Worker();
 
-    public SimulatorBase(ICompiler compiler, ILinker linker, IBufferedDecoder decoder) {
+    public SimulatorBase(
+        ICompiler compiler,
+        ILinker linker,
+        IBufferedDecoder decoder,
+        IBackStepper backStepper
+    ) {
         this.compiler = compiler;
         this.linker = linker;
         this.decoder = decoder;
+        this.backStepper = backStepper == null ? new BackStepperStub() : backStepper;
+    }
+
+    public boolean isPaused() {
+        return worker.isPaused();
+    }
+
+    public boolean isRunning() {
+        return worker.isRunning();
     }
 
     @Override
@@ -51,7 +69,6 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
 
     protected void onStartSetup() {
         reset();
-        loadProgram(executable);
     }
 
     /**
@@ -93,9 +110,17 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
         worker.stop();
     }
 
+    public void stepBack() throws NoBackStepsLeftException, ExecutionException {
+        if (!worker.isPaused()) {
+            throw new RuntimeException("Wait until the worker is paused");
+        }
+        backStepper.revert();
+    }
+
     protected abstract IInstruction getNextInstruction() throws ExecutionException;
 
     protected void executeOneInstruction() throws ExecutionException {
+        backStepper.addStep();
         executeInstruction(getNextInstruction());
     }
 
@@ -132,7 +157,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
             synchronized (lock) {
                 if (isRunning) return;
                 isRunning = true;
-                instructionsToRun = -1;
+                instructionsToRun = runImmediately ? -1 : 0;
                 isPaused = !runImmediately;
             }
             onStartSetup();
@@ -195,6 +220,18 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
                 isRunning = false;
                 isPaused = true;
                 instructionsToRun = 0;
+            }
+        }
+
+        public boolean isPaused() {
+            synchronized (lock) {
+                return isPaused;
+            }
+        }
+
+        public boolean isRunning() {
+            synchronized (lock) {
+                return isRunning;
             }
         }
     }

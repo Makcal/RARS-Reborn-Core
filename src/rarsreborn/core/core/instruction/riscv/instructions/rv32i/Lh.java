@@ -25,7 +25,7 @@ public class Lh extends InstructionI {
             registers.getRegisterByNumber(rd).setValue(
                 (short) memory.getMultiple(
                     registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
-                    4
+                    2
                 )
             );
         } catch (UnknownRegisterException e) {

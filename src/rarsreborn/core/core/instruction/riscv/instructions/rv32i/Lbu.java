@@ -25,7 +25,7 @@ public class Lbu extends InstructionI {
             registers.getRegisterByNumber(rd).setValue(
                 (byte) memory.getMultiple(
                     Integer.toUnsignedLong(registers.getRegisterByNumber(rs1).getValue()) + asNegative(imm, 12),
-                    4
+                    1
                 )
             );
         } catch (UnknownRegisterException e) {

@@ -13,7 +13,7 @@ public abstract class InstructionB extends RiscVInstruction {
         checkFieldSize(data.funct3, 3);
         checkFieldSize(data.rs1, 5);
         checkFieldSize(data.rs2, 5);
-        checkFieldSize(data.imm, 12, 1);
+        checkFieldSize(data.imm, 12);
         this.funct3 = data.funct3;
         this.rs1 = data.rs1;
         this.rs2 = data.rs2;

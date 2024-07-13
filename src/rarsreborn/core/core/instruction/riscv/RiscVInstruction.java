@@ -15,23 +15,9 @@ public abstract class RiscVInstruction implements IInstruction {
         return (field & (-1 << bitSize)) != 0;
     }
 
-    protected static boolean fieldOutOfBounds(int field, int bitSize, int offset) {
-        return (field & (-1 << (bitSize + offset))) != 0 && bitSize + offset < 32
-            || (field & ((1 << offset) - 1)) != 0;
-    }
-
     protected static void checkFieldSize(int field, int bitSize) {
         if (fieldOutOfBounds(field, bitSize)) {
             throw new IllegalArgumentException("Field 0x%x is too large (%d bits max)".formatted(field, bitSize));
-        }
-    }
-
-    protected static void checkFieldSize(int field, int bitSize, int offset) {
-        if (fieldOutOfBounds(field, bitSize, offset)) {
-            throw new IllegalArgumentException(
-                "Field 0x%x is too large (%d bits max) or ".formatted(field, bitSize) +
-                "contains non-zero bits in the lower %d bits".formatted(offset)
-            );
         }
     }
 

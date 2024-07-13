@@ -26,7 +26,7 @@ public class Jalr extends InstructionI implements ILinkableInstruction {
     protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
         try {
             registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + 4);
-            registerFile.getRegisterByNumber(rs1).setValue(programCounter.getValue() + asNegative(imm, 12));
+            programCounter.setValue(registerFile.getRegisterByNumber(rs1).getValue() + (asNegative(imm, 12) >> 1 << 1));
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }

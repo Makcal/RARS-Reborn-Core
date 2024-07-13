@@ -21,7 +21,7 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
 
     protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
         try {
-            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + imm);
+            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + (asNegative(imm, 12) << 12));
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
@@ -32,7 +32,7 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
         if ((offset & 0b1000_0000_0000) != 0) {
             offset += 0b1_0000_0000_0000;
         }
-        imm = (int) (offset ^ (offset & 0b1111_1111_1111));
+        imm = (int) (offset >> 12);
     }
 
     @Override

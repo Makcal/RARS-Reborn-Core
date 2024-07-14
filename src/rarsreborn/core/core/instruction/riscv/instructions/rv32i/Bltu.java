@@ -12,7 +12,6 @@ import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
-import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 public class Bltu extends InstructionB implements ILinkableInstruction {
     public static final String NAME = "bltu";
@@ -28,7 +27,7 @@ public class Bltu extends InstructionB implements ILinkableInstruction {
         try {
             if (Integer.toUnsignedLong(registers.getRegisterByNumber(rs1).getValue()) <
                 Integer.toUnsignedLong(registers.getRegisterByNumber(rs2).getValue())) {
-                programCounter.setValue(programCounter.getValue() + asNegative(imm, 13));
+                programCounter.setValue(programCounter.getValue() + (asNegative(imm, 12) << 1));
             }
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
@@ -37,9 +36,9 @@ public class Bltu extends InstructionB implements ILinkableInstruction {
 
     @Override
     public void link(long offset) throws LinkingException {
-        offset ^= offset & 0b1;
+        offset >>= 1;
         try {
-            imm = (short) truncateNegative(offset, 13);
+            imm = (short) truncateNegative(offset, 12);
         } catch (ImmediateTooLargeException e) {
             throw new TargetAddressTooLargeException(offset);
         }
@@ -57,7 +56,7 @@ public class Bltu extends InstructionB implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Bltu> {
         @Override
-        public void handle(Bltu instruction) throws MemoryAccessException {
+        public void handle(Bltu instruction) {
             instruction.exec(registerFile, programCounter);
         }
     }

@@ -8,7 +8,9 @@ import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
+import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
 public class Auipc extends InstructionU implements ILinkableInstruction {
     public static final String NAME = "auipc";
@@ -21,18 +23,22 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
 
     protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
         try {
-            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + imm);
+            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + (asNegative(imm, 20) << 12));
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public void link(long offset) {
+    public void link(long offset) throws TargetAddressTooLargeException {
         if ((offset & 0b1000_0000_0000) != 0) {
             offset += 0b1_0000_0000_0000;
         }
-        imm = (int) (offset ^ (offset & 0b1111_1111_1111));
+        try {
+            imm = (int) truncateNegative(offset >> 12, 20);
+        } catch (ImmediateTooLargeException e) {
+            throw new TargetAddressTooLargeException(offset);
+        }
     }
 
     @Override

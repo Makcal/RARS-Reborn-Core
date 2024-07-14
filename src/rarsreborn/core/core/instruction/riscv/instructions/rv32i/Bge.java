@@ -12,7 +12,6 @@ import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
-import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 public class Bge extends InstructionB implements ILinkableInstruction {
     public static final String NAME = "bge";
@@ -27,7 +26,7 @@ public class Bge extends InstructionB implements ILinkableInstruction {
     public void exec(IRegisterFile<Register32> registers, Register32 programCounter) {
         try {
             if (registers.getRegisterByNumber(rs1).getValue() >= registers.getRegisterByNumber(rs2).getValue()) {
-                programCounter.setValue(programCounter.getValue() + asNegative(imm, 13));
+                programCounter.setValue(programCounter.getValue() + (asNegative(imm, 12) << 1));
             }
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
@@ -36,9 +35,9 @@ public class Bge extends InstructionB implements ILinkableInstruction {
 
     @Override
     public void link(long offset) throws LinkingException {
-        offset ^= offset & 0b1;
+        offset >>= 1;
         try {
-            imm = (short) truncateNegative(offset, 13);
+            imm = (short) truncateNegative(offset, 12);
         } catch (ImmediateTooLargeException e) {
             throw new TargetAddressTooLargeException(offset);
         }
@@ -56,7 +55,7 @@ public class Bge extends InstructionB implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Bge> {
         @Override
-        public void handle(Bge instruction) throws MemoryAccessException {
+        public void handle(Bge instruction) {
             instruction.exec(registerFile, programCounter);
         }
     }

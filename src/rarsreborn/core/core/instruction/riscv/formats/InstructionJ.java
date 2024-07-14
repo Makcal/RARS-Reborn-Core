@@ -9,7 +9,7 @@ public abstract class InstructionJ extends RiscVInstruction {
     public InstructionJ(InstructionJData data) {
         super(data.opcode);
         checkFieldSize(data.rd, 5);
-        checkFieldSize(data.imm, 20, 1);
+        checkFieldSize(data.imm, 20);
         this.rd = data.rd;
         this.imm = data.imm;
     }

@@ -21,8 +21,8 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
 
     protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
         try {
-            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue());
-            programCounter.setValue(programCounter.getValue() + asNegative(imm, 21));
+            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + 4);
+            programCounter.setValue(programCounter.getValue() + (asNegative(imm, 20) << 1));
         } catch (UnknownRegisterException e) {
             throw new RuntimeException(e);
         }
@@ -30,9 +30,9 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
 
     @Override
     public void link(long offset) throws TargetAddressTooLargeException {
-        offset ^= offset & 0b1;
+        offset >>= 1;
         try {
-            imm = (int) truncateNegative(offset, 21);
+            imm = (int) truncateNegative(offset, 20);
         } catch (ImmediateTooLargeException e) {
             throw new TargetAddressTooLargeException(offset);
         }

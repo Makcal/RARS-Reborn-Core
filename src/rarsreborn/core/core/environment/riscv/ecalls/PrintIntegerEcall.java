@@ -1,6 +1,6 @@
 package rarsreborn.core.core.environment.riscv.ecalls;
 
-import rarsreborn.core.core.environment.ConsolePrintIntegerEvent;
+import rarsreborn.core.core.environment.events.ConsolePrintIntegerEvent;
 import rarsreborn.core.core.environment.riscv.RiscVSystemCall;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 

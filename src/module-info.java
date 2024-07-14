@@ -26,4 +26,5 @@ module rarsreborn.core {
     exports rarsreborn.core.exceptions.compilation;
     exports rarsreborn.core.compilation.compiler.riscv;
     exports rarsreborn.core.compilation.decoder;
+    exports rarsreborn.core.core.environment.events;
 }

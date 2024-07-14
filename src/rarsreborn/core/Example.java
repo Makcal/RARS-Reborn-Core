@@ -1,8 +1,8 @@
 package rarsreborn.core;
 
-import rarsreborn.core.core.environment.ConsolePrintCharEvent;
-import rarsreborn.core.core.environment.ConsolePrintIntegerEvent;
-import rarsreborn.core.core.environment.ConsolePrintStringEvent;
+import rarsreborn.core.core.environment.events.ConsolePrintCharEvent;
+import rarsreborn.core.core.environment.events.ConsolePrintIntegerEvent;
+import rarsreborn.core.core.environment.events.ConsolePrintStringEvent;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;

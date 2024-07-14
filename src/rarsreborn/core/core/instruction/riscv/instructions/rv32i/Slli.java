@@ -7,7 +7,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public class Slli extends InstructionI {
     public static final String NAME = "slli";
@@ -18,14 +18,10 @@ public class Slli extends InstructionI {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) {
-        try {
-            registerFile.getRegisterByNumber(rd).setValue(
-                registerFile.getRegisterByNumber(rs1).getValue() << (imm & 0b1_1111)
-            );
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+        registerFile.getRegisterByNumber(rd).setValue(
+            registerFile.getRegisterByNumber(rs1).getValue() << (imm & 0b1_1111)
+        );
     }
 
     @Override
@@ -35,7 +31,7 @@ public class Slli extends InstructionI {
 
     public static class Handler extends RiscV32InstructionHandler<Slli> {
         @Override
-        public void handle(Slli instruction) {
+        public void handle(Slli instruction) throws IllegalRegisterException {
             instruction.exec(registerFile);
         }
     }

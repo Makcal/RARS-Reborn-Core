@@ -8,6 +8,7 @@ import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.*;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
 public class Jal extends InstructionJ implements ILinkableInstruction {
@@ -19,13 +20,9 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
         super(new InstructionJData(OPCODE, data.rd(), data.imm()));
     }
 
-    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
-        try {
-            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue());
-            programCounter.setValue(programCounter.getValue() + asNegative(imm, 21));
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    public void exec(IRegisterFile<Register32> registers, Register32 programCounter) throws IllegalRegisterException {
+        registers.getRegisterByNumber(rd).setValue(programCounter.getValue() + 4);
+        programCounter.setValue(programCounter.getValue() + asNegative(imm, 21));
     }
 
     @Override
@@ -50,7 +47,7 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Jal> {
         @Override
-        public void handle(Jal instruction) {
+        public void handle(Jal instruction) throws IllegalRegisterException {
             instruction.exec(registerFile, programCounter);
         }
     }

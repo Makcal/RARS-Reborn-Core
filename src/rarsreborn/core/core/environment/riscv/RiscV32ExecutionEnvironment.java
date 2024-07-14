@@ -8,7 +8,6 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.event.IObservable;
 import rarsreborn.core.event.IObserver;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.execution.UnknownSystemCallException;
 
@@ -51,11 +50,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
     @Override
     public void call() throws ExecutionException {
         int number;
-        try {
-            number = registers.getRegisterByNumber(17).getValue(); // a7
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+                number = registers.getRegisterByNumber(17).getValue(); // a7
         ISystemCall handler = handlers.get(number);
         if (handler == null) {
             throw new UnknownSystemCallException(number);

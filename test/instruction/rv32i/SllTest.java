@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Sll;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ class SllTest {
     }
 
     @Test
-    void sll() throws UnknownRegisterException {
+    void sll() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(0b110);
         register32File.getRegisterByNumber(2).setValue(2);
         handler.handle(sll);

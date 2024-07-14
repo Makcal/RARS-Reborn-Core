@@ -9,7 +9,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public class Addi extends InstructionI implements ILinkableInstruction {
     public static final String NAME = "addi";
@@ -20,14 +20,10 @@ public class Addi extends InstructionI implements ILinkableInstruction {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) {
-        try {
-            registerFile.getRegisterByNumber(rd).setValue(
-                registerFile.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12)
-            );
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+        registerFile.getRegisterByNumber(rd).setValue(
+            registerFile.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12)
+        );
     }
 
     @Override
@@ -47,7 +43,7 @@ public class Addi extends InstructionI implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Addi> {
         @Override
-        public void handle(Addi instruction) {
+        public void handle(Addi instruction) throws IllegalRegisterException {
             instruction.exec(registerFile);
         }
     }

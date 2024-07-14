@@ -4,7 +4,7 @@ import rarsreborn.core.core.environment.ISystemCall;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public abstract class RiscVSystemCall implements ISystemCall {
     protected RiscV32ExecutionEnvironment executionEnvironment;
@@ -44,11 +44,7 @@ public abstract class RiscVSystemCall implements ISystemCall {
         this.programCounter = programCounter;
     }
 
-    protected int getRegisterValue(int number) {
-        try {
-            return registers.getRegisterByNumber(number).getValue();
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    protected int getRegisterValue(int number) throws IllegalRegisterException {
+        return registers.getRegisterByNumber(number).getValue();
     }
 }

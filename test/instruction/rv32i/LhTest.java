@@ -9,7 +9,7 @@ import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Lh;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +33,7 @@ class LhTest {
     }
 
     @Test
-    void lh() throws UnknownRegisterException, MemoryAccessException {
+    void lh() throws MemoryAccessException, IllegalRegisterException {
         lh = new Lh(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 0));
         register32File.getRegisterByNumber(1).setValue(Memory32.DATA_SECTION_START);
         memory.setMultiple(Memory32.DATA_SECTION_START, 258, 2);
@@ -42,7 +42,7 @@ class LhTest {
     }
 
     @Test
-    void lhTruncateLittleEndian() throws UnknownRegisterException, MemoryAccessException {
+    void lhTruncateLittleEndian() throws MemoryAccessException, IllegalRegisterException {
         lh = new Lh(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 0));
         register32File.getRegisterByNumber(1).setValue(Memory32.DATA_SECTION_START);
         memory.setMultiple(Memory32.DATA_SECTION_START, 259 | (1 << 24), 4);
@@ -51,7 +51,7 @@ class LhTest {
     }
 
     @Test
-    void lhNegativeOffset() throws UnknownRegisterException, ImmediateTooLargeException, MemoryAccessException {
+    void lhNegativeOffset() throws ImmediateTooLargeException, MemoryAccessException, IllegalRegisterException {
         lh = new Lh(new InstructionI.InstructionIParams(
             (byte) 0,
             (byte) 1,

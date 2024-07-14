@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32m.Div;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ class DivTest {
     }
 
     @Test
-    void division() throws UnknownRegisterException {
+    void division() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(10);
         register32File.getRegisterByNumber(2).setValue(2);
         handler.handle(div);
@@ -36,7 +36,7 @@ class DivTest {
     }
 
     @Test
-    void divisionNegative() throws UnknownRegisterException {
+    void divisionNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(-12);
         register32File.getRegisterByNumber(2).setValue(3);
         handler.handle(div);
@@ -44,7 +44,7 @@ class DivTest {
     }
 
     @Test
-    void divisionWithRemainder() throws UnknownRegisterException {
+    void divisionWithRemainder() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(14);
         register32File.getRegisterByNumber(2).setValue(5);
         handler.handle(div);

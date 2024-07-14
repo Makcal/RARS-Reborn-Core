@@ -7,7 +7,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionB;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Bne;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +36,7 @@ class BneTest {
     }
 
     @Test
-    void bneSuccessful() throws UnknownRegisterException {
+    void bneSuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(bne);
@@ -44,7 +44,7 @@ class BneTest {
     }
 
     @Test
-    void bneUnsuccessful() throws UnknownRegisterException {
+    void bneUnsuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(bne);

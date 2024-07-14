@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Slli;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,7 +26,7 @@ class SlliTest {
     }
 
     @Test
-    void sll() throws UnknownRegisterException {
+    void sll() throws IllegalRegisterException {
         Slli slli = new Slli(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 2));
         register32File.getRegisterByNumber(1).setValue(0b1010);
         handler.handle(slli);

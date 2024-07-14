@@ -9,7 +9,7 @@ import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Lbu;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +33,7 @@ class LbuTest {
     }
 
     @Test
-    void lbu() throws UnknownRegisterException, MemoryAccessException {
+    void lbu() throws MemoryAccessException, IllegalRegisterException {
         lbu = new Lbu(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 0));
         register32File.getRegisterByNumber(1).setValue(Memory32.DATA_SECTION_START);
         memory.setMultiple(Memory32.DATA_SECTION_START, 2, 1);
@@ -42,7 +42,7 @@ class LbuTest {
     }
 
     @Test
-    void lbuTruncateLittleEndian() throws UnknownRegisterException, MemoryAccessException {
+    void lbuTruncateLittleEndian() throws MemoryAccessException, IllegalRegisterException {
         lbu = new Lbu(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 0));
         register32File.getRegisterByNumber(1).setValue(Memory32.DATA_SECTION_START);
         memory.setMultiple(Memory32.DATA_SECTION_START, 258 | (1 << 24), 4);
@@ -51,7 +51,7 @@ class LbuTest {
     }
 
     @Test
-    void lbuNegativeOffset() throws UnknownRegisterException, ImmediateTooLargeException, MemoryAccessException {
+    void lbuNegativeOffset() throws ImmediateTooLargeException, MemoryAccessException, IllegalRegisterException {
         lbu = new Lbu(new InstructionI.InstructionIParams(
             (byte) 0,
             (byte) 1,
@@ -64,7 +64,7 @@ class LbuTest {
     }
 
     @Test
-    void lbuNegative() throws UnknownRegisterException, MemoryAccessException {
+    void lbuNegative() throws MemoryAccessException, IllegalRegisterException {
         lbu = new Lbu(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 0));
         register32File.getRegisterByNumber(1).setValue(Memory32.DATA_SECTION_START);
         memory.setMultiple(Memory32.DATA_SECTION_START, -1, 1);

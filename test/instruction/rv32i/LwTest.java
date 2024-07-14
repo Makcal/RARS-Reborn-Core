@@ -9,7 +9,7 @@ import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Lw;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +33,7 @@ class LwTest {
     }
 
     @Test
-    void lw() throws UnknownRegisterException, MemoryAccessException {
+    void lw() throws MemoryAccessException, IllegalRegisterException {
         lw = new Lw(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 0));
         register32File.getRegisterByNumber(1).setValue(Memory32.DATA_SECTION_START);
         memory.setMultiple(Memory32.DATA_SECTION_START, 257, 4);
@@ -42,7 +42,7 @@ class LwTest {
     }
 
     @Test
-    void lwNegative() throws UnknownRegisterException, ImmediateTooLargeException, MemoryAccessException {
+    void lwNegative() throws ImmediateTooLargeException, MemoryAccessException, IllegalRegisterException {
         lw = new Lw(new InstructionI.InstructionIParams(
             (byte) 0,
             (byte) 1,

@@ -1,6 +1,6 @@
 package rarsreborn.core.core.register;
 
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,21 +25,21 @@ public class Register32File implements IRegisterFile<Register32> {
     }
 
     @Override
-    public Register32 getRegisterByName(String name) throws UnknownRegisterException {
+    public Register32 getRegisterByName(String name) throws IllegalRegisterException {
         for (Register32 register : registers) {
             if (register.getName().equals(name)) {
                 return register;
             }
         }
-        throw new UnknownRegisterException("Register not found: " + name);
+        throw new IllegalRegisterException(name);
     }
 
     @Override
-    public Register32 getRegisterByNumber(int number) throws UnknownRegisterException {
+    public Register32 getRegisterByNumber(int number) throws IllegalRegisterException {
         try {
             return registers.get(number);
         } catch (IndexOutOfBoundsException e) {
-            throw new UnknownRegisterException(String.valueOf(number));
+            throw new IllegalRegisterException(number);
         }
     }
 }

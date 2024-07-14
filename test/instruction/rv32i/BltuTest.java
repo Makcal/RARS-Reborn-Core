@@ -7,7 +7,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionB;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Bltu;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +36,7 @@ class BltuTest {
     }
 
     @Test
-    void bltuSuccessful() throws UnknownRegisterException {
+    void bltuSuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(bltu);
@@ -44,7 +44,7 @@ class BltuTest {
     }
 
     @Test
-    void bltuUnsuccessfulEqual() throws UnknownRegisterException {
+    void bltuUnsuccessfulEqual() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(bltu);
@@ -52,7 +52,7 @@ class BltuTest {
     }
 
     @Test
-    void bltuUnsuccessful() throws UnknownRegisterException {
+    void bltuUnsuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(2);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(bltu);
@@ -60,7 +60,7 @@ class BltuTest {
     }
 
     @Test
-    void bltuSuccessfulNegative() throws UnknownRegisterException {
+    void bltuSuccessfulNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(2);
         register32File.getRegisterByNumber(1).setValue(-1);
         handler.handle(bltu);
@@ -68,7 +68,7 @@ class BltuTest {
     }
 
     @Test
-    void bltuUnsuccessfulNegative() throws UnknownRegisterException {
+    void bltuUnsuccessfulNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(-1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(bltu);

@@ -7,7 +7,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionB;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Beq;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +36,7 @@ class BeqTest {
     }
 
     @Test
-    void beqSuccessful() throws UnknownRegisterException {
+    void beqSuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(beq);
@@ -44,7 +44,7 @@ class BeqTest {
     }
 
     @Test
-    void beqUnsuccessful() throws UnknownRegisterException {
+    void beqUnsuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(beq);

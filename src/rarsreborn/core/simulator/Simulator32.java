@@ -14,9 +14,9 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.event.IObserver;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 import rarsreborn.core.simulator.backstepper.IBackStepper;
 import rarsreborn.core.simulator.backstepper.MemoryChange;
@@ -35,7 +35,7 @@ public class Simulator32 extends SimulatorBase {
     protected long lastPcPosition;
 
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
-    protected HashMap<Register32, IObserver<Register32ChangeEvent>> registerBackStepperObservers = new HashMap<>();
+    protected final HashMap<Register32, IObserver<Register32ChangeEvent>> registerBackStepperObservers = new HashMap<>();
 
     public Simulator32(
         ICompiler compiler,
@@ -98,7 +98,7 @@ public class Simulator32 extends SimulatorBase {
         programCounter.setValue(Memory32.TEXT_SECTION_START);
         try {
             registerFile.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);
-        } catch (UnknownRegisterException e) {
+        } catch (IllegalRegisterException e) {
             throw new RuntimeException(e);
         }
         loadProgram(executable);

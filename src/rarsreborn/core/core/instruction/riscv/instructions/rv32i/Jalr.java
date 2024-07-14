@@ -9,7 +9,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
@@ -23,13 +23,9 @@ public class Jalr extends InstructionI implements ILinkableInstruction {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT3, data.rs1(), data.imm()));
     }
 
-    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
-        try {
-            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + 4);
-            registerFile.getRegisterByNumber(rs1).setValue(programCounter.getValue() + asNegative(imm, 12));
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) throws IllegalRegisterException {
+        registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + 4);
+        programCounter.setValue(registerFile.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12));
     }
 
     @Override
@@ -54,7 +50,7 @@ public class Jalr extends InstructionI implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Jalr> {
         @Override
-        public void handle(Jalr instruction) {
+        public void handle(Jalr instruction) throws IllegalRegisterException {
             instruction.exec(registerFile, programCounter);
         }
     }

@@ -8,7 +8,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Addi;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,7 +29,7 @@ class AddiTest {
     }
 
     @Test
-    void addition() throws UnknownRegisterException {
+    void addition() throws IllegalRegisterException {
         addi = new Addi(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 10));
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(addi);
@@ -37,7 +37,7 @@ class AddiTest {
     }
 
     @Test
-    void additionNegative() throws UnknownRegisterException, ImmediateTooLargeException {
+    void additionNegative() throws ImmediateTooLargeException, IllegalRegisterException {
         addi = new Addi(new InstructionI.InstructionIParams(
             (byte) 0,
             (byte) 1,

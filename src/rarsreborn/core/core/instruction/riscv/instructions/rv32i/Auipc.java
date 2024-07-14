@@ -8,7 +8,7 @@ import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public class Auipc extends InstructionU implements ILinkableInstruction {
     public static final String NAME = "auipc";
@@ -19,12 +19,8 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
         super(new InstructionUData(OPCODE, data.rd(), data.imm()));
     }
 
-    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) {
-        try {
-            registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + imm);
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) throws IllegalRegisterException {
+        registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + imm);
     }
 
     @Override
@@ -47,7 +43,7 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Auipc> {
         @Override
-        public void handle(Auipc instruction) {
+        public void handle(Auipc instruction) throws IllegalRegisterException {
             instruction.exec(registerFile, programCounter);
         }
     }

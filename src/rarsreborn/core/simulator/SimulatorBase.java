@@ -7,6 +7,9 @@ import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.IInstructionHandler;
 import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.program.IObjectFile;
+import rarsreborn.core.event.IObservable;
+import rarsreborn.core.event.IObserver;
+import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.exceptions.NoBackStepsLeftException;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
@@ -19,7 +22,7 @@ import rarsreborn.core.simulator.backstepper.IBackStepper;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class SimulatorBase implements IMultiFileSimulator {
+public abstract class SimulatorBase implements IMultiFileSimulator, IObservable {
     protected final ICompiler compiler;
     protected final ILinker linker;
     protected final IBufferedDecoder decoder;
@@ -30,6 +33,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
     protected IExecutable executable;
 
     protected final Worker worker = new Worker();
+    protected final IObservable observableImplementation = new ObservableImplementation();
 
     public SimulatorBase(
         ICompiler compiler,
@@ -122,6 +126,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
     protected void executeOneInstruction() throws ExecutionException {
         backStepper.addStep();
         executeInstruction(getNextInstruction());
+        notifyObservers(new InstructionExecutedEvent());
     }
 
     protected void executeInstruction(IInstruction instruction) throws ExecutionException {
@@ -143,6 +148,21 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
         handlers.put(instructionClass, handler);
     }
 
+    @Override
+    public <TEvent> void notifyObservers(TEvent event) {
+        observableImplementation.notifyObservers(event);
+    }
+
+    @Override
+    public <TEvent> void removeObserver(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+        observableImplementation.removeObserver(eventClass, observer);
+    }
+
+    @Override
+    public <TEvent> void addObserver(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+        observableImplementation.addObserver(eventClass, observer);
+    }
+
     protected class Worker {
         protected final Object lock = new Object();
         protected boolean isRunning = false;
@@ -161,9 +181,9 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
                 isPaused = !runImmediately;
             }
             onStartSetup();
-            while (isRunning) {
+            while (isRunning()) {
                 synchronized (lock) {
-                    while (isPaused || instructionsToRun == 0) {
+                    while (isPaused()) {
                         try {
                             lock.wait();
                         } catch (InterruptedException e) {
@@ -181,12 +201,11 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
                     }
                 } catch (EndOfExecutionException ignored) {
                     stop();
-                    return;
                 }
             }
 
             synchronized (lock) {
-                isPaused = true;
+                stop();
             }
         }
 
@@ -194,6 +213,16 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
             synchronized (lock) {
                 isPaused = true;
             }
+            notifyObservers(new PauseEvent());
+        }
+
+        public void stop() {
+            synchronized (lock) {
+                isRunning = false;
+                isPaused = true;
+                instructionsToRun = 0;
+            }
+            notifyObservers(new StopEvent());
         }
 
         public void run() {
@@ -215,17 +244,9 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
             }
         }
 
-        public void stop() {
-            synchronized (lock) {
-                isRunning = false;
-                isPaused = true;
-                instructionsToRun = 0;
-            }
-        }
-
         public boolean isPaused() {
             synchronized (lock) {
-                return isPaused;
+                return isPaused || instructionsToRun == 0;
             }
         }
 

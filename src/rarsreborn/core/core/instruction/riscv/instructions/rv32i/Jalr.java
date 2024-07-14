@@ -1,23 +1,17 @@
 package rarsreborn.core.core.instruction.riscv.instructions.rv32i;
 
 import rarsreborn.core.compilation.compiler.riscv.InstructionRegexParserRegisterBase;
-import rarsreborn.core.core.instruction.ILinkableInstruction;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
-import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
-import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
-import rarsreborn.core.exceptions.linking.LinkingException;
-import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
-public class Jalr extends InstructionI implements ILinkableInstruction {
+public class Jalr extends InstructionI {
     public static final String NAME = "jalr";
     public static final byte OPCODE = 0b1100111;
     public static final byte FUNCT3 = 0x0;
-    protected LinkRequest linkRequest;
 
     public Jalr(InstructionIParams data) {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT3, data.rs1(), data.imm()));
@@ -29,23 +23,8 @@ public class Jalr extends InstructionI implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long offset) throws LinkingException {
-        offset ^= offset & 0b1;
-        try {
-            imm = (short) truncateNegative(offset, 12);
-        } catch (ImmediateTooLargeException e) {
-            throw new TargetAddressTooLargeException(offset);
-        }
-    }
-
-    @Override
     public String getName() {
         return NAME;
-    }
-
-    @Override
-    public LinkRequest getLinkRequest() {
-        return linkRequest;
     }
 
     public static class Handler extends RiscV32InstructionHandler<Jalr> {
@@ -62,15 +41,13 @@ public class Jalr extends InstructionI implements ILinkableInstruction {
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
             Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
-            String label = split[2];
+            short imm = parseShort(split[2]);
 
-            Jalr instruction = new Jalr(new InstructionIParams(
+            return new Jalr(new InstructionIParams(
                 (byte) rd.getNumber(),
                 (byte) rs1.getNumber(),
-                (short) 0
+                imm
             ));
-            instruction.linkRequest = new LinkRequest(label);
-            return instruction;
         }
     }
 }

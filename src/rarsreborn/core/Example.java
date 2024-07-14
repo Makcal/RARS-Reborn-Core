@@ -1,6 +1,7 @@
 package rarsreborn.core;
 
-import rarsreborn.core.core.environment.ConsolePrintEvent;
+import rarsreborn.core.core.environment.ConsolePrintIntegerEvent;
+import rarsreborn.core.core.environment.ConsolePrintStringEvent;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
@@ -10,6 +11,7 @@ import rarsreborn.core.simulator.Simulator32;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Example {
@@ -17,8 +19,12 @@ public class Example {
         try {
             Simulator32 simulator = Presets.getClassicalRiscVSimulator(new InputDevice());
             simulator.getExecutionEnvironment().addObserver(
-                ConsolePrintEvent.class,
-                consolePrintEvent -> System.out.print(consolePrintEvent.text())
+                ConsolePrintStringEvent.class,
+                event -> System.out.print(event.text())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerEvent.class,
+                event -> System.out.println(event.value())
             );
 
             Register32File registers = simulator.getRegisterFile();
@@ -91,7 +97,11 @@ public class Example {
 
         @Override
         public int requestInt() {
-            return scanner.nextInt();
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                return 0;
+            }
         }
     }
 }

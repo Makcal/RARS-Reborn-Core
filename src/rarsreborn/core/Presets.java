@@ -6,10 +6,7 @@ import rarsreborn.core.compilation.decoder.riscv.RiscVDecoder;
 import rarsreborn.core.compilation.linker.RiscVLinker;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
-import rarsreborn.core.core.environment.riscv.ecalls.ExitEcall;
-import rarsreborn.core.core.environment.riscv.ecalls.PrintStringEcall;
-import rarsreborn.core.core.environment.riscv.ecalls.ReadIntegerEcall;
-import rarsreborn.core.core.environment.riscv.ecalls.ReadStringEcall;
+import rarsreborn.core.core.environment.riscv.ecalls.*;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
@@ -134,6 +131,7 @@ public class Presets {
                 .setMemory(memory)
                 .setObservableImplementation(new ObservableImplementation())
                 .setConsoleReader(consoleReader)
+                .addHandler(1, new PrintIntegerEcall())
                 .addHandler(4, new PrintStringEcall())
                 .addHandler(5, new ReadIntegerEcall())
                 .addHandler(8, new ReadStringEcall())

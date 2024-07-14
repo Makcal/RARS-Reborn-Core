@@ -9,7 +9,6 @@
     li t3, -2
 l:
     la a0, t
-    li a1, 0
     li a7, 4
     ecall
     li t0, 1
@@ -19,14 +18,12 @@ l:
 
 skip:
     la a0, t
-    li a1, 0
+    li a7, 4
     ecall
 
-    la a0, h
-    li a1, 4
-    li a7, 8
+    li a7, 5
     ecall
-    li a7, 4
+    li a7, 1
     ecall
 
     li a7, 10

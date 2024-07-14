@@ -35,7 +35,7 @@ class AuipcTest {
 
     @Test
     void auipcNegative() throws UnknownRegisterException, ImmediateTooLargeException {
-        auipc = new Auipc(new InstructionU.InstructionUParams((byte) 0, (int) truncateNegative(-2, 12)));
+        auipc = new Auipc(new InstructionU.InstructionUParams((byte) 0, (int) truncateNegative(-2, 20)));
         handler.handle(auipc);
         assertEquals(0x400_000 - (2 << 12), register32File.getRegisterByNumber(0).getValue());
     }

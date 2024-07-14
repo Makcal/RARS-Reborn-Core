@@ -8,7 +8,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 public class Lbu extends InstructionI {
@@ -20,17 +20,14 @@ public class Lbu extends InstructionI {
         super(new InstructionIData(OPCODE, params.rd(), FUNCT3, params.rs1(), params.imm()));
     }
 
-    public void exec(IRegisterFile<Register32> registers, IMemory memory) throws MemoryAccessException {
-        try {
-            registers.getRegisterByNumber(rd).setValue(
-                (int) memory.getMultiple(
-                    registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
-                    1
-                )
-            );
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    public void exec(IRegisterFile<Register32> registers, IMemory memory)
+            throws MemoryAccessException, IllegalRegisterException {
+        registers.getRegisterByNumber(rd).setValue(
+            (int) memory.getMultiple(
+                registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
+                1
+            )
+        );
     }
 
     @Override
@@ -40,7 +37,7 @@ public class Lbu extends InstructionI {
 
     public static class Handler extends RiscV32InstructionHandler<Lbu> {
         @Override
-        public void handle(Lbu instruction) throws MemoryAccessException {
+        public void handle(Lbu instruction) throws MemoryAccessException, IllegalRegisterException {
             instruction.exec(registerFile, memory);
         }
     }

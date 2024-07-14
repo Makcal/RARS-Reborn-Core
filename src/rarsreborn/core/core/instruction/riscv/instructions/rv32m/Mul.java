@@ -6,6 +6,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.exceptions.compilation.*;
 import rarsreborn.core.core.register.Register32;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public class Mul extends InstructionR {
     public static final String NAME = "mul";
@@ -17,15 +18,11 @@ public class Mul extends InstructionR {
         super(new InstructionRData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.rs2(), FUNCT_7));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) {
-        try {
-            registerFile.getRegisterByNumber(rd).setValue(
-                registerFile.getRegisterByNumber(rs1).getValue()
-                * registerFile.getRegisterByNumber(rs2).getValue()
-            );
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+        registerFile.getRegisterByNumber(rd).setValue(
+            registerFile.getRegisterByNumber(rs1).getValue()
+            * registerFile.getRegisterByNumber(rs2).getValue()
+        );
     }
 
     @Override
@@ -35,7 +32,7 @@ public class Mul extends InstructionR {
 
     public static class Handler extends RiscV32InstructionHandler<Mul> {
         @Override
-        public void handle(Mul instruction) {
+        public void handle(Mul instruction) throws IllegalRegisterException {
             instruction.exec(registerFile);
         }
     }

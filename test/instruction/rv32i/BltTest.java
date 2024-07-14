@@ -7,7 +7,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionB;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Blt;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +36,7 @@ class BltTest {
     }
 
     @Test
-    void bltSuccessful() throws UnknownRegisterException {
+    void bltSuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(blt);
@@ -44,7 +44,7 @@ class BltTest {
     }
 
     @Test
-    void bltUnsuccessfulEqual() throws UnknownRegisterException {
+    void bltUnsuccessfulEqual() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(blt);
@@ -52,7 +52,7 @@ class BltTest {
     }
 
     @Test
-    void bltUnsuccessful() throws UnknownRegisterException {
+    void bltUnsuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(2);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(blt);
@@ -60,7 +60,7 @@ class BltTest {
     }
 
     @Test
-    void bltSuccessfulNegative() throws UnknownRegisterException {
+    void bltSuccessfulNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(-1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(blt);
@@ -68,7 +68,7 @@ class BltTest {
     }
 
     @Test
-    void bltUnsuccessfulNegative() throws UnknownRegisterException {
+    void bltUnsuccessfulNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(2);
         register32File.getRegisterByNumber(1).setValue(-1);
         handler.handle(blt);

@@ -8,7 +8,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 public class Sw extends InstructionS {
@@ -20,16 +20,13 @@ public class Sw extends InstructionS {
         super(new InstructionSData(OPCODE, params.imm(), FUNCT3, params.rs1(), params.rs2()));
     }
 
-    public void exec(IRegisterFile<Register32> registers, IMemory memory) throws MemoryAccessException {
-        try {
-            memory.setMultiple(
-                registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
-                registers.getRegisterByNumber(rs2).getValue(), 
-                4
-            );
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    public void exec(IRegisterFile<Register32> registers, IMemory memory)
+            throws MemoryAccessException, IllegalRegisterException {
+        memory.setMultiple(
+            registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
+            registers.getRegisterByNumber(rs2).getValue(),
+            4
+        );
     }
 
     @Override
@@ -39,7 +36,7 @@ public class Sw extends InstructionS {
 
     public static class Handler extends RiscV32InstructionHandler<Sw> {
         @Override
-        public void handle(Sw instruction) throws MemoryAccessException {
+        public void handle(Sw instruction) throws MemoryAccessException, IllegalRegisterException {
             instruction.exec(registerFile, memory);
         }
     }

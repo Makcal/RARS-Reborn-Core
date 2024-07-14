@@ -9,7 +9,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
@@ -23,13 +23,9 @@ public class Beq extends InstructionB implements ILinkableInstruction {
         super(new InstructionBData(OPCODE, params.imm(), FUNCT3, params.rs1(), params.rs2()));
     }
 
-    public void exec(IRegisterFile<Register32> registers, Register32 programCounter) {
-        try {
-            if (registers.getRegisterByNumber(rs1).getValue() == registers.getRegisterByNumber(rs2).getValue()) {
-                programCounter.setValue(programCounter.getValue() + asNegative(imm, 13));
-            }
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
+    public void exec(IRegisterFile<Register32> registers, Register32 programCounter) throws IllegalRegisterException {
+        if (registers.getRegisterByNumber(rs1).getValue() == registers.getRegisterByNumber(rs2).getValue()) {
+            programCounter.setValue(programCounter.getValue() + asNegative(imm, 13));
         }
     }
 
@@ -55,7 +51,7 @@ public class Beq extends InstructionB implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Beq> {
         @Override
-        public void handle(Beq instruction) {
+        public void handle(Beq instruction) throws IllegalRegisterException {
             instruction.exec(registerFile, programCounter);
         }
     }

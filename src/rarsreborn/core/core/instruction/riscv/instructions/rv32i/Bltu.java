@@ -9,7 +9,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
@@ -23,14 +23,10 @@ public class Bltu extends InstructionB implements ILinkableInstruction {
         super(new InstructionBData(OPCODE, params.imm(), FUNCT3, params.rs1(), params.rs2()));
     }
 
-    public void exec(IRegisterFile<Register32> registers, Register32 programCounter) {
-        try {
-            if (Integer.toUnsignedLong(registers.getRegisterByNumber(rs1).getValue()) <
-                Integer.toUnsignedLong(registers.getRegisterByNumber(rs2).getValue())) {
-                programCounter.setValue(programCounter.getValue() + asNegative(imm, 13));
-            }
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
+    public void exec(IRegisterFile<Register32> registers, Register32 programCounter) throws IllegalRegisterException {
+        if (Integer.toUnsignedLong(registers.getRegisterByNumber(rs1).getValue()) <
+            Integer.toUnsignedLong(registers.getRegisterByNumber(rs2).getValue())) {
+            programCounter.setValue(programCounter.getValue() + asNegative(imm, 13));
         }
     }
 
@@ -56,7 +52,7 @@ public class Bltu extends InstructionB implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Bltu> {
         @Override
-        public void handle(Bltu instruction) {
+        public void handle(Bltu instruction) throws IllegalRegisterException {
             instruction.exec(registerFile, programCounter);
         }
     }

@@ -7,7 +7,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionB;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Bgeu;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -36,7 +36,7 @@ class BgeuTest {
     }
 
     @Test
-    void bgeuSuccessful() throws UnknownRegisterException {
+    void bgeuSuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(2);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(bgeu);
@@ -44,7 +44,7 @@ class BgeuTest {
     }
 
     @Test
-    void bgeuSuccessfulEqual() throws UnknownRegisterException {
+    void bgeuSuccessfulEqual() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(1);
         handler.handle(bgeu);
@@ -52,7 +52,7 @@ class BgeuTest {
     }
 
     @Test
-    void bgeuUnsuccessful() throws UnknownRegisterException {
+    void bgeuUnsuccessful() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(bgeu);
@@ -60,7 +60,7 @@ class BgeuTest {
     }
 
     @Test
-    void bgeuSuccessfulNegative() throws UnknownRegisterException {
+    void bgeuSuccessfulNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(-1);
         register32File.getRegisterByNumber(1).setValue(2);
         handler.handle(bgeu);
@@ -68,7 +68,7 @@ class BgeuTest {
     }
 
     @Test
-    void bgeuUnsuccessfulNegative() throws UnknownRegisterException {
+    void bgeuUnsuccessfulNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(0).setValue(2);
         register32File.getRegisterByNumber(1).setValue(-1);
         handler.handle(bgeu);

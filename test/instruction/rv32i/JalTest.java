@@ -8,7 +8,7 @@ import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Jal;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static rarsreborn.core.core.instruction.riscv.RiscVInstruction.truncateNegative;
@@ -32,7 +32,7 @@ class JalTest {
     }
 
     @Test
-    void jal() throws UnknownRegisterException {
+    void jal() throws IllegalRegisterException {
         jal = new Jal(new InstructionJ.InstructionJParams((byte) 0, 12));
         handler.handle(jal);
         assertEquals(0x400_004, register32File.getRegisterByNumber(0).getValue());
@@ -40,7 +40,7 @@ class JalTest {
     }
 
     @Test
-    void jalNegative() throws UnknownRegisterException, ImmediateTooLargeException {
+    void jalNegative() throws ImmediateTooLargeException, IllegalRegisterException {
         jal = new Jal(new InstructionJ.InstructionJParams((byte) 0, (int) truncateNegative(-2, 21)));
         handler.handle(jal);
         assertEquals(0x400_004, register32File.getRegisterByNumber(0).getValue());

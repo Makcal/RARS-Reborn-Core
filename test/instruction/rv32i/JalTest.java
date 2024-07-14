@@ -33,7 +33,7 @@ class JalTest {
 
     @Test
     void jal() throws UnknownRegisterException {
-        jal = new Jal(new InstructionJ.InstructionJParams((byte) 0, 12 >> 1));
+        jal = new Jal(new InstructionJ.InstructionJParams((byte) 0, 12));
         handler.handle(jal);
         assertEquals(0x400_004, register32File.getRegisterByNumber(0).getValue());
         assertEquals(0x400_000 + 12, programCounter.getValue());
@@ -41,7 +41,7 @@ class JalTest {
 
     @Test
     void jalNegative() throws UnknownRegisterException, ImmediateTooLargeException {
-        jal = new Jal(new InstructionJ.InstructionJParams((byte) 0, (int) truncateNegative(-2 >> 1, 20)));
+        jal = new Jal(new InstructionJ.InstructionJParams((byte) 0, (int) truncateNegative(-2, 21)));
         handler.handle(jal);
         assertEquals(0x400_004, register32File.getRegisterByNumber(0).getValue());
         assertEquals(0x400_000 - 2, programCounter.getValue());

@@ -6,11 +6,9 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionU;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Auipc;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static rarsreborn.core.core.instruction.riscv.RiscVInstruction.truncateNegative;
 
 class AuipcTest {
     private static final Register32File register32File = new Register32File();
@@ -28,14 +26,14 @@ class AuipcTest {
 
     @Test
     void auipc() throws UnknownRegisterException {
-        auipc = new Auipc(new InstructionU.InstructionUParams((byte) 0, 8));
+        auipc = new Auipc(new InstructionU.InstructionUParams((byte) 0, 8 << 12));
         handler.handle(auipc);
         assertEquals(0x400_000 + (8 << 12), register32File.getRegisterByNumber(0).getValue());
     }
 
     @Test
-    void auipcNegative() throws UnknownRegisterException, ImmediateTooLargeException {
-        auipc = new Auipc(new InstructionU.InstructionUParams((byte) 0, (int) truncateNegative(-2, 12)));
+    void auipcNegative() throws UnknownRegisterException {
+        auipc = new Auipc(new InstructionU.InstructionUParams((byte) 0, -2 << 12));
         handler.handle(auipc);
         assertEquals(0x400_000 - (2 << 12), register32File.getRegisterByNumber(0).getValue());
     }

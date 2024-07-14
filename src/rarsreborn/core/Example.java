@@ -1,7 +1,7 @@
 package rarsreborn.core;
 
 import rarsreborn.core.core.environment.ConsolePrintEvent;
-import rarsreborn.core.core.environment.StringInputDevice;
+import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32File;
@@ -15,14 +15,7 @@ import java.util.Scanner;
 public class Example {
     public static void main(String[] args) {
         try {
-            Simulator32 simulator = Presets.getClassicalRiscVSimulator(new StringInputDevice() {
-                @Override
-                public String requestString(int count) {
-                    Scanner scanner = new Scanner(System.in);
-                    String s = scanner.nextLine() + "\n";
-                    return s.length() <= count ? s : s.substring(0, count);
-                }
-            });
+            Simulator32 simulator = Presets.getClassicalRiscVSimulator(new InputDevice());
             simulator.getExecutionEnvironment().addObserver(
                 ConsolePrintEvent.class,
                 consolePrintEvent -> System.out.print(consolePrintEvent.text())
@@ -84,6 +77,21 @@ public class Example {
     private static void waitUntilPaused(Simulator32 simulator) {
         while (!simulator.isPaused()) {
             Thread.onSpinWait();
+        }
+    }
+
+    private static class InputDevice implements ITextInputDevice {
+        private final Scanner scanner = new Scanner(System.in);
+
+        @Override
+        public String requestString(int count) {
+            String s = scanner.nextLine() + "\n";
+            return s.length() <= count ? s : s.substring(0, count);
+        }
+
+        @Override
+        public int requestInt() {
+            return scanner.nextInt();
         }
     }
 }

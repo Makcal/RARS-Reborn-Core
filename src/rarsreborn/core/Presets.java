@@ -4,11 +4,12 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.compiler.riscv.RegexCompiler;
 import rarsreborn.core.compilation.decoder.riscv.RiscVDecoder;
 import rarsreborn.core.compilation.linker.RiscVLinker;
-import rarsreborn.core.core.environment.IInputDevice;
+import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.environment.riscv.ecalls.ExitEcall;
-import rarsreborn.core.core.environment.riscv.ecalls.PrintEcall;
-import rarsreborn.core.core.environment.riscv.ecalls.ReadEcall;
+import rarsreborn.core.core.environment.riscv.ecalls.PrintStringEcall;
+import rarsreborn.core.core.environment.riscv.ecalls.ReadIntegerEcall;
+import rarsreborn.core.core.environment.riscv.ecalls.ReadStringEcall;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
@@ -25,7 +26,7 @@ import rarsreborn.core.simulator.Simulator32;
 import rarsreborn.core.simulator.backstepper.BackStepper;
 
 public class Presets {
-    public static Simulator32 getClassicalRiscVSimulator(IInputDevice consoleReader) {
+    public static Simulator32 getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
         try {
             String[] registerNames = new String[] {
                 "ra", "sp", "gp", "tp",
@@ -133,8 +134,9 @@ public class Presets {
                 .setMemory(memory)
                 .setObservableImplementation(new ObservableImplementation())
                 .setConsoleReader(consoleReader)
-                .addHandler(0, new PrintEcall())
-                .addHandler(1, new ReadEcall())
+                .addHandler(4, new PrintStringEcall())
+                .addHandler(5, new ReadIntegerEcall())
+                .addHandler(8, new ReadStringEcall())
                 .addHandler(10, new ExitEcall())
                 .build();
 

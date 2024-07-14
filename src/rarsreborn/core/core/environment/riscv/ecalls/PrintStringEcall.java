@@ -5,7 +5,7 @@ import rarsreborn.core.core.environment.ConsolePrintEvent;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
-public class PrintEcall extends RiscVSystemCall {
+public class PrintStringEcall extends RiscVSystemCall {
     @Override
     public void call() throws MemoryAccessException, IllegalRegisterException {
         StringBuilder stringBuilder = new StringBuilder();

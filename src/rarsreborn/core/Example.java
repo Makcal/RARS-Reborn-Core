@@ -1,11 +1,10 @@
 package rarsreborn.core;
 
-import rarsreborn.core.core.environment.events.ConsolePrintCharEvent;
-import rarsreborn.core.core.environment.events.ConsolePrintIntegerEvent;
-import rarsreborn.core.core.environment.events.ConsolePrintStringEvent;
+import rarsreborn.core.core.environment.events.*;
 import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
+import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.Simulator32;
@@ -29,7 +28,27 @@ public class Example {
             );
             simulator.getExecutionEnvironment().addObserver(
                 ConsolePrintIntegerEvent.class,
-                event -> System.out.println(event.value())
+                event -> System.out.print(event.value())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerHexEvent.class,
+                event -> System.out.printf("%x", event.value())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerOctalEvent.class,
+                event -> System.out.printf("%o", event.value())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerBinaryEvent.class,
+                event -> System.out.print(Integer.toBinaryString(event.value()))
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerUnsignedEvent.class,
+                event -> System.out.print(Integer.toUnsignedString(event.value()))
+            );
+            simulator.getRegisterFile().getRegisterByNumber(10).addObserver(
+                Register32ChangeEvent.class,
+                event -> {}
             );
 
             Register32File registers = simulator.getRegisterFile();

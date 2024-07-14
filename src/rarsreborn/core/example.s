@@ -23,10 +23,46 @@ skip:
 
     li a7, 5
     ecall
-    li a7, 1
-    ecall
+    jal ra, printInt
 
     li a7, 10
     ecall
     # not running, exited
     li t5, 11
+
+printInt:
+    mv s0, a0
+    li a7, 1
+    ecall
+    li a0, ' '
+    li a7, 11
+    ecall
+
+    mv a0, s0
+    li a7, 34
+    ecall
+    li a0, ' '
+    li a7, 11
+    ecall
+
+    mv a0, s0
+    li a7, 37
+    ecall
+    li a0, ' '
+    li a7, 11
+    ecall
+
+    mv a0, s0
+    li a7, 35
+    ecall
+    li a0, ' '
+    li a7, 11
+    ecall
+
+    mv a0, s0
+    li a7, 36
+    ecall
+    li a0, '\n'
+    li a7, 11
+    ecall
+    jalr zero, ra, 0

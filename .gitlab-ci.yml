@@ -6,7 +6,7 @@ stages:
   - deploy
 
 # <<< MERGE REQUESTS >>>
-assign-reviewers-job:
+.assign-reviewers-job:
   stage: set up merge request
   image: alpine
   rules:

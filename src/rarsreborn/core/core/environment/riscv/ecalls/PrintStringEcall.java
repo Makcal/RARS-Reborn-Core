@@ -1,12 +1,13 @@
 package rarsreborn.core.core.environment.riscv.ecalls;
 
 import rarsreborn.core.core.environment.riscv.RiscVSystemCall;
-import rarsreborn.core.events.ConsolePrintEvent;
+import rarsreborn.core.core.environment.events.ConsolePrintStringEvent;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
-public class PrintEcall extends RiscVSystemCall {
+public class PrintStringEcall extends RiscVSystemCall {
     @Override
-    public void call() throws MemoryAccessException {
+    public void call() throws MemoryAccessException, IllegalRegisterException {
         StringBuilder stringBuilder = new StringBuilder();
         long address = getRegisterValue(10); // a0
         while (true) {
@@ -16,6 +17,6 @@ public class PrintEcall extends RiscVSystemCall {
             }
             stringBuilder.append((char) b);
         }
-        executionEnvironment.notifyObservers(new ConsolePrintEvent(stringBuilder.toString()));
+        executionEnvironment.notifyObservers(new ConsolePrintStringEvent(stringBuilder.toString()));
     }
 }

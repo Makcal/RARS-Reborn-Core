@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Andi;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,7 +26,7 @@ class AndiTest {
     }
 
     @Test
-    void and() throws UnknownRegisterException {
+    void and() throws IllegalRegisterException {
         Andi andi = new Andi(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) 0b1010));
         register32File.getRegisterByNumber(1).setValue(0b0111);
         handler.handle(andi);

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32m.Mul;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ class MulTest {
     }
 
     @Test
-    void multiply() throws UnknownRegisterException {
+    void multiply() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(3);
         register32File.getRegisterByNumber(2).setValue(2);
         handler.handle(mul);
@@ -36,7 +36,7 @@ class MulTest {
     }
 
     @Test
-    void multiplyNegative() throws UnknownRegisterException {
+    void multiplyNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(-3);
         register32File.getRegisterByNumber(2).setValue(-2);
         handler.handle(mul);
@@ -44,7 +44,7 @@ class MulTest {
     }
 
     @Test
-    void multiplyOverflow() throws UnknownRegisterException {
+    void multiplyOverflow() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(Integer.MAX_VALUE);
         register32File.getRegisterByNumber(2).setValue(4);
         handler.handle(mul);

@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Xor;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ class XorTest {
     }
 
     @Test
-    void xor() throws UnknownRegisterException {
+    void xor() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(0b110);
         register32File.getRegisterByNumber(2).setValue(0b100);
         handler.handle(xor);

@@ -7,82 +7,126 @@ import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.IInstructionHandler;
 import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.program.IObjectFile;
+import rarsreborn.core.event.IObservable;
+import rarsreborn.core.event.IObserver;
+import rarsreborn.core.event.ObservableImplementation;
+import rarsreborn.core.exceptions.NoBackStepsLeftException;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.linking.LinkingException;
+import rarsreborn.core.simulator.backstepper.BackStepperStub;
+import rarsreborn.core.simulator.backstepper.IBackStepper;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class SimulatorBase implements IMultiFileSimulator {
+public abstract class SimulatorBase implements IMultiFileSimulator, IObservable {
     protected final ICompiler compiler;
     protected final ILinker linker;
     protected final IBufferedDecoder decoder;
-
     protected final Map<Class<? extends IInstruction>, IInstructionHandler<?>> handlers
             = new HashMap<>();
+    protected final IBackStepper backStepper;
 
-    public SimulatorBase(ICompiler compiler, ILinker linker, IBufferedDecoder decoder) {
+    protected IExecutable executable;
+
+    protected final Worker worker = new Worker();
+    protected final IObservable observableImplementation = new ObservableImplementation();
+
+    public SimulatorBase(
+        ICompiler compiler,
+        ILinker linker,
+        IBufferedDecoder decoder,
+        IBackStepper backStepper
+    ) {
         this.compiler = compiler;
         this.linker = linker;
         this.decoder = decoder;
+        this.backStepper = backStepper == null ? new BackStepperStub() : backStepper;
+    }
+
+    public boolean isPaused() {
+        return worker.isPaused();
+    }
+
+    public boolean isRunning() {
+        return worker.isRunning();
     }
 
     @Override
     public void compile(String program) throws CompilationException, LinkingException {
-        reset();
-        IObjectFile objectFile = compiler.compile(program);
-        IExecutable executable = linker.link(objectFile);
-        loadProgram(executable);
+        compile(new String[] { program });
     }
 
     @Override
     public void compile(String ...programs) throws CompilationException, LinkingException {
-        reset();
         IObjectFile[] objectFiles = new IObjectFile[programs.length];
         for (int i = 0; i < programs.length; i++) {
             objectFiles[i] = compiler.compile(programs[i]);
         }
-        IExecutable executable = linker.link(objectFiles);
-        loadProgram(executable);
+        executable = linker.link(objectFiles);
     }
 
     abstract protected void loadProgram(IExecutable program);
 
-    protected void onStartSetup() {}
+    protected void onStartSetup() {
+        reset();
+    }
 
+    /**
+     * Initializes an execution loop, but does not start execution itself. Better run in a separate thread.
+     * @throws ExecutionException any exception during execution
+     */
+    public void startWorker() throws ExecutionException {
+        worker.start();
+    }
+
+    public void startWorkerAndRun() throws ExecutionException {
+        worker.start(true);
+    }
+
+    /**
+     * Starts infinite execution in a worker.
+     */
     @Override
     public void run() {
-        onStartSetup();
-        try {
-            //noinspection InfiniteLoopStatement
-            while (true) {
-                executeOneInstruction();
-            }
-        } catch (EndOfExecutionException ignored) {
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
+        worker.run();
+    }
+
+    /**
+     * Execute a limited number of instructions in a worker.
+     * @param n the number of steps
+     */
+    @Override
+    public void runSteps(int n) {
+        worker.runSteps(n);
     }
 
     @Override
-    public void runSteps(int n) {
-        try {
-            for (int i = 0; i < n; i++) {
-                executeOneInstruction();
-            }
-        } catch (EndOfExecutionException ignored) {
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
+    public void pause() {
+        worker.pause();
+    }
+
+    @Override
+    public void stop() {
+        worker.stop();
+    }
+
+    public void stepBack() throws NoBackStepsLeftException, ExecutionException {
+        if (!worker.isPaused()) {
+            throw new RuntimeException("Wait until the worker is paused");
         }
+        backStepper.revert();
     }
 
     protected abstract IInstruction getNextInstruction() throws ExecutionException;
 
     protected void executeOneInstruction() throws ExecutionException {
+        backStepper.addStep();
         executeInstruction(getNextInstruction());
+        notifyObservers(new InstructionExecutedEvent());
     }
 
     protected void executeInstruction(IInstruction instruction) throws ExecutionException {
@@ -102,5 +146,114 @@ public abstract class SimulatorBase implements IMultiFileSimulator {
             IInstructionHandler<TInstruction> handler
     ) {
         handlers.put(instructionClass, handler);
+    }
+
+    @Override
+    public <TEvent> void notifyObservers(TEvent event) {
+        observableImplementation.notifyObservers(event);
+    }
+
+    @Override
+    public <TEvent> void removeObserver(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+        observableImplementation.removeObserver(eventClass, observer);
+    }
+
+    @Override
+    public <TEvent> void addObserver(Class<TEvent> eventClass, IObserver<TEvent> observer) {
+        observableImplementation.addObserver(eventClass, observer);
+    }
+
+    protected class Worker {
+        protected final Object lock = new Object();
+        protected boolean isRunning = false;
+        protected boolean isPaused = true;
+        protected int instructionsToRun = 0;
+
+        public void start() throws ExecutionException {
+            start(false);
+        }
+
+        public void start(boolean runImmediately) throws ExecutionException {
+            synchronized (lock) {
+                if (isRunning) return;
+                isRunning = true;
+                instructionsToRun = runImmediately ? -1 : 0;
+                isPaused = !runImmediately;
+            }
+            onStartSetup();
+            while (isRunning()) {
+                synchronized (lock) {
+                    while (isPaused()) {
+                        try {
+                            lock.wait();
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            throw new RuntimeException(e);
+                        }
+                    }
+                }
+
+                try {
+                    executeOneInstruction();
+                    instructionsToRun--;
+                    if (instructionsToRun == 0) {
+                        pause();
+                    }
+                } catch (EndOfExecutionException ignored) {
+                    stop();
+                }
+            }
+
+            synchronized (lock) {
+                stop();
+            }
+        }
+
+        public void pause() {
+            synchronized (lock) {
+                isPaused = true;
+            }
+            notifyObservers(new PauseEvent());
+        }
+
+        public void stop() {
+            synchronized (lock) {
+                isRunning = false;
+                isPaused = true;
+                instructionsToRun = 0;
+            }
+            notifyObservers(new StopEvent());
+        }
+
+        public void run() {
+            synchronized (lock) {
+                if (!isRunning) throw new RuntimeException("The worker has not been initialized");
+                isPaused = false;
+                instructionsToRun = -1;
+                lock.notifyAll();
+            }
+        }
+
+        public void runSteps(int n) {
+            synchronized (lock) {
+                if (!isRunning) throw new RuntimeException("The worker has not been initialized");
+                if (instructionsToRun == -1) return;
+                isPaused = false;
+                instructionsToRun += n;
+                lock.notifyAll();
+            }
+        }
+
+        public boolean isPaused() {
+            synchronized (lock) {
+                return isPaused || instructionsToRun == 0;
+            }
+        }
+
+        public boolean isRunning() {
+            synchronized (lock) {
+                return isRunning;
+            }
+        }
     }
 }

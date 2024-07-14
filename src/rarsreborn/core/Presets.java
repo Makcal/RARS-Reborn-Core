@@ -4,10 +4,9 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.compiler.riscv.RegexCompiler;
 import rarsreborn.core.compilation.decoder.riscv.RiscVDecoder;
 import rarsreborn.core.compilation.linker.RiscVLinker;
-import rarsreborn.core.core.environment.IInputDevice;
+import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
-import rarsreborn.core.core.environment.riscv.ecalls.PrintEcall;
-import rarsreborn.core.core.environment.riscv.ecalls.ReadEcall;
+import rarsreborn.core.core.environment.riscv.ecalls.*;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
@@ -24,7 +23,7 @@ import rarsreborn.core.simulator.Simulator32;
 import rarsreborn.core.simulator.backstepper.BackStepper;
 
 public class Presets {
-    public static Simulator32 getClassicalRiscVSimulator(IInputDevice consoleReader) {
+    public static Simulator32 getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
         try {
             String[] registerNames = new String[] {
                 "ra", "sp", "gp", "tp",
@@ -59,7 +58,7 @@ public class Presets {
                 .registerInstruction(Andi.NAME, new Andi.Parser())
                 .registerInstruction(Slli.NAME, new Slli.Parser())
                 .registerInstruction(Srli.NAME, new Srli.Parser())
-//                .registerInstruction(Srai.NAME, new Srai.Parser())
+                .registerInstruction(Srai.NAME, new Srai.Parser())
                 // Load/store
                 .registerInstruction(Lw.NAME, new Lw.Parser())
                 // Branches
@@ -100,8 +99,7 @@ public class Presets {
                 .registerIInstruction(Ori.OPCODE, Ori.FUNCT_3, Ori.class)
                 .registerIInstruction(Andi.OPCODE, Andi.FUNCT_3, Andi.class)
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
-                .registerIInstruction(Srli.OPCODE, Srli.FUNCT_3, Srli.class)
-//                .registerIInstruction(Srai.OPCODE, Srai.FUNCT_3, Srai.class)
+                .registerIInstruction(ShiftRightImm.OPCODE, ShiftRightImm.FUNCT_3, ShiftRightImm.class)
                 // Load/store
                 .registerIInstruction(Lw.OPCODE, Lw.FUNCT3, Lw.class)
                 // Branches
@@ -132,8 +130,17 @@ public class Presets {
                 .setMemory(memory)
                 .setObservableImplementation(new ObservableImplementation())
                 .setConsoleReader(consoleReader)
-                .addHandler(0, new PrintEcall())
-                .addHandler(1, new ReadEcall())
+                .addHandler(1, new PrintIntegerEcall())
+                .addHandler(4, new PrintStringEcall())
+                .addHandler(5, new ReadIntegerEcall())
+                .addHandler(8, new ReadStringEcall())
+                .addHandler(10, new ExitEcall())
+                .addHandler(11, new PrintCharEcall())
+                .addHandler(12, new ReadCharEcall())
+                .addHandler(34, new PrintIntegerHexEcall())
+                .addHandler(35, new PrintIntegerBinaryEcall())
+                .addHandler(36, new PrintIntegerUnsignedEcall())
+                .addHandler(37, new PrintIntegerOctalEcall())
                 .build();
 
             return new Simulator32(
@@ -161,8 +168,7 @@ public class Presets {
                 .registerHandler(Ori.class, new Ori.Handler())
                 .registerHandler(Andi.class, new Andi.Handler())
                 .registerHandler(Slli.class, new Slli.Handler())
-                .registerHandler(Srli.class, new Srli.Handler())
-//                .registerHandler(Srai.class, new Srai.Handler())
+                .registerHandler(ShiftRightImm.class, new ShiftRightImm.Handler())
                 // Load/store
                 .registerHandler(Lw.class, new Lw.Handler())
                 // Branches

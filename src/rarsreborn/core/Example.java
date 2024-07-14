@@ -1,31 +1,54 @@
 package rarsreborn.core;
 
-import rarsreborn.core.core.environment.ConsolePrintEvent;
-import rarsreborn.core.core.environment.StringInputDevice;
+import rarsreborn.core.core.environment.events.*;
+import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
+import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.Simulator32;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Example {
     public static void main(String[] args) {
         try {
-            Simulator32 simulator = Presets.getClassicalRiscVSimulator(new StringInputDevice() {
-                @Override
-                public String requestString(int count) {
-                    Scanner scanner = new Scanner(System.in);
-                    String s = scanner.nextLine() + "\n";
-                    return s.length() <= count ? s : s.substring(0, count);
-                }
-            });
+            Simulator32 simulator = Presets.getClassicalRiscVSimulator(new InputDevice());
             simulator.getExecutionEnvironment().addObserver(
-                ConsolePrintEvent.class,
-                consolePrintEvent -> System.out.print(consolePrintEvent.text())
+                ConsolePrintStringEvent.class,
+                event -> System.out.print(event.text())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintCharEvent.class,
+                event -> System.out.print((char) event.character())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerEvent.class,
+                event -> System.out.print(event.value())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerHexEvent.class,
+                event -> System.out.printf("%x", event.value())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerOctalEvent.class,
+                event -> System.out.printf("%o", event.value())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerBinaryEvent.class,
+                event -> System.out.print(Integer.toBinaryString(event.value()))
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintIntegerUnsignedEvent.class,
+                event -> System.out.print(Integer.toUnsignedString(event.value()))
+            );
+            simulator.getRegisterFile().getRegisterByNumber(10).addObserver(
+                Register32ChangeEvent.class,
+                event -> {}
             );
 
             Register32File registers = simulator.getRegisterFile();
@@ -84,6 +107,30 @@ public class Example {
     private static void waitUntilPaused(Simulator32 simulator) {
         while (!simulator.isPaused()) {
             Thread.onSpinWait();
+        }
+    }
+
+    private static class InputDevice implements ITextInputDevice {
+        private final Scanner scanner = new Scanner(System.in);
+
+        @Override
+        public String requestString(int count) {
+            String s = scanner.nextLine() + "\n";
+            return s.length() <= count ? s : s.substring(0, count);
+        }
+
+        @Override
+        public int requestInt() {
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                return 0;
+            }
+        }
+
+        @Override
+        public byte requestChar() {
+            return (byte) scanner.next().charAt(0);
         }
     }
 }

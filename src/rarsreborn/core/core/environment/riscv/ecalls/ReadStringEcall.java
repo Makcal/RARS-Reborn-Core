@@ -4,7 +4,7 @@ import rarsreborn.core.core.environment.riscv.RiscVSystemCall;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
-public class ReadEcall extends RiscVSystemCall {
+public class ReadStringEcall extends RiscVSystemCall {
     @Override
     public void call() throws MemoryAccessException, IllegalRegisterException {
         long address = getRegisterValue(10); // a0

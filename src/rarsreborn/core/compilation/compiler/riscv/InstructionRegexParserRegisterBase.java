@@ -48,7 +48,7 @@ public abstract class InstructionRegexParserRegisterBase
 
     protected static short parseShort(String s) throws CompilationException {
         try {
-            long l = Long.parseLong(s);
+            long l = RegexCompiler.parseLongInteger(s);
             if (l < Short.MIN_VALUE || Short.MAX_VALUE < l) {
                 throw new ImmediateTooLargeException(l);
             }

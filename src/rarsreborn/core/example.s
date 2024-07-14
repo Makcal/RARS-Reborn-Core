@@ -27,3 +27,8 @@ skip:
     ecall
     li a7, 0
     ecall
+
+    li a7, 10
+    ecall
+    # not running, exited
+    li t5, 11

@@ -20,7 +20,7 @@ class BneTest {
     private static final Bne bne = new Bne(new InstructionB.InstructionBParams(
         (byte) 0,
         (byte) 1,
-        (short) ((PC_CHANGED - PC_INITIAL) >> 1)
+        (short) (PC_CHANGED - PC_INITIAL)
     ));
 
     @BeforeAll

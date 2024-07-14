@@ -20,7 +20,7 @@ class BgeuTest {
     private static final Bgeu bgeu = new Bgeu(new InstructionB.InstructionBParams(
         (byte) 0,
         (byte) 1,
-        (short) ((PC_CHANGED - PC_INITIAL) >> 1)
+        (short) (PC_CHANGED - PC_INITIAL)
     ));
 
     @BeforeAll

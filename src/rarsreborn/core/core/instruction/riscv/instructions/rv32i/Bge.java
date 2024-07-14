@@ -12,7 +12,6 @@ import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
 import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
-import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 public class Bge extends InstructionB implements ILinkableInstruction {
     public static final String NAME = "bge";
@@ -56,7 +55,7 @@ public class Bge extends InstructionB implements ILinkableInstruction {
 
     public static class Handler extends RiscV32InstructionHandler<Bge> {
         @Override
-        public void handle(Bge instruction) throws MemoryAccessException {
+        public void handle(Bge instruction) {
             instruction.exec(registerFile, programCounter);
         }
     }

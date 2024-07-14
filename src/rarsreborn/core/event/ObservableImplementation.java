@@ -1,4 +1,4 @@
-package rarsreborn.core.events;
+package rarsreborn.core.event;
 
 import java.util.HashMap;
 import java.util.HashSet;

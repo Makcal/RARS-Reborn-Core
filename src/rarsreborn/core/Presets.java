@@ -4,10 +4,9 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.compiler.riscv.RegexCompiler;
 import rarsreborn.core.compilation.decoder.riscv.RiscVDecoder;
 import rarsreborn.core.compilation.linker.RiscVLinker;
-import rarsreborn.core.core.environment.IInputDevice;
+import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
-import rarsreborn.core.core.environment.riscv.ecalls.PrintEcall;
-import rarsreborn.core.core.environment.riscv.ecalls.ReadEcall;
+import rarsreborn.core.core.environment.riscv.ecalls.*;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
@@ -19,11 +18,12 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.ZeroRegister32;
 import rarsreborn.core.core.riscvprogram.RiscVObjectFile;
-import rarsreborn.core.events.ObservableImplementation;
+import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.simulator.Simulator32;
+import rarsreborn.core.simulator.backstepper.BackStepper;
 
 public class Presets {
-    public static Simulator32 getClassicalRiscVSimulator(IInputDevice consoleReader) {
+    public static Simulator32 getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
         try {
             String[] registerNames = new String[] {
                 "ra", "sp", "gp", "tp",
@@ -58,13 +58,19 @@ public class Presets {
                 .registerInstruction(Andi.NAME, new Andi.Parser())
                 .registerInstruction(Slli.NAME, new Slli.Parser())
                 .registerInstruction(Srli.NAME, new Srli.Parser())
-//                .registerInstruction(Srai.NAME, new Srai.Parser())
+                .registerInstruction(Srai.NAME, new Srai.Parser())
                 // Load/store
-
+                .registerInstruction(Lw.NAME, new Lw.Parser())
                 // Branches
-
+                .registerInstruction(Beq.NAME, new Beq.Parser())
+                .registerInstruction(Bne.NAME, new Bne.Parser())
+                .registerInstruction(Blt.NAME, new Blt.Parser())
+                .registerInstruction(Bge.NAME, new Bge.Parser())
+                .registerInstruction(Bltu.NAME, new Bltu.Parser())
+                .registerInstruction(Bgeu.NAME, new Bgeu.Parser())
                 // Jumps
                 .registerInstruction(Jal.NAME, new Jal.Parser())
+                .registerInstruction(Jalr.NAME, new Jalr.Parser())
                 .registerInstruction(Auipc.NAME, new Auipc.Parser())
                 // Other
                 .registerInstruction(Ecall.NAME, new Ecall.Parser())
@@ -93,14 +99,19 @@ public class Presets {
                 .registerIInstruction(Ori.OPCODE, Ori.FUNCT_3, Ori.class)
                 .registerIInstruction(Andi.OPCODE, Andi.FUNCT_3, Andi.class)
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
-                .registerIInstruction(Srli.OPCODE, Srli.FUNCT_3, Srli.class)
-//                .registerIInstruction(Srai.OPCODE, Srai.FUNCT_3, Srai.class)
+                .registerIInstruction(ShiftRightImm.OPCODE, ShiftRightImm.FUNCT_3, ShiftRightImm.class)
                 // Load/store
-
+                .registerIInstruction(Lw.OPCODE, Lw.FUNCT3, Lw.class)
                 // Branches
-
+                .registerBInstruction(Beq.OPCODE, Beq.FUNCT3, Beq.class)
+                .registerBInstruction(Bne.OPCODE, Bne.FUNCT3, Bne.class)
+                .registerBInstruction(Blt.OPCODE, Blt.FUNCT3, Blt.class)
+                .registerBInstruction(Bge.OPCODE, Bge.FUNCT3, Bge.class)
+                .registerBInstruction(Bltu.OPCODE, Bltu.FUNCT3, Bltu.class)
+                .registerBInstruction(Bgeu.OPCODE, Bgeu.FUNCT3, Bgeu.class)
                 // Jumps
                 .registerJInstruction(Jal.OPCODE, Jal.class)
+                .registerIInstruction(Jalr.OPCODE, Jalr.FUNCT3, Jalr.class)
                 .registerUInstruction(Auipc.OPCODE, Auipc.class)
                 // Other
                 .registerIInstruction(Ecall.OPCODE, Ecall.FUNCT3, Ecall.class)
@@ -119,12 +130,28 @@ public class Presets {
                 .setMemory(memory)
                 .setObservableImplementation(new ObservableImplementation())
                 .setConsoleReader(consoleReader)
-                .addHandler(0, new PrintEcall())
-                .addHandler(1, new ReadEcall())
+                .addHandler(1, new PrintIntegerEcall())
+                .addHandler(4, new PrintStringEcall())
+                .addHandler(5, new ReadIntegerEcall())
+                .addHandler(8, new ReadStringEcall())
+                .addHandler(10, new ExitEcall())
+                .addHandler(11, new PrintCharEcall())
+                .addHandler(12, new ReadCharEcall())
+                .addHandler(34, new PrintIntegerHexEcall())
+                .addHandler(35, new PrintIntegerBinaryEcall())
+                .addHandler(36, new PrintIntegerUnsignedEcall())
+                .addHandler(37, new PrintIntegerOctalEcall())
                 .build();
 
             return new Simulator32(
-                    compiler, linker, decoder, registers, programCounter, memory, executionEnvironment
+                compiler,
+                linker,
+                decoder,
+                registers,
+                programCounter,
+                memory,
+                executionEnvironment,
+                new BackStepper(200)
             )
                 // Arithmetic and logic
                 .registerHandler(Add.class, new Add.Handler())
@@ -141,14 +168,19 @@ public class Presets {
                 .registerHandler(Ori.class, new Ori.Handler())
                 .registerHandler(Andi.class, new Andi.Handler())
                 .registerHandler(Slli.class, new Slli.Handler())
-                .registerHandler(Srli.class, new Srli.Handler())
-//                .registerHandler(Srai.class, new Srai.Handler())
+                .registerHandler(ShiftRightImm.class, new ShiftRightImm.Handler())
                 // Load/store
-
+                .registerHandler(Lw.class, new Lw.Handler())
                 // Branches
-
+                .registerHandler(Beq.class, new Beq.Handler())
+                .registerHandler(Bne.class, new Bne.Handler())
+                .registerHandler(Blt.class, new Blt.Handler())
+                .registerHandler(Bge.class, new Bge.Handler())
+                .registerHandler(Bltu.class, new Bltu.Handler())
+                .registerHandler(Bgeu.class, new Bgeu.Handler())
                 // Jumps
                 .registerHandler(Jal.class, new Jal.Handler())
+                .registerHandler(Jalr.class, new Jalr.Handler())
                 .registerHandler(Auipc.class, new Auipc.Handler())
                 // Other
                 .registerHandler(Ecall.class, new Ecall.Handler())

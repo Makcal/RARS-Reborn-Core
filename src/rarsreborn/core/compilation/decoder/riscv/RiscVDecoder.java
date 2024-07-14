@@ -9,10 +9,9 @@ import rarsreborn.core.exceptions.execution.IllegalInstructionException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class RiscVDecoder implements IBufferedDecoder {
-    private Map<Byte, RiscVInstructionFormat> opcodesToFormats = new HashMap<>();
+    private HashMap<Byte, RiscVInstructionFormat> opcodesToFormats = new HashMap<>();
     private InstructionMapping<DoubleFunctInfo, InstructionR> rInstructions = new InstructionMapping<>();
     private InstructionMapping<SingleFunctInfo, InstructionI> iInstructions = new InstructionMapping<>();
     private InstructionMapping<SingleFunctInfo, InstructionS> sInstructions = new InstructionMapping<>();
@@ -156,7 +155,7 @@ public class RiscVDecoder implements IBufferedDecoder {
     }
 
     public static class RiscVDecoderBuilder {
-        private final Map<Byte, RiscVInstructionFormat> opcodesToFormats = new HashMap<>();
+        private final HashMap<Byte, RiscVInstructionFormat> opcodesToFormats = new HashMap<>();
         private final InstructionMapping<DoubleFunctInfo, InstructionR> rInstructions = new InstructionMapping<>();
         private final InstructionMapping<SingleFunctInfo, InstructionI> iInstructions = new InstructionMapping<>();
         private final InstructionMapping<SingleFunctInfo, InstructionS> sInstructions = new InstructionMapping<>();

@@ -7,7 +7,7 @@ import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public class Ori extends InstructionI {
     public static final String NAME = "ori";
@@ -18,12 +18,8 @@ public class Ori extends InstructionI {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) {
-        try {
-            registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() | imm);
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+        registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() | imm);
     }
 
     @Override
@@ -33,7 +29,7 @@ public class Ori extends InstructionI {
 
     public static class Handler extends RiscV32InstructionHandler<Ori> {
         @Override
-        public void handle(Ori instruction) {
+        public void handle(Ori instruction) throws IllegalRegisterException {
             instruction.exec(registerFile);
         }
     }
@@ -45,7 +41,7 @@ public class Ori extends InstructionI {
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
             Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
-            short imm = parseShort(split[2]);
+            short imm = (short) truncateNegative(parseShort(split[2]), 12);
 
             try {
                 return new Ori(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));

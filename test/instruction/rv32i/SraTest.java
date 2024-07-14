@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Sra;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ class SraTest {
     }
 
     @Test
-    void sra() throws UnknownRegisterException {
+    void sra() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(0b110);
         register32File.getRegisterByNumber(2).setValue(2);
         handler.handle(sra);
@@ -36,7 +36,7 @@ class SraTest {
     }
 
     @Test
-    void sraNegative() throws UnknownRegisterException {
+    void sraNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(-2);
         register32File.getRegisterByNumber(2).setValue(1);
         handler.handle(sra);

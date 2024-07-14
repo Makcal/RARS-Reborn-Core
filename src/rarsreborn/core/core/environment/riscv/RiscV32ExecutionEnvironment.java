@@ -1,14 +1,13 @@
 package rarsreborn.core.core.environment.riscv;
 
 import rarsreborn.core.core.environment.IExecutionEnvironment;
-import rarsreborn.core.core.environment.IInputDevice;
 import rarsreborn.core.core.environment.ISystemCall;
+import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.events.IObservable;
-import rarsreborn.core.events.IObserver;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.event.IObservable;
+import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.execution.UnknownSystemCallException;
 
@@ -21,7 +20,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
     protected final IMemory memory;
     protected final Map<Integer, ISystemCall> handlers;
     protected final IObservable observableImplementation;
-    protected final IInputDevice consoleReader;
+    protected final ITextInputDevice consoleReader;
 
     public RiscV32ExecutionEnvironment(
         Register32File registers,
@@ -29,7 +28,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
         IMemory memory,
         Map<Integer, ISystemCall> handlers,
         IObservable observableImplementation,
-        IInputDevice consoleReader
+        ITextInputDevice consoleReader
     ) {
         this.registers = registers;
         this.programCounter = programCounter;
@@ -44,18 +43,14 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
         this.consoleReader = consoleReader;
     }
 
-    public IInputDevice getConsoleReader() {
+    public ITextInputDevice getConsoleReader() {
         return consoleReader;
     }
 
     @Override
     public void call() throws ExecutionException {
         int number;
-        try {
-            number = registers.getRegisterByNumber(17).getValue(); // a7
-        } catch (UnknownRegisterException e) {
-            throw new RuntimeException(e);
-        }
+                number = registers.getRegisterByNumber(17).getValue(); // a7
         ISystemCall handler = handlers.get(number);
         if (handler == null) {
             throw new UnknownSystemCallException(number);
@@ -88,7 +83,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
         private Register32 programCounter;
         private IMemory memory;
         protected IObservable observableImplementation;
-        protected IInputDevice consoleReader;
+        protected ITextInputDevice consoleReader;
         private final Map<Integer, ISystemCall> handlers = new HashMap<>();
 
         public Builder setRegisters(Register32File registers) {
@@ -111,7 +106,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
             return this;
         }
 
-        public Builder setConsoleReader(IInputDevice consoleReader) {
+        public Builder setConsoleReader(ITextInputDevice consoleReader) {
             this.consoleReader = consoleReader;
             return this;
         }

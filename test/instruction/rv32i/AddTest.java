@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Add;
 import rarsreborn.core.core.register.Register32File;
-import rarsreborn.core.exceptions.compilation.UnknownRegisterException;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ class AddTest {
     }
 
     @Test
-    void addition() throws UnknownRegisterException {
+    void addition() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(1);
         register32File.getRegisterByNumber(2).setValue(2);
         handler.handle(add);
@@ -36,7 +36,7 @@ class AddTest {
     }
 
     @Test
-    void additionNegative() throws UnknownRegisterException {
+    void additionNegative() throws IllegalRegisterException {
         register32File.getRegisterByNumber(1).setValue(-1);
         register32File.getRegisterByNumber(2).setValue(-2);
         handler.handle(add);

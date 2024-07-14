@@ -5,6 +5,7 @@ import rarsreborn.core.core.register.IRegister;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.*;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public abstract class InstructionRegexParserRegisterBase
         <TInstruction extends IInstruction>
@@ -28,14 +29,13 @@ public abstract class InstructionRegexParserRegisterBase
 
     protected static IRegister parseRegister(IRegisterFile<?> registers, String s)
             throws UnknownRegisterException {
-        IRegister register =
-            s.matches("x\\d+")
+        try {
+            return s.matches("x\\d+")
             ? registers.getRegisterByNumber(Integer.parseInt(s.substring(1)))
             : registers.getRegisterByName(s);
-        if (register == null) {
-            throw new UnknownRegisterException(s);
+        } catch (IllegalRegisterException e) {
+            throw new UnknownRegisterException(e.getMessage());
         }
-        return register;
     }
 
     protected static Register32 castToRegister32(IRegister register) throws WrongRegisterTypeException {
@@ -48,8 +48,8 @@ public abstract class InstructionRegexParserRegisterBase
 
     protected static short parseShort(String s) throws CompilationException {
         try {
-            long l = Long.parseLong(s);
-            if (l >>> 16 != 0) {
+            long l = RegexCompiler.parseLongInteger(s);
+            if (l < Short.MIN_VALUE || Short.MAX_VALUE < l) {
                 throw new ImmediateTooLargeException(l);
             }
             return (short) l;

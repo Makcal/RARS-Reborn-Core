@@ -16,6 +16,7 @@ public class Slli extends InstructionI {
 
     public Slli(InstructionIParams data) {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
+        checkFieldSize(imm, 5);
     }
 
     private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {

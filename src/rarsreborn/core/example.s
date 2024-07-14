@@ -23,6 +23,7 @@ skip:
 
     li a7, 5
     ecall
+    srai a0, a0, 1
     jal ra, printInt
 
     li a7, 10

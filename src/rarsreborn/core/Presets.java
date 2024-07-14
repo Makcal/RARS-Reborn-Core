@@ -58,7 +58,7 @@ public class Presets {
                 .registerInstruction(Andi.NAME, new Andi.Parser())
                 .registerInstruction(Slli.NAME, new Slli.Parser())
                 .registerInstruction(Srli.NAME, new Srli.Parser())
-//                .registerInstruction(Srai.NAME, new Srai.Parser())
+                .registerInstruction(Srai.NAME, new Srai.Parser())
                 // Load/store
                 .registerInstruction(Lw.NAME, new Lw.Parser())
                 // Branches
@@ -99,8 +99,7 @@ public class Presets {
                 .registerIInstruction(Ori.OPCODE, Ori.FUNCT_3, Ori.class)
                 .registerIInstruction(Andi.OPCODE, Andi.FUNCT_3, Andi.class)
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
-                .registerIInstruction(Srli.OPCODE, Srli.FUNCT_3, Srli.class)
-//                .registerIInstruction(Srai.OPCODE, Srai.FUNCT_3, Srai.class)
+                .registerIInstruction(ShiftRightImm.OPCODE, ShiftRightImm.FUNCT_3, ShiftRightImm.class)
                 // Load/store
                 .registerIInstruction(Lw.OPCODE, Lw.FUNCT3, Lw.class)
                 // Branches
@@ -169,8 +168,7 @@ public class Presets {
                 .registerHandler(Ori.class, new Ori.Handler())
                 .registerHandler(Andi.class, new Andi.Handler())
                 .registerHandler(Slli.class, new Slli.Handler())
-                .registerHandler(Srli.class, new Srli.Handler())
-//                .registerHandler(Srai.class, new Srai.Handler())
+                .registerHandler(ShiftRightImm.class, new ShiftRightImm.Handler())
                 // Load/store
                 .registerHandler(Lw.class, new Lw.Handler())
                 // Branches

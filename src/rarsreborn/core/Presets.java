@@ -136,6 +136,8 @@ public class Presets {
                 .addHandler(5, new ReadIntegerEcall())
                 .addHandler(8, new ReadStringEcall())
                 .addHandler(10, new ExitEcall())
+                .addHandler(11, new PrintCharEcall())
+                .addHandler(12, new ReadCharEcall())
                 .build();
 
             return new Simulator32(

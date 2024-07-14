@@ -1,5 +1,6 @@
 package rarsreborn.core;
 
+import rarsreborn.core.core.environment.ConsolePrintCharEvent;
 import rarsreborn.core.core.environment.ConsolePrintIntegerEvent;
 import rarsreborn.core.core.environment.ConsolePrintStringEvent;
 import rarsreborn.core.core.environment.ITextInputDevice;
@@ -21,6 +22,10 @@ public class Example {
             simulator.getExecutionEnvironment().addObserver(
                 ConsolePrintStringEvent.class,
                 event -> System.out.print(event.text())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintCharEvent.class,
+                event -> System.out.print((char) event.character())
             );
             simulator.getExecutionEnvironment().addObserver(
                 ConsolePrintIntegerEvent.class,
@@ -102,6 +107,11 @@ public class Example {
             } catch (InputMismatchException e) {
                 return 0;
             }
+        }
+
+        @Override
+        public byte requestChar() {
+            return (byte) scanner.next().charAt(0);
         }
     }
 }

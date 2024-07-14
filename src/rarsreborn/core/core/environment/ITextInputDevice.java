@@ -11,4 +11,6 @@ public interface ITextInputDevice extends IInputDevice {
     String requestString(int count);
 
     int requestInt();
+
+    byte requestChar();
 }

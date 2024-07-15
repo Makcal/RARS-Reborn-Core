@@ -17,7 +17,7 @@ import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.ZeroRegister32;
-import rarsreborn.core.core.riscvprogram.RiscVObjectFile;
+import rarsreborn.core.core.program.riscvprogram.RiscVObjectFile;
 import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.simulator.Simulator32;
 import rarsreborn.core.simulator.backstepper.BackStepper;

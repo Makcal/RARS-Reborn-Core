@@ -6,7 +6,7 @@ import rarsreborn.core.core.memory.ArrayBlockStorage;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.MemoryBlock;
 import rarsreborn.core.core.program.*;
-import rarsreborn.core.core.riscvprogram.RiscVExecutable;
+import rarsreborn.core.core.program.riscvprogram.RiscVExecutable;
 import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.compilation.LabelDuplicateException;
 import rarsreborn.core.exceptions.execution.IllegalInstructionException;

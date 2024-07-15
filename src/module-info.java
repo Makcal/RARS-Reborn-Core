@@ -2,7 +2,7 @@ module rarsreborn.core {
     exports rarsreborn.core.compilation.linker;
     exports rarsreborn.core.event;
     exports rarsreborn.core.core.instruction.riscv.instructions.rv32m;
-    exports rarsreborn.core.core.riscvprogram;
+    exports rarsreborn.core.core.program.riscvprogram;
     exports rarsreborn.core.core.environment.riscv.ecalls;
     exports rarsreborn.core.core.memory;
     exports rarsreborn.core.compilation.decoder.riscv;

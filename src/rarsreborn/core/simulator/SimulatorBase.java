@@ -16,6 +16,7 @@ import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.linking.LinkingException;
+import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 import rarsreborn.core.simulator.backstepper.BackStepperStub;
 import rarsreborn.core.simulator.backstepper.IBackStepper;
 
@@ -119,6 +120,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
             throw new RuntimeException("Wait until the worker is paused");
         }
         backStepper.revert();
+        observableImplementation.notifyObservers(new BackStepFinishedEvent());
     }
 
     protected abstract IInstruction getNextInstruction() throws ExecutionException;
@@ -213,7 +215,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
             synchronized (lock) {
                 isPaused = true;
             }
-            notifyObservers(new PauseEvent());
+            notifyObservers(new PausedEvent());
         }
 
         public void stop() {
@@ -222,7 +224,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                 isPaused = true;
                 instructionsToRun = 0;
             }
-            notifyObservers(new StopEvent());
+            notifyObservers(new StoppedEvent());
         }
 
         public void run() {

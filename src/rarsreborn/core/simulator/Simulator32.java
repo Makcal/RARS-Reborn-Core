@@ -30,10 +30,11 @@ public class Simulator32 extends SimulatorBase {
 
     protected long programLength;
     protected byte lastInstructionSize;
-    protected long lastPcPosition;
+    protected boolean wasProgramCounterAffected;
 
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
     protected IObserver<Register32ChangeEvent> registerObserver;
+    protected IObserver<Register32ChangeEvent> programCounterObserver;
 
     public Simulator32(
         ICompiler compiler,
@@ -84,10 +85,31 @@ public class Simulator32 extends SimulatorBase {
         if (memoryBackStepperObserver != null) {
             memory.removeObserver(MemoryChangeEvent.class, memoryBackStepperObserver);
         }
+
         registerFile.getAllRegisters().forEach(
             register -> register.removeObserver(Register32ChangeEvent.class, registerObserver)
         );
         programCounter.removeObserver(Register32ChangeEvent.class, registerObserver);
+
+        programCounter.removeObserver(Register32ChangeEvent.class, programCounterObserver);
+    }
+
+    private void setUpObservers() {
+        this.memory.addObserver(
+            MemoryChangeEvent.class,
+            memoryBackStepperObserver = event -> this.backStepper.addChange(new MemoryChange(this.memory, event))
+        );
+
+        registerObserver = event -> this.backStepper.addChange(new Register32Change(event));
+        registerFile.getAllRegisters().forEach(
+            register -> register.addObserver(Register32ChangeEvent.class, registerObserver)
+        );
+        programCounter.addObserver(Register32ChangeEvent.class, registerObserver);
+
+        programCounter.addObserver(
+            Register32ChangeEvent.class,
+            programCounterObserver = event -> wasProgramCounterAffected = true
+        );
     }
 
     @Override
@@ -108,18 +130,6 @@ public class Simulator32 extends SimulatorBase {
         setUpObservers();
     }
 
-    private void setUpObservers() {
-        this.memory.addObserver(
-            MemoryChangeEvent.class,
-            memoryBackStepperObserver = event -> this.backStepper.addChange(new MemoryChange(this.memory, event))
-        );
-        registerObserver = event -> this.backStepper.addChange(new Register32Change(event));
-        registerFile.getAllRegisters().forEach(
-            register -> register.addObserver(Register32ChangeEvent.class, registerObserver)
-        );
-        programCounter.addObserver(Register32ChangeEvent.class, registerObserver);
-    }
-
     @Override
     protected void loadProgram(IExecutable program) {
         memory.writeBytes(Memory32.DATA_SECTION_START, program.getData());
@@ -137,7 +147,6 @@ public class Simulator32 extends SimulatorBase {
         try {
             DecodingResult decoded = decoder.decodeNextInstruction(memory, programCounter.getValue());
             lastInstructionSize = decoded.bytesConsumed();
-            lastPcPosition = programCounter.getValue();
             return decoded.instruction();
         } catch (MemoryAccessException e) {
             throw new RuntimeException(e);
@@ -146,9 +155,11 @@ public class Simulator32 extends SimulatorBase {
 
     @Override
     protected void executeOneInstruction() throws ExecutionException {
+        wasProgramCounterAffected = false;
         super.executeOneInstruction();
-        if (lastPcPosition == programCounter.getValue())
+        if (!wasProgramCounterAffected) {
             programCounter.setValue(programCounter.getValue() + lastInstructionSize);
+        }
     }
 
     public <TInstruction extends IInstruction> Simulator32 registerHandler(

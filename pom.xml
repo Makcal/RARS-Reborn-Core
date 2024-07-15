@@ -6,6 +6,23 @@
     <artifactId>RARS_Reborn_Core</artifactId>
     <version>1.0</version>
 
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.pg.innopolis.university/api/v4/groups/2049/-/packages/maven</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.pg.innopolis.university/api/v4/projects/1066/packages/maven</url>
+        </repository>
+        <snapshotRepository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.example.com/api/v4/projects/1066/packages/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <directory>${project.basedir}/out</directory>
         <sourceDirectory>${project.basedir}/src</sourceDirectory>

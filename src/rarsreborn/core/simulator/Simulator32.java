@@ -22,8 +22,6 @@ import rarsreborn.core.simulator.backstepper.IBackStepper;
 import rarsreborn.core.simulator.backstepper.MemoryChange;
 import rarsreborn.core.simulator.backstepper.Register32Change;
 
-import java.util.HashMap;
-
 public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
@@ -35,7 +33,7 @@ public class Simulator32 extends SimulatorBase {
     protected long lastPcPosition;
 
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
-    protected final HashMap<Register32, IObserver<Register32ChangeEvent>> registerBackStepperObservers = new HashMap<>();
+    protected IObserver<Register32ChangeEvent> registerObserver;
 
     public Simulator32(
         ICompiler compiler,
@@ -82,15 +80,19 @@ public class Simulator32 extends SimulatorBase {
         return executionEnvironment;
     }
 
-    @Override
-    public void reset() {
+    protected void clearObservers() {
         if (memoryBackStepperObserver != null) {
             memory.removeObserver(MemoryChangeEvent.class, memoryBackStepperObserver);
         }
-        registerBackStepperObservers.forEach(
-            (register, observer) -> register.removeObserver(Register32ChangeEvent.class, observer)
+        registerFile.getAllRegisters().forEach(
+            register -> register.removeObserver(Register32ChangeEvent.class, registerObserver)
         );
-        registerBackStepperObservers.clear();
+        programCounter.removeObserver(Register32ChangeEvent.class, registerObserver);
+    }
+
+    @Override
+    public void reset() {
+        clearObservers();
 
         backStepper.reset();
         memory.reset();
@@ -103,23 +105,19 @@ public class Simulator32 extends SimulatorBase {
         }
         loadProgram(executable);
 
+        setUpObservers();
+    }
+
+    private void setUpObservers() {
         this.memory.addObserver(
             MemoryChangeEvent.class,
             memoryBackStepperObserver = event -> this.backStepper.addChange(new MemoryChange(this.memory, event))
         );
-        IObserver<Register32ChangeEvent> observer = event -> this.backStepper.addChange(new Register32Change(event));
-        for (Register32 register : registerFile.getAllRegisters()) {
-            register.addObserver(
-                Register32ChangeEvent.class,
-                observer
-            );
-            registerBackStepperObservers.put(register, observer);
-        }
-        programCounter.addObserver(
-            Register32ChangeEvent.class,
-            observer
+        registerObserver = event -> this.backStepper.addChange(new Register32Change(event));
+        registerFile.getAllRegisters().forEach(
+            register -> register.addObserver(Register32ChangeEvent.class, registerObserver)
         );
-        registerBackStepperObservers.put(programCounter, observer);
+        programCounter.addObserver(Register32ChangeEvent.class, registerObserver);
     }
 
     @Override

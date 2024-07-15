@@ -2,9 +2,27 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>rarsreborn.core</groupId>
-    <artifactId>RARS_Reborn_Core</artifactId>
+    <groupId>swapik</groupId>
+    <artifactId>rarsreborn.core</artifactId>
     <version>1.0</version>
+    <name>RARS Reborn Core</name>
+
+    <repositories>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.pg.innopolis.university/api/v4/groups/2049/-/packages/maven</url>
+        </repository>
+    </repositories>
+    <distributionManagement>
+        <repository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.pg.innopolis.university/api/v4/projects/1066/packages/maven</url>
+        </repository>
+        <snapshotRepository>
+            <id>gitlab-maven</id>
+            <url>https://gitlab.example.com/api/v4/projects/1066/packages/maven</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <build>
         <directory>${project.basedir}/out</directory>

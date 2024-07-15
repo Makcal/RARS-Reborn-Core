@@ -67,12 +67,22 @@ variables:
 
 build:
   extends: .jdk
-  stage: deploy
+  stage: build
   script:
     - |
       ./mvnw $MAVEN_CLI_OPTS package
-      if [ $? -ne 0 ]; then cat out/surefire-reports/*.txt; fi
+      if [ $? -ne 0 ]; then cat out/surefire-reports/*.txt; exit 1; fi
+      cp out/rarsreborn.core*.jar .
   artifacts:
     name: "RARS-Reborn-Core"
     paths:
-      - "out/RARS_Reborn_Core-*.jar"
+      - "rarsreborn.core*.jar"
+
+deploy:
+  extends: .jdk
+  stage: deploy
+  script:
+    - |
+      ./mvnw $MAVEN_CLI_OPTS -s ci_settings.xml -DskipTests=true deploy
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"

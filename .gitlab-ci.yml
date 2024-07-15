@@ -72,11 +72,11 @@ build:
     - |
       ./mvnw $MAVEN_CLI_OPTS package
       if [ $? -ne 0 ]; then cat out/surefire-reports/*.txt; exit 1; fi
-      cp out/RARS_Reborn_Core-*.jar .
+      cp out/rarsreborn.core*.jar .
   artifacts:
     name: "RARS-Reborn-Core"
     paths:
-      - "RARS_Reborn_Core-*.jar"
+      - "rarsreborn.core*.jar"
 
 deploy:
   extends: .jdk

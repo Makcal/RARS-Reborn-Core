@@ -26,6 +26,11 @@ public class Ecall extends InstructionI {
         return NAME;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
+
     public void exec(IExecutionEnvironment environment) throws ExecutionException {
         environment.call();
     }

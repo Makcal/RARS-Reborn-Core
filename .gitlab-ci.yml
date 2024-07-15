@@ -8,6 +8,8 @@ stages:
 # <<< MERGE REQUESTS >>>
 .assign-reviewers-job:
   stage: set up merge request
+  tags:
+    - linux
   image: alpine
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && 
@@ -55,21 +57,20 @@ variables:
     -DinstallAtEnd=true
     -DdeployAtEnd=true
 
-cache:
-  paths:
-    - .m2/repository
-
-.maven:
-  image: alpine
-  before_script:
-    - apk add openjdk21 maven
+.jdk:
+  tags:
+    - linux
+  image: openjdk:23-slim-bullseye
+  cache:
+    paths:
+      - .m2/repository
 
 build:
-  extends: .maven
+  extends: .jdk
   stage: deploy
   script:
     - |
-      mvn $MAVEN_CLI_OPTS package
+      ./mvnw $MAVEN_CLI_OPTS package
       if [ $? -ne 0 ]; then cat out/surefire-reports/*.txt; fi
   artifacts:
     name: "RARS-Reborn-Core"

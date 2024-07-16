@@ -38,7 +38,7 @@ public abstract class RiscVInstruction implements IInstruction {
     /**
      * Check the sign bit and extend the sign if necessary
      */
-    protected static int asNegative(int value, int bitSize) {
+    public static int asNegative(int value, int bitSize) {
         if ((value & (1 << (bitSize - 1))) != 0) {
             return value | (-1 << bitSize);
         }

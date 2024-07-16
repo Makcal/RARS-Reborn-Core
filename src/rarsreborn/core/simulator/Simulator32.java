@@ -22,8 +22,6 @@ import rarsreborn.core.simulator.backstepper.IBackStepper;
 import rarsreborn.core.simulator.backstepper.MemoryChange;
 import rarsreborn.core.simulator.backstepper.Register32Change;
 
-import java.util.HashMap;
-
 public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
@@ -32,10 +30,11 @@ public class Simulator32 extends SimulatorBase {
 
     protected long programLength;
     protected byte lastInstructionSize;
-    protected long lastPcPosition;
+    protected boolean wasProgramCounterAffected;
 
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
-    protected final HashMap<Register32, IObserver<Register32ChangeEvent>> registerBackStepperObservers = new HashMap<>();
+    protected IObserver<Register32ChangeEvent> registerObserver;
+    protected IObserver<Register32ChangeEvent> programCounterObserver;
 
     public Simulator32(
         ICompiler compiler,
@@ -82,15 +81,40 @@ public class Simulator32 extends SimulatorBase {
         return executionEnvironment;
     }
 
-    @Override
-    public void reset() {
+    protected void clearObservers() {
         if (memoryBackStepperObserver != null) {
             memory.removeObserver(MemoryChangeEvent.class, memoryBackStepperObserver);
         }
-        registerBackStepperObservers.forEach(
-            (register, observer) -> register.removeObserver(Register32ChangeEvent.class, observer)
+
+        registerFile.getAllRegisters().forEach(
+            register -> register.removeObserver(Register32ChangeEvent.class, registerObserver)
         );
-        registerBackStepperObservers.clear();
+        programCounter.removeObserver(Register32ChangeEvent.class, registerObserver);
+
+        programCounter.removeObserver(Register32ChangeEvent.class, programCounterObserver);
+    }
+
+    private void setUpObservers() {
+        this.memory.addObserver(
+            MemoryChangeEvent.class,
+            memoryBackStepperObserver = event -> this.backStepper.addChange(new MemoryChange(this.memory, event))
+        );
+
+        registerObserver = event -> this.backStepper.addChange(new Register32Change(event));
+        registerFile.getAllRegisters().forEach(
+            register -> register.addObserver(Register32ChangeEvent.class, registerObserver)
+        );
+        programCounter.addObserver(Register32ChangeEvent.class, registerObserver);
+
+        programCounter.addObserver(
+            Register32ChangeEvent.class,
+            programCounterObserver = event -> wasProgramCounterAffected = true
+        );
+    }
+
+    @Override
+    public void reset() {
+        clearObservers();
 
         backStepper.reset();
         memory.reset();
@@ -103,23 +127,7 @@ public class Simulator32 extends SimulatorBase {
         }
         loadProgram(executable);
 
-        this.memory.addObserver(
-            MemoryChangeEvent.class,
-            memoryBackStepperObserver = event -> this.backStepper.addChange(new MemoryChange(this.memory, event))
-        );
-        IObserver<Register32ChangeEvent> observer = event -> this.backStepper.addChange(new Register32Change(event));
-        for (Register32 register : registerFile.getAllRegisters()) {
-            register.addObserver(
-                Register32ChangeEvent.class,
-                observer
-            );
-            registerBackStepperObservers.put(register, observer);
-        }
-        programCounter.addObserver(
-            Register32ChangeEvent.class,
-            observer
-        );
-        registerBackStepperObservers.put(programCounter, observer);
+        setUpObservers();
     }
 
     @Override
@@ -139,7 +147,6 @@ public class Simulator32 extends SimulatorBase {
         try {
             DecodingResult decoded = decoder.decodeNextInstruction(memory, programCounter.getValue());
             lastInstructionSize = decoded.bytesConsumed();
-            lastPcPosition = programCounter.getValue();
             return decoded.instruction();
         } catch (MemoryAccessException e) {
             throw new RuntimeException(e);
@@ -148,9 +155,11 @@ public class Simulator32 extends SimulatorBase {
 
     @Override
     protected void executeOneInstruction() throws ExecutionException {
+        wasProgramCounterAffected = false;
         super.executeOneInstruction();
-        if (lastPcPosition == programCounter.getValue())
+        if (!wasProgramCounterAffected) {
             programCounter.setValue(programCounter.getValue() + lastInstructionSize);
+        }
     }
 
     public <TInstruction extends IInstruction> Simulator32 registerHandler(

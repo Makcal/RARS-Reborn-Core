@@ -223,7 +223,9 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
 
                 try {
                     executeOneInstruction();
-                    instructionsToRun--;
+                    if (instructionsToRun > 0) {
+                        instructionsToRun--;
+                    }
                     if (instructionsToRun == 0) {
                         pause();
                     }

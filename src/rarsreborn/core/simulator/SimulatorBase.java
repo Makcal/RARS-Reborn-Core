@@ -91,7 +91,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         IMemory memoryWrapper
             = new MemoryBlockWrapper(new MemoryBlock(0, new ArrayBlockStorage(executable.getText())));
         try {
-            for (long pc = 0; pc < executable.getText().length;) {
+            for (long pc = 0; pc + decoder.getBufferSize() <= executable.getText().length;) {
                 DecodingResult decodingResult = decoder.decodeNextInstruction(memoryWrapper, pc);
                 instructions.add(decodingResult.instruction());
                 pc += decodingResult.bytesConsumed();

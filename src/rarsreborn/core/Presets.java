@@ -60,7 +60,11 @@ public class Presets {
                 .registerInstruction(Srli.NAME, new Srli.Parser())
                 .registerInstruction(Srai.NAME, new Srai.Parser())
                 // Load/store
+                .registerInstruction(Lb.NAME, new Lb.Parser())
+                .registerInstruction(Lh.NAME, new Lh.Parser())
                 .registerInstruction(Lw.NAME, new Lw.Parser())
+                .registerInstruction(Lbu.NAME, new Lbu.Parser())
+                .registerInstruction(Lhu.NAME, new Lhu.Parser())
                 // Branches
                 .registerInstruction(Beq.NAME, new Beq.Parser())
                 .registerInstruction(Bne.NAME, new Bne.Parser())
@@ -102,7 +106,11 @@ public class Presets {
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
                 .registerIInstruction(ShiftRightImm.OPCODE, ShiftRightImm.FUNCT_3, ShiftRightImm.class)
                 // Load/store
+                .registerIInstruction(Lb.OPCODE, Lb.FUNCT_3, Lb.class)
+                .registerIInstruction(Lh.OPCODE, Lh.FUNCT_3, Lh.class)
                 .registerIInstruction(Lw.OPCODE, Lw.FUNCT_3, Lw.class)
+                .registerIInstruction(Lbu.OPCODE, Lbu.FUNCT_3, Lbu.class)
+                .registerIInstruction(Lhu.OPCODE, Lhu.FUNCT_3, Lhu.class)
                 // Branches
                 .registerBInstruction(Beq.OPCODE, Beq.FUNCT_3, Beq.class)
                 .registerBInstruction(Bne.OPCODE, Bne.FUNCT_3, Bne.class)
@@ -171,7 +179,11 @@ public class Presets {
                 .registerHandler(Slli.class, new Slli.Handler())
                 .registerHandler(ShiftRightImm.class, new ShiftRightImm.Handler())
                 // Load/store
+                .registerHandler(Lb.class, new Lb.Handler())
+                .registerHandler(Lh.class, new Lh.Handler())
                 .registerHandler(Lw.class, new Lw.Handler())
+                .registerHandler(Lbu.class, new Lbu.Handler())
+                .registerHandler(Lhu.class, new Lhu.Handler())
                 // Branches
                 .registerHandler(Beq.class, new Beq.Handler())
                 .registerHandler(Bne.class, new Bne.Handler())

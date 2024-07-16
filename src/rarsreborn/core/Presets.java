@@ -74,6 +74,7 @@ public class Presets {
                 .registerInstruction(Auipc.NAME, new Auipc.Parser())
                 // Other
                 .registerInstruction(Ecall.NAME, new Ecall.Parser())
+                .registerInstruction(Ebreak.NAME, new Ebreak.Parser())
                 // RV32M
                 .registerInstruction(Mul.NAME, new Mul.Parser())
                 .registerInstruction(Div.NAME, new Div.Parser())
@@ -114,7 +115,7 @@ public class Presets {
                 .registerIInstruction(Jalr.OPCODE, Jalr.FUNCT3, Jalr.class)
                 .registerUInstruction(Auipc.OPCODE, Auipc.class)
                 // Other
-                .registerIInstruction(Ecall.OPCODE, Ecall.FUNCT3, Ecall.class)
+                .registerIInstruction(EcallEbreakImpl.OPCODE, EcallEbreakImpl.FUNCT3, EcallEbreakImpl.class)
                 // RV32M
                 .registerRInstruction(Mul.OPCODE, Mul.FUNCT_3, Mul.FUNCT_7, Mul.class)
                 .registerRInstruction(Div.OPCODE, Div.FUNCT_3, Div.FUNCT_7, Div.class)
@@ -183,7 +184,7 @@ public class Presets {
                 .registerHandler(Jalr.class, new Jalr.Handler())
                 .registerHandler(Auipc.class, new Auipc.Handler())
                 // Other
-                .registerHandler(Ecall.class, new Ecall.Handler())
+                .registerHandler(EcallEbreakImpl.class, new EcallEbreakImpl.Handler())
                 // RV32M
                 .registerHandler(Mul.class, new Mul.Handler())
                 .registerHandler(Div.class, new Div.Handler());

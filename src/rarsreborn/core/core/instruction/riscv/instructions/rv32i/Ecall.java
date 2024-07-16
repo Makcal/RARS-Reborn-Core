@@ -16,9 +16,13 @@ public class Ecall extends InstructionI {
         super(new InstructionIData(OPCODE, (byte) 0, FUNCT3, (byte) 0, (short) 0));
     }
 
+    // Required for parsing
     @SuppressWarnings("unused")
-    public Ecall(InstructionIParams ignoredData) {
-        this();
+    public Ecall(InstructionIParams data) {
+        super(new InstructionIData(OPCODE, data.rd(), FUNCT3, data.rs1(), data.imm()));
+        checkFieldSize(rd, 0);
+        checkFieldSize(rs1, 0);
+        checkFieldSize(imm, 0);
     }
 
     @Override

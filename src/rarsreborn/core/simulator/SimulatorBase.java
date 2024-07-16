@@ -19,6 +19,7 @@ import rarsreborn.core.exceptions.NoBackStepsLeftException;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
+import rarsreborn.core.exceptions.execution.ExecutionBreakException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.execution.IllegalInstructionException;
 import rarsreborn.core.exceptions.linking.LinkingException;
@@ -231,6 +232,9 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                     }
                 } catch (EndOfExecutionException ignored) {
                     stop();
+                } catch (ExecutionBreakException ignored) {
+                    pause();
+                    notifyObservers(new InstructionExecutedEvent());
                 }
             }
 

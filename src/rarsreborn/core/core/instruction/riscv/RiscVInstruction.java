@@ -11,22 +11,22 @@ public abstract class RiscVInstruction implements IInstruction {
         this.opcode = opcode;
     }
 
-    protected static boolean fieldOutOfBounds(int field, int bitSize) {
+    public static boolean fieldOutOfBounds(int field, int bitSize) {
         return (field & (-1 << bitSize)) != 0;
     }
 
-    protected static boolean fieldOutOfBounds(int field, int bitSize, int offset) {
+    public static boolean fieldOutOfBounds(int field, int bitSize, int offset) {
         return (field & (-1 << (bitSize + offset))) != 0 && bitSize + offset < 32
             || (field & ((1 << offset) - 1)) != 0;
     }
 
-    protected static void checkFieldSize(int field, int bitSize) {
+    public static void checkFieldSize(int field, int bitSize) {
         if (fieldOutOfBounds(field, bitSize)) {
             throw new IllegalArgumentException("Field 0x%x is too large (%d bits max)".formatted(field, bitSize));
         }
     }
 
-    protected static void checkFieldSize(int field, int bitSize, int offset) {
+    public static void checkFieldSize(int field, int bitSize, int offset) {
         if (fieldOutOfBounds(field, bitSize, offset)) {
             throw new IllegalArgumentException(
                 "Field 0x%x is too large (%d bits max) or ".formatted(field, bitSize) +
@@ -47,6 +47,15 @@ public abstract class RiscVInstruction implements IInstruction {
         }
     }
 
+    /**
+     * Removes leading bits compressing them to the sign bit.
+     * <p>
+     * E.g. -1 (0xffff_ffff) in 12 bits is 0xfff with leading zeros.
+     * @param value a number to truncate
+     * @param bitSize the number of significant bits including the right-most sign bit
+     * @return the number with insignificant sign bits removed
+     * @throws ImmediateTooLargeException if the number can not be fit in <code>value</code> bits
+     */
     public static long truncateNegative(long value, int bitSize) throws ImmediateTooLargeException {
         final int MAX = (1 << (bitSize - 1)) - 1;
         if (value < ~MAX || MAX < value) {

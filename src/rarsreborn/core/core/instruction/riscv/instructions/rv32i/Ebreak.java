@@ -1,11 +1,10 @@
 package rarsreborn.core.core.instruction.riscv.instructions.rv32i;
 
 import rarsreborn.core.compilation.compiler.riscv.InstructionRegexParserRegisterBase;
+import rarsreborn.core.core.environment.IExecutionEnvironment;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
-import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
-import rarsreborn.core.exceptions.execution.ExecutionBreakException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.execution.IllegalInstructionException;
 
@@ -39,15 +38,14 @@ public class Ebreak extends InstructionI {
         return getName();
     }
 
-    public void exec(Register32 programCounter) throws ExecutionException {
-        programCounter.setValue(programCounter.getValue() + 4);
-        throw new ExecutionBreakException();
+    public void exec(IExecutionEnvironment executionEnvironment) throws ExecutionException {
+        executionEnvironment.break_();
     }
 
     public static class Handler extends RiscV32InstructionHandler<Ebreak> {
         @Override
         public void handle(Ebreak instruction) throws ExecutionException {
-            instruction.exec(programCounter);
+            instruction.exec(executionEnvironment);
         }
     }
 

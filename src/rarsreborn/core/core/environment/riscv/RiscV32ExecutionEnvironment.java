@@ -3,6 +3,7 @@ package rarsreborn.core.core.environment.riscv;
 import rarsreborn.core.core.environment.IExecutionEnvironment;
 import rarsreborn.core.core.environment.ISystemCall;
 import rarsreborn.core.core.environment.ITextInputDevice;
+import rarsreborn.core.core.environment.events.BreakpointEvent;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
@@ -14,7 +15,7 @@ import rarsreborn.core.exceptions.execution.UnknownSystemCallException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObservable {
+public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
     protected final Register32File registers;
     protected final Register32 programCounter;
     protected final IMemory memory;
@@ -60,7 +61,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
 
     @Override
     public void break_() {
-        throw new RuntimeException("Not implemented");
+        notifyObservers(new BreakpointEvent());
     }
 
     @Override

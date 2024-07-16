@@ -26,7 +26,6 @@ public class Simulator32 extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
     protected final Memory32 memory;
-    protected final RiscV32ExecutionEnvironment executionEnvironment;
 
     protected long programLength;
     protected byte lastInstructionSize;
@@ -58,11 +57,10 @@ public class Simulator32 extends SimulatorBase {
         RiscV32ExecutionEnvironment executionEnvironment,
         IBackStepper backStepper
     ) {
-        super(compiler, linker, decoder, backStepper);
+        super(compiler, linker, decoder, backStepper, executionEnvironment);
         this.registerFile = registerFile;
         this.memory = memory;
         this.programCounter = programCounter;
-        this.executionEnvironment = executionEnvironment;
     }
 
     public Register32File getRegisterFile() {
@@ -75,10 +73,6 @@ public class Simulator32 extends SimulatorBase {
 
     public Register32 getProgramCounter() {
         return programCounter;
-    }
-
-    public RiscV32ExecutionEnvironment getExecutionEnvironment() {
-        return executionEnvironment;
     }
 
     protected void clearObservers() {

@@ -57,4 +57,16 @@ public abstract class InstructionRegexParserRegisterBase
             throw new ExpectedIntegerException(s);
         }
     }
+
+    protected static int parseInt(String s) throws CompilationException {
+        try {
+            long l = RegexCompiler.parseLongInteger(s);
+            if (l < Integer.MIN_VALUE || Integer.MAX_VALUE < l) {
+                throw new ImmediateTooLargeException(l);
+            }
+            return (int) l;
+        } catch (NumberFormatException e) {
+            throw new ExpectedIntegerException(s);
+        }
+    }
 }

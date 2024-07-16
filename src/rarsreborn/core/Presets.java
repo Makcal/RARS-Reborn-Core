@@ -75,6 +75,7 @@ public class Presets {
                 // Jumps
                 .registerInstruction(Jal.NAME, new Jal.Parser())
                 .registerInstruction(Jalr.NAME, new Jalr.Parser())
+                .registerInstruction(Lui.NAME, new Lui.Parser())
                 .registerInstruction(Auipc.NAME, new Auipc.Parser())
                 // Other
                 .registerInstruction(Ecall.NAME, new Ecall.Parser())
@@ -121,6 +122,7 @@ public class Presets {
                 // Jumps
                 .registerJInstruction(Jal.OPCODE, Jal.class)
                 .registerIInstruction(Jalr.OPCODE, Jalr.FUNCT_3, Jalr.class)
+                .registerUInstruction(Lui.OPCODE, Lui.class)
                 .registerUInstruction(Auipc.OPCODE, Auipc.class)
                 // Other
                 .registerIInstruction(EcallEbreakImpl.OPCODE, EcallEbreakImpl.FUNCT_3, EcallEbreakImpl.class)
@@ -194,6 +196,7 @@ public class Presets {
                 // Jumps
                 .registerHandler(Jal.class, new Jal.Handler())
                 .registerHandler(Jalr.class, new Jalr.Handler())
+                .registerHandler(Lui.class, new Lui.Handler())
                 .registerHandler(Auipc.class, new Auipc.Handler())
                 // Other
                 .registerHandler(EcallEbreakImpl.class, new EcallEbreakImpl.Handler())

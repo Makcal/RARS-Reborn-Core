@@ -12,16 +12,16 @@ import rarsreborn.core.exceptions.execution.IllegalInstructionException;
 public class Ebreak extends InstructionI {
     public static final String NAME = "ebreak";
     public static final byte OPCODE = 0b1110011;
-    public static final byte FUNCT3 = 0x0;
+    public static final byte FUNCT_3 = 0x0;
 
     public Ebreak() {
-        super(new InstructionIData(OPCODE, (byte) 0, FUNCT3, (byte) 0, (short) 1));
+        super(new InstructionIData(OPCODE, (byte) 0, FUNCT_3, (byte) 0, (short) 1));
     }
 
     // Required for parsing
     @SuppressWarnings("unused")
     public Ebreak(InstructionIParams data) throws IllegalInstructionException {
-        super(new InstructionIData(OPCODE, data.rd(), FUNCT3, data.rs1(), data.imm()));
+        super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
         checkFieldSize(rd, 0);
         checkFieldSize(rs1, 0);
         if (imm != 0x1) {

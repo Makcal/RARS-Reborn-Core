@@ -11,10 +11,10 @@ import rarsreborn.core.exceptions.execution.ExecutionException;
  */
 public class EcallEbreakImpl extends InstructionI {
     public static final byte OPCODE = 0b1110011;
-    public static final byte FUNCT3 = 0x0;
+    public static final byte FUNCT_3 = 0x0;
 
     public EcallEbreakImpl(InstructionIParams data) {
-        super(new InstructionIData(OPCODE, data.rd(), FUNCT3, data.rs1(), data.imm()));
+        super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
         checkFieldSize(imm, 1);
     }
 

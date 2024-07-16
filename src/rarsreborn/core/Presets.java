@@ -102,20 +102,20 @@ public class Presets {
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
                 .registerIInstruction(ShiftRightImm.OPCODE, ShiftRightImm.FUNCT_3, ShiftRightImm.class)
                 // Load/store
-                .registerIInstruction(Lw.OPCODE, Lw.FUNCT3, Lw.class)
+                .registerIInstruction(Lw.OPCODE, Lw.FUNCT_3, Lw.class)
                 // Branches
-                .registerBInstruction(Beq.OPCODE, Beq.FUNCT3, Beq.class)
-                .registerBInstruction(Bne.OPCODE, Bne.FUNCT3, Bne.class)
-                .registerBInstruction(Blt.OPCODE, Blt.FUNCT3, Blt.class)
-                .registerBInstruction(Bge.OPCODE, Bge.FUNCT3, Bge.class)
-                .registerBInstruction(Bltu.OPCODE, Bltu.FUNCT3, Bltu.class)
-                .registerBInstruction(Bgeu.OPCODE, Bgeu.FUNCT3, Bgeu.class)
+                .registerBInstruction(Beq.OPCODE, Beq.FUNCT_3, Beq.class)
+                .registerBInstruction(Bne.OPCODE, Bne.FUNCT_3, Bne.class)
+                .registerBInstruction(Blt.OPCODE, Blt.FUNCT_3, Blt.class)
+                .registerBInstruction(Bge.OPCODE, Bge.FUNCT_3, Bge.class)
+                .registerBInstruction(Bltu.OPCODE, Bltu.FUNCT_3, Bltu.class)
+                .registerBInstruction(Bgeu.OPCODE, Bgeu.FUNCT_3, Bgeu.class)
                 // Jumps
                 .registerJInstruction(Jal.OPCODE, Jal.class)
-                .registerIInstruction(Jalr.OPCODE, Jalr.FUNCT3, Jalr.class)
+                .registerIInstruction(Jalr.OPCODE, Jalr.FUNCT_3, Jalr.class)
                 .registerUInstruction(Auipc.OPCODE, Auipc.class)
                 // Other
-                .registerIInstruction(EcallEbreakImpl.OPCODE, EcallEbreakImpl.FUNCT3, EcallEbreakImpl.class)
+                .registerIInstruction(EcallEbreakImpl.OPCODE, EcallEbreakImpl.FUNCT_3, EcallEbreakImpl.class)
                 // RV32M
                 .registerRInstruction(Mul.OPCODE, Mul.FUNCT_3, Mul.FUNCT_7, Mul.class)
                 .registerRInstruction(Div.OPCODE, Div.FUNCT_3, Div.FUNCT_7, Div.class)

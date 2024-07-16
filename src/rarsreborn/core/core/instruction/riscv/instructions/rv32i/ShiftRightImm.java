@@ -31,6 +31,11 @@ public class ShiftRightImm extends InstructionI {
         return isArithmetic() ? "srai" : "srli";
     }
 
+    @Override
+    public String toString() {
+        return "%s x%d, x%d, %d".formatted(getName(), rd, rs1, imm & 0b1_1111);
+    }
+
     public boolean isArithmetic() {
         return (imm & (1 << 10)) != 0;
     }

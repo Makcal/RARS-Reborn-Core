@@ -16,11 +16,11 @@ import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 public class Bltu extends InstructionB implements ILinkableInstruction {
     public static final String NAME = "bltu";
     public static final byte OPCODE = 0b1100011;
-    public static final byte FUNCT3 = 0x6;
+    public static final byte FUNCT_3 = 0x6;
     protected LinkRequest linkRequest;
 
     public Bltu(InstructionBParams params) {
-        super(new InstructionBData(OPCODE, params.imm(), FUNCT3, params.rs1(), params.rs2()));
+        super(new InstructionBData(OPCODE, params.imm(), FUNCT_3, params.rs1(), params.rs2()));
     }
 
     public void exec(IRegisterFile<Register32> registers, Register32 programCounter) throws IllegalRegisterException {

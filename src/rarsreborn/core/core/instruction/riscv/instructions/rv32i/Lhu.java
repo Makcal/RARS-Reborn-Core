@@ -14,10 +14,10 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 public class Lhu extends InstructionI {
     public static final String NAME = "lhu";
     public static final byte OPCODE = 0b0000011;
-    public static final byte FUNCT3 = 0x5;
+    public static final byte FUNCT_3 = 0x5;
 
     public Lhu(InstructionIParams params) {
-        super(new InstructionIData(OPCODE, params.rd(), FUNCT3, params.rs1(), params.imm()));
+        super(new InstructionIData(OPCODE, params.rd(), FUNCT_3, params.rs1(), params.imm()));
     }
 
     public void exec(IRegisterFile<Register32> registers, IMemory memory)

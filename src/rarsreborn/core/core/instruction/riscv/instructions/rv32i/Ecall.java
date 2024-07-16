@@ -10,20 +10,29 @@ import rarsreborn.core.exceptions.execution.ExecutionException;
 public class Ecall extends InstructionI {
     public static final String NAME = "ecall";
     public static final byte OPCODE = 0b1110011;
-    public static final byte FUNCT3 = 0x0;
+    public static final byte FUNCT_3 = 0x0;
 
     public Ecall() {
-        super(new InstructionIData(OPCODE, (byte) 0, FUNCT3, (byte) 0, (short) 0));
+        super(new InstructionIData(OPCODE, (byte) 0, FUNCT_3, (byte) 0, (short) 0));
     }
 
+    // Required for parsing
     @SuppressWarnings("unused")
-    public Ecall(InstructionIParams ignoredData) {
-        this();
+    public Ecall(InstructionIParams data) {
+        super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
+        checkFieldSize(rd, 0);
+        checkFieldSize(rs1, 0);
+        checkFieldSize(imm, 0);
     }
 
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
     }
 
     public void exec(IExecutionEnvironment environment) throws ExecutionException {

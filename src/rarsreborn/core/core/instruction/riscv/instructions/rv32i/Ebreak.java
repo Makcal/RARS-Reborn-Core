@@ -18,7 +18,7 @@ public class Ebreak extends InstructionI {
         super(new InstructionIData(OPCODE, (byte) 0, FUNCT_3, (byte) 0, (short) 1));
     }
 
-    // Required for parsing
+    // Required for decoding
     @SuppressWarnings("unused")
     public Ebreak(InstructionIParams data) throws IllegalInstructionException {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));

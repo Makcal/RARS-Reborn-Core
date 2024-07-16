@@ -55,7 +55,8 @@ public class RiscVLinker implements ILinker {
                             + localInstructionAddress
                             - relocationRecord.extraCompensation();
                         instruction.link(
-                            context.symbolTable.getSymbol(relocationRecord.symbol()).address() - pcPosition
+                            pcPosition,
+                            context.symbolTable.getSymbol(relocationRecord.symbol()).address()
                         );
                     } catch (TargetAddressTooLargeException e) {
                         throw new TargetAddressTooLargeException(relocationRecord.symbol(), e);

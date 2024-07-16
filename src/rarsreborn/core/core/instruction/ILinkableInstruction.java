@@ -4,7 +4,7 @@ import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.exceptions.linking.LinkingException;
 
 public interface ILinkableInstruction extends IInstruction {
-    void link(long offset) throws LinkingException;
+    void link(long instructionPosition, long symbolAddress) throws LinkingException;
 
     LinkRequest getLinkRequest();
 }

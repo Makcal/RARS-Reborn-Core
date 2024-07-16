@@ -26,7 +26,8 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long offset) throws TargetAddressTooLargeException {
+    public void link(long instructionPosition, long symbolAddress) throws TargetAddressTooLargeException {
+        long offset = symbolAddress - instructionPosition;
         offset ^= offset & 0b1;
         try {
             imm = (int) truncateNegative(offset, 21);

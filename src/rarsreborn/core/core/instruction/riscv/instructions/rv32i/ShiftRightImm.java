@@ -19,11 +19,12 @@ public class ShiftRightImm extends InstructionI {
     }
 
     private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        int rs1Value = registerFile.getRegisterByNumber(rs1).getValue();
-        int shamt = imm & 0b1_1111;
-        registerFile.getRegisterByNumber(rd).setValue(
-            isArithmetic() ? rs1Value >> shamt : rs1Value >>> shamt
-        );
+        if (isArithmetic()) {
+            new Srai(rd, rs1, (short) (imm ^ 1 << 10)).exec(registerFile);
+        }
+        else {
+            new Srli(new InstructionIParams(rd, rs1, imm)).exec(registerFile);
+        }
     }
 
     @Override

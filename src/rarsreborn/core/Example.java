@@ -63,7 +63,7 @@ public class Example {
                     throw new RuntimeException(e);
                 }
             }).start();
-            waitUntilRunning(simulator);
+            waitUntilWorkerStarted(simulator);
 
             simulator.runSteps(9);
             waitUntilPaused(simulator);
@@ -92,7 +92,7 @@ public class Example {
         }
     }
 
-    private static void waitUntilRunning(Simulator32 simulator) {
+    private static void waitUntilWorkerStarted(Simulator32 simulator) {
         while (!simulator.isRunning()) {
             Thread.onSpinWait();
         }

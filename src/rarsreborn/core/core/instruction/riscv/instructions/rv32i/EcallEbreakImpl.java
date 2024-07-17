@@ -3,7 +3,6 @@ package rarsreborn.core.core.instruction.riscv.instructions.rv32i;
 import rarsreborn.core.core.environment.IExecutionEnvironment;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
-import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 
 /**
@@ -28,15 +27,15 @@ public class EcallEbreakImpl extends InstructionI {
         return getName();
     }
 
-    public void exec(IExecutionEnvironment environment, Register32 programCounter) throws ExecutionException {
+    public void exec(IExecutionEnvironment environment) throws ExecutionException {
         if (imm == 0) new Ecall().exec(environment);
-        else new Ebreak().exec(programCounter);
+        else new Ebreak().exec(environment);
     }
 
     public static class Handler extends RiscV32InstructionHandler<EcallEbreakImpl> {
         @Override
         public void handle(EcallEbreakImpl instruction) throws ExecutionException {
-            instruction.exec(executionEnvironment, programCounter);
+            instruction.exec(executionEnvironment);
         }
     }
 }

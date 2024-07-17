@@ -45,11 +45,11 @@ public class Lhu extends InstructionI {
     public static class Parser extends InstructionRegexParserRegisterBase<Lhu> {
         @Override
         public Lhu parse(String line) throws CompilationException {
-            String[] split = splitArguments(line, 3, NAME);
+            LoadStoreFormatArguments args = parseLoadStoreFormat(line);
 
-            Register32 rd = castToRegister32(parseRegister(registers, split[0]));
-            Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
-            short imm = (short) truncateNegative(parseShort(split[2]), 12);
+            Register32 rd = castToRegister32(parseRegister(registers, args.valueRegister()));
+            Register32 rs1 = castToRegister32(parseRegister(registers, args.addressRegister()));
+            short imm = (short) truncateNegative(args.offset(), 12);
 
             try {
                 return new Lhu(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));

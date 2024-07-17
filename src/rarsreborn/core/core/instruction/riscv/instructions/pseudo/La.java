@@ -24,7 +24,8 @@ public class La implements IInstruction, ILinkableInstruction {
     }
 
     @Override
-    public void link(long offset) {
+    public void link(long instructionPosition, long symbolAddress) {
+        long offset = symbolAddress - instructionPosition;
         throw new RuntimeException("Should not have been come here");
     }
 

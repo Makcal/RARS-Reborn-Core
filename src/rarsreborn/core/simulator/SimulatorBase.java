@@ -4,6 +4,8 @@ import rarsreborn.core.compilation.compiler.ICompiler;
 import rarsreborn.core.compilation.decoder.DecodingResult;
 import rarsreborn.core.compilation.decoder.IBufferedDecoder;
 import rarsreborn.core.compilation.linker.ILinker;
+import rarsreborn.core.core.environment.IExecutionEnvironment;
+import rarsreborn.core.core.environment.events.BreakpointEvent;
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.IInstructionHandler;
 import rarsreborn.core.core.memory.ArrayBlockStorage;
@@ -19,7 +21,6 @@ import rarsreborn.core.exceptions.NoBackStepsLeftException;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
-import rarsreborn.core.exceptions.execution.ExecutionBreakException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.execution.IllegalInstructionException;
 import rarsreborn.core.exceptions.linking.LinkingException;
@@ -41,29 +42,33 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
             = new HashMap<>();
     protected final IBackStepper backStepper;
 
+    protected final IExecutionEnvironment executionEnvironment;
+
     protected IExecutable executable;
 
     protected final Worker worker = new Worker();
     protected final IObservable observableImplementation = new ObservableImplementation();
+    protected final IObserver<BreakpointEvent> breakpointObserver = event -> {
+        pause();
+        notifyObservers(new InstructionExecutedEvent());
+    };
 
     public SimulatorBase(
         ICompiler compiler,
         ILinker linker,
         IBufferedDecoder decoder,
-        IBackStepper backStepper
+        IBackStepper backStepper,
+        IExecutionEnvironment executionEnvironment
     ) {
         this.compiler = compiler;
         this.linker = linker;
         this.decoder = decoder;
         this.backStepper = backStepper == null ? new BackStepperStub() : backStepper;
+        this.executionEnvironment = executionEnvironment;
     }
 
-    public boolean isPaused() {
-        return worker.isPaused();
-    }
-
-    public boolean isRunning() {
-        return worker.isRunning();
+    public IExecutionEnvironment getExecutionEnvironment() {
+        return executionEnvironment;
     }
 
     @Override
@@ -86,7 +91,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         IMemory memoryWrapper
             = new MemoryBlockWrapper(new MemoryBlock(0, new ArrayBlockStorage(executable.getText())));
         try {
-            for (long pc = 0; pc < executable.getText().length;) {
+            for (long pc = 0; pc + decoder.getBufferSize() <= executable.getText().length;) {
                 DecodingResult decodingResult = decoder.decodeNextInstruction(memoryWrapper, pc);
                 instructions.add(decodingResult.instruction());
                 pc += decodingResult.bytesConsumed();
@@ -107,6 +112,14 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
 
     public void startWorkerAndRun() throws ExecutionException {
         worker.start(true);
+    }
+
+    public boolean isPaused() {
+        return worker.isPaused();
+    }
+
+    public boolean isRunning() {
+        return worker.isRunning();
     }
 
     /**
@@ -147,6 +160,8 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
     abstract protected void loadProgram(IExecutable program);
 
     protected void onStartSetup() {
+        executionEnvironment.removeObserver(BreakpointEvent.class, breakpointObserver);
+        executionEnvironment.addObserver(BreakpointEvent.class, breakpointObserver);
         reset();
     }
 
@@ -232,9 +247,6 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                     }
                 } catch (EndOfExecutionException ignored) {
                     stop();
-                } catch (ExecutionBreakException ignored) {
-                    pause();
-                    notifyObservers(new InstructionExecutedEvent());
                 }
             }
 

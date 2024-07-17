@@ -3,6 +3,8 @@ package rarsreborn.core.core.environment.riscv;
 import rarsreborn.core.core.environment.IExecutionEnvironment;
 import rarsreborn.core.core.environment.ISystemCall;
 import rarsreborn.core.core.environment.ITextInputDevice;
+import rarsreborn.core.core.environment.events.BreakpointEvent;
+import rarsreborn.core.core.environment.mmu.IMemoryManagementUnit;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
@@ -14,13 +16,14 @@ import rarsreborn.core.exceptions.execution.UnknownSystemCallException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObservable {
+public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
     protected final Register32File registers;
     protected final Register32 programCounter;
     protected final IMemory memory;
     protected final Map<Integer, ISystemCall> handlers;
     protected final IObservable observableImplementation;
     protected final ITextInputDevice consoleReader;
+    protected final IMemoryManagementUnit mmu;
 
     public RiscV32ExecutionEnvironment(
         Register32File registers,
@@ -28,7 +31,8 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
         IMemory memory,
         Map<Integer, ISystemCall> handlers,
         IObservable observableImplementation,
-        ITextInputDevice consoleReader
+        ITextInputDevice consoleReader,
+        IMemoryManagementUnit mmu
     ) {
         this.registers = registers;
         this.programCounter = programCounter;
@@ -39,6 +43,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
                 ((RiscVSystemCall) systemCall).setExecutionEnvironment(this);
             }
         }
+        this.mmu = mmu;
         this.observableImplementation = observableImplementation;
         this.consoleReader = consoleReader;
     }
@@ -60,7 +65,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
 
     @Override
     public void break_() {
-        throw new RuntimeException("Not implemented");
+        notifyObservers(new BreakpointEvent());
     }
 
     @Override
@@ -79,12 +84,13 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
     }
 
     public static class Builder {
-        private Register32File registers;
-        private Register32 programCounter;
-        private IMemory memory;
+        protected Register32File registers;
+        protected Register32 programCounter;
+        protected IMemory memory;
         protected IObservable observableImplementation;
         protected ITextInputDevice consoleReader;
         private final Map<Integer, ISystemCall> handlers = new HashMap<>();
+        protected IMemoryManagementUnit mmu;
 
         public Builder setRegisters(Register32File registers) {
             this.registers = registers;
@@ -116,16 +122,22 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment, IObse
             return this;
         }
 
+        public Builder setMmu(IMemoryManagementUnit mmu) {
+            this.mmu = mmu;
+            return this;
+        }
+
         public Builder addHandler(int number, RiscVSystemCall handler) {
             handler.setRegisters(registers);
             handler.setProgramCounter(programCounter);
             handler.setMemory(memory);
+            handler.setMmu(mmu);
             return this.addHandler(number, (ISystemCall) handler);
         }
 
         public RiscV32ExecutionEnvironment build() {
             return new RiscV32ExecutionEnvironment(
-                registers, programCounter, memory, handlers, observableImplementation, consoleReader
+                registers, programCounter, memory, handlers, observableImplementation, consoleReader, mmu
             );
         }
     }

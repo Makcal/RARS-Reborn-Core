@@ -10,7 +10,6 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
-import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
 public class Blt extends InstructionB implements ILinkableInstruction {
@@ -30,7 +29,8 @@ public class Blt extends InstructionB implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long offset) throws LinkingException {
+    public void link(long instructionPosition, long symbolAddress) throws TargetAddressTooLargeException {
+        long offset = symbolAddress - instructionPosition;
         offset ^= offset & 0b1;
         try {
             imm = (short) truncateNegative(offset, 13);

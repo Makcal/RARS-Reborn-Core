@@ -7,6 +7,6 @@ public class ReadIntegerEcall extends RiscVSystemCall {
     @Override
     public void call() throws IllegalRegisterException {
         // 10 = a0
-        registers.getRegisterByNumber(10).setValue(executionEnvironment.getConsoleReader().requestInt());
+        setRegisterValue(10, executionEnvironment.getConsoleReader().requestInt());
     }
 }

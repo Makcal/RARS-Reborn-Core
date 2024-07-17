@@ -19,7 +19,7 @@ public class Sltu extends InstructionR {
     }
 
     private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        if(registerFile.getRegisterByNumber(rs1).getValue() < registerFile.getRegisterByNumber(rs2).getValue()) {
+        if(Integer.toUnsignedLong(registerFile.getRegisterByNumber(rs1).getValue()) < registerFile.getRegisterByNumber(rs2).getValue()) {
             registerFile.getRegisterByNumber(rd).setValue(1);
         }
         else {

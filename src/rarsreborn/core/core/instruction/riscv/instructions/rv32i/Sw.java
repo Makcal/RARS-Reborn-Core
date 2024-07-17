@@ -44,11 +44,11 @@ public class Sw extends InstructionS {
     public static class Parser extends InstructionRegexParserRegisterBase<Sw> {
         @Override
         public Sw parse(String line) throws CompilationException {
-            String[] split = splitArguments(line, 3, NAME);
+            LoadStoreFormatArguments args = parseLoadStoreFormat(line);
 
-            Register32 rs1 = castToRegister32(parseRegister(registers, split[0]));
-            Register32 rs2 = castToRegister32(parseRegister(registers, split[1]));
-            short imm = (short) truncateNegative(parseShort(split[2]), 12);
+            Register32 rs2 = castToRegister32(parseRegister(registers, args.valueRegister()));
+            Register32 rs1 = castToRegister32(parseRegister(registers, args.addressRegister()));
+            short imm = (short) truncateNegative(args.offset(), 12);
 
             try {
                 return new Sw(new InstructionSParams((byte) rs1.getNumber(), (byte) rs2.getNumber(), imm));

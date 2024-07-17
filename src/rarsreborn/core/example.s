@@ -4,7 +4,7 @@
     w: .word 42
 .text
     la t4, w
-    lw t4, t4, 0
+    lw t4, 0(t4)
     jal x0, l
     li t3, -2
 l:

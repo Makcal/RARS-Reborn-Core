@@ -19,9 +19,9 @@ public class Mulh extends InstructionR {
     }
 
     private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        String gav = (Integer.toBinaryString(registerFile.getRegisterByNumber(rs1).getValue()
-        * registerFile.getRegisterByNumber(rs2).getValue())).substring(0, 32);
-        registerFile.getRegisterByNumber(rd).setValue(Integer.parseInt(gav));
+        long val1 = registerFile.getRegisterByNumber(rs1).getValue();
+        long val2 = registerFile.getRegisterByNumber(rs2).getValue();
+        registerFile.getRegisterByNumber(rd).setValue((int) (val1 * val2 >> 32));
     }
 
     @Override
@@ -46,11 +46,7 @@ public class Mulh extends InstructionR {
             Register32 rs2 = castToRegister32(parseRegister(registers, split[2]));
 
             return new Mulh(
-                new InstructionRParams(
-                    (byte) rd.getNumber(),
-                    (byte) rs1.getNumber(),
-                    (byte) rs2.getNumber()
-                )
+                new InstructionRParams((byte) rd.getNumber(), (byte) rs1.getNumber(), (byte) rs2.getNumber())
             );
         }
     }

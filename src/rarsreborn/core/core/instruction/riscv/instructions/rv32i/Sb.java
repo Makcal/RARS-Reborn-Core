@@ -24,7 +24,7 @@ public class Sb extends InstructionS {
             throws MemoryAccessException, IllegalRegisterException {
         memory.setMultiple(
             registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
-            registers.getRegisterByNumber(rs2).getValue(),
+            (byte) registers.getRegisterByNumber(rs2).getValue(),
             1
         );
     }

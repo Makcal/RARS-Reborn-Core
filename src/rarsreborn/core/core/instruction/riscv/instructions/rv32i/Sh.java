@@ -24,7 +24,7 @@ public class Sh extends InstructionS {
             throws MemoryAccessException, IllegalRegisterException {
         memory.setMultiple(
             registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
-            registers.getRegisterByNumber(rs2).getValue(),
+            (short) registers.getRegisterByNumber(rs2).getValue(),
             2
         );
     }

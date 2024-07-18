@@ -11,20 +11,17 @@ import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 public class Sltu extends InstructionR {
     public static final String NAME = "sltu";
     public static final byte OPCODE = 0b0110011;
-    public static final byte FUNCT_3 = 0x03;
-    public static final byte FUNCT_7 = 0x0;
+    public static final byte FUNCT_3 = 0x3;
+    public static final byte FUNCT_7 = 0x00;
 
     public Sltu(InstructionRParams data) {
         super(new InstructionRData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.rs2(), FUNCT_7));
     }
 
     private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        if(Integer.toUnsignedLong(registerFile.getRegisterByNumber(rs1).getValue()) < registerFile.getRegisterByNumber(rs2).getValue()) {
-            registerFile.getRegisterByNumber(rd).setValue(1);
-        }
-        else {
-            registerFile.getRegisterByNumber(rd).setValue(0);
-        }
+        long val1 = Integer.toUnsignedLong(registerFile.getRegisterByNumber(rs1).getValue());
+        long val2 = Integer.toUnsignedLong(registerFile.getRegisterByNumber(rs2).getValue());
+        registerFile.getRegisterByNumber(rd).setValue(val1 < val2 ? 1 : 0);
     }
 
     @Override

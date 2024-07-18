@@ -19,8 +19,9 @@ public class Sltiu extends InstructionI {
     }
 
     private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        boolean less = Integer.toUnsignedLong(registerFile.getRegisterByNumber(rs1).getValue()) < asNegative(imm, 12);
-        registerFile.getRegisterByNumber(rd).setValue(less ? 1 : 0);
+        long val1 = Integer.toUnsignedLong(registerFile.getRegisterByNumber(rs1).getValue());
+        long val2 = Integer.toUnsignedLong(asNegative(imm, 12));
+        registerFile.getRegisterByNumber(rd).setValue(val1 < val2 ? 1 : 0);
     }
 
     @Override

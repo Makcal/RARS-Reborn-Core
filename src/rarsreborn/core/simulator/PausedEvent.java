@@ -1,3 +1,3 @@
 package rarsreborn.core.simulator;
 
-public record StopEvent() {}
+public record PausedEvent() {}

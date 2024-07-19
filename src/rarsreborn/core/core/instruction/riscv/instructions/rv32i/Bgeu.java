@@ -10,17 +10,16 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
-import rarsreborn.core.exceptions.linking.LinkingException;
 import rarsreborn.core.exceptions.linking.TargetAddressTooLargeException;
 
 public class Bgeu extends InstructionB implements ILinkableInstruction {
     public static final String NAME = "bgeu";
     public static final byte OPCODE = 0b1100011;
-    public static final byte FUNCT3 = 0x7;
+    public static final byte FUNCT_3 = 0x7;
     protected LinkRequest linkRequest;
 
     public Bgeu(InstructionBParams params) {
-        super(new InstructionBData(OPCODE, params.imm(), FUNCT3, params.rs1(), params.rs2()));
+        super(new InstructionBData(OPCODE, params.imm(), FUNCT_3, params.rs1(), params.rs2()));
     }
 
     public void exec(IRegisterFile<Register32> registers, Register32 programCounter) throws IllegalRegisterException {
@@ -31,7 +30,8 @@ public class Bgeu extends InstructionB implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long offset) throws LinkingException {
+    public void link(long instructionPosition, long symbolAddress) throws TargetAddressTooLargeException {
+        long offset = symbolAddress - instructionPosition;
         offset ^= offset & 0b1;
         try {
             imm = (short) truncateNegative(offset, 13);

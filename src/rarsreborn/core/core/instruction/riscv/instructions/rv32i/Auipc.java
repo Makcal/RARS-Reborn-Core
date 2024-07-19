@@ -24,7 +24,8 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
     }
 
     @Override
-    public void link(long offset) {
+    public void link(long instructionPosition, long symbolAddress) {
+        long offset = symbolAddress - instructionPosition;
         if ((offset & 0b1000_0000_0000) != 0) {
             offset += 0b1_0000_0000_0000;
         }

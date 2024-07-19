@@ -14,10 +14,10 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 public class Sw extends InstructionS {
     public static final String NAME = "sw";
     public static final byte OPCODE = 0b0100011;
-    public static final byte FUNCT3 = 0x2;
+    public static final byte FUNCT_3 = 0x2;
 
     public Sw(InstructionSParams params) {
-        super(new InstructionSData(OPCODE, params.imm(), FUNCT3, params.rs1(), params.rs2()));
+        super(new InstructionSData(OPCODE, params.imm(), FUNCT_3, params.rs1(), params.rs2()));
     }
 
     public void exec(IRegisterFile<Register32> registers, IMemory memory)
@@ -44,11 +44,11 @@ public class Sw extends InstructionS {
     public static class Parser extends InstructionRegexParserRegisterBase<Sw> {
         @Override
         public Sw parse(String line) throws CompilationException {
-            String[] split = splitArguments(line, 3, NAME);
+            LoadStoreFormatArguments args = parseLoadStoreFormat(line);
 
-            Register32 rs1 = castToRegister32(parseRegister(registers, split[0]));
-            Register32 rs2 = castToRegister32(parseRegister(registers, split[1]));
-            short imm = (short) truncateNegative(parseShort(split[2]), 12);
+            Register32 rs2 = castToRegister32(parseRegister(registers, args.valueRegister()));
+            Register32 rs1 = castToRegister32(parseRegister(registers, args.addressRegister()));
+            short imm = (short) truncateNegative(args.offset(), 12);
 
             try {
                 return new Sw(new InstructionSParams((byte) rs1.getNumber(), (byte) rs2.getNumber(), imm));

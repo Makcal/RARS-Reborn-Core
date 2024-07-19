@@ -16,8 +16,8 @@ public class Memory32 implements IMemory {
 
     // In bytes
     public static final int TEXT_SECTION_SIZE = 0x100000; // 1 MB
-    public static final int DATA_SECTION_SIZE = 0x30000; // 192 KB
-    public static final int HEAP_SECTION_SIZE = 0x30000; // 192 KB
+    public static final int DATA_SECTION_SIZE = 0x100000; // 1 MB
+    public static final int HEAP_SECTION_SIZE = 0x800000; // 8 MB
     public static final int STACK_SECTION_SIZE = 0x100000; // 1 MB
     public static final int INITIAL_STACK_POINTER = STACK_SECTION_START + STACK_SECTION_SIZE - 4;
 

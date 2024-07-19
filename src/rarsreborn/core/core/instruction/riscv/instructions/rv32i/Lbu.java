@@ -14,10 +14,10 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 public class Lbu extends InstructionI {
     public static final String NAME = "lbu";
     public static final byte OPCODE = 0b0000011;
-    public static final byte FUNCT3 = 0x4;
+    public static final byte FUNCT_3 = 0x4;
 
     public Lbu(InstructionIParams params) {
-        super(new InstructionIData(OPCODE, params.rd(), FUNCT3, params.rs1(), params.imm()));
+        super(new InstructionIData(OPCODE, params.rd(), FUNCT_3, params.rs1(), params.imm()));
     }
 
     public void exec(IRegisterFile<Register32> registers, IMemory memory)
@@ -45,11 +45,11 @@ public class Lbu extends InstructionI {
     public static class Parser extends InstructionRegexParserRegisterBase<Lbu> {
         @Override
         public Lbu parse(String line) throws CompilationException {
-            String[] split = splitArguments(line, 3, NAME);
+            LoadStoreFormatArguments args = parseLoadStoreFormat(line);
 
-            Register32 rd = castToRegister32(parseRegister(registers, split[0]));
-            Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
-            short imm = (short) truncateNegative(parseShort(split[2]), 12);
+            Register32 rd = castToRegister32(parseRegister(registers, args.valueRegister()));
+            Register32 rs1 = castToRegister32(parseRegister(registers, args.addressRegister()));
+            short imm = (short) truncateNegative(args.offset(), 12);
 
             try {
                 return new Lbu(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));

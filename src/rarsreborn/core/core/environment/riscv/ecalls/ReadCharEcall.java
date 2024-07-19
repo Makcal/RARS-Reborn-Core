@@ -7,6 +7,6 @@ public class ReadCharEcall extends RiscVSystemCall {
     @Override
     public void call() throws IllegalRegisterException {
         // 10 = a0
-        registers.getRegisterByNumber(10).setValue(executionEnvironment.getConsoleReader().requestChar());
+        setRegisterValue(10, executionEnvironment.getConsoleReader().requestChar());
     }
 }

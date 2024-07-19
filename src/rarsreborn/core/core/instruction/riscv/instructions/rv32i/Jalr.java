@@ -11,10 +11,10 @@ import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 public class Jalr extends InstructionI {
     public static final String NAME = "jalr";
     public static final byte OPCODE = 0b1100111;
-    public static final byte FUNCT3 = 0x0;
+    public static final byte FUNCT_3 = 0x0;
 
     public Jalr(InstructionIParams data) {
-        super(new InstructionIData(OPCODE, data.rd(), FUNCT3, data.rs1(), data.imm()));
+        super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
     protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) throws IllegalRegisterException {

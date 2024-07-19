@@ -47,11 +47,7 @@ public class Div extends InstructionR {
             Register32 rs2 = castToRegister32(parseRegister(registers, split[2]));
 
             return new Div(
-                new InstructionRParams(
-                    (byte) rd.getNumber(),
-                    (byte) rs1.getNumber(),
-                    (byte) rs2.getNumber()
-                )
+                new InstructionRParams((byte) rd.getNumber(), (byte) rs1.getNumber(), (byte) rs2.getNumber())
             );
         }
     }

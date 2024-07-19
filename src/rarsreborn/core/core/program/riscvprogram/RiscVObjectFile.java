@@ -1,4 +1,4 @@
-package rarsreborn.core.core.riscvprogram;
+package rarsreborn.core.core.program.riscvprogram;
 
 import rarsreborn.core.core.program.*;
 

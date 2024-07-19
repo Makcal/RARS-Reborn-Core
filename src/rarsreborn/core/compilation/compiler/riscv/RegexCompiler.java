@@ -6,7 +6,7 @@ import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.ILinkableInstruction;
 import rarsreborn.core.core.program.*;
 import rarsreborn.core.core.register.IRegisterFile;
-import rarsreborn.core.core.riscvprogram.DataBlock;
+import rarsreborn.core.core.program.riscvprogram.DataBlock;
 import rarsreborn.core.exceptions.compilation.*;
 
 import java.util.*;

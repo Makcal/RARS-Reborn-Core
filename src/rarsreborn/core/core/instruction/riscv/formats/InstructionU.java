@@ -15,6 +15,11 @@ public abstract class InstructionU extends RiscVInstruction {
     }
 
     @Override
+    public String toString() {
+        return "%s x%d, %d".formatted(getName(), rd, imm);
+    }
+
+    @Override
     public byte[] serialize() {
         int encoded = opcode & 0b111_1111
             | (rd & 0b1_1111) << 7

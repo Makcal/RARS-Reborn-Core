@@ -7,6 +7,9 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.*;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public abstract class InstructionRegexParserRegisterBase
         <TInstruction extends IInstruction>
         implements IInstructionRegexParser<TInstruction> {
@@ -18,7 +21,7 @@ public abstract class InstructionRegexParserRegisterBase
         this.registers = registers;
     }
 
-    protected static String[] splitArguments(String line, int argumentsCount, String instructionName)
+    public static String[] splitArguments(String line, int argumentsCount, String instructionName)
             throws WrongNumberOfArgumentsException {
         String[] args = line.isEmpty() ? new String[]{} : line.split(",");
         if (args.length != argumentsCount) {
@@ -27,7 +30,7 @@ public abstract class InstructionRegexParserRegisterBase
         return args;
     }
 
-    protected static IRegister parseRegister(IRegisterFile<?> registers, String s)
+    public static IRegister parseRegister(IRegisterFile<?> registers, String s)
             throws UnknownRegisterException {
         try {
             return s.matches("x\\d+")
@@ -38,7 +41,7 @@ public abstract class InstructionRegexParserRegisterBase
         }
     }
 
-    protected static Register32 castToRegister32(IRegister register) throws WrongRegisterTypeException {
+    public static Register32 castToRegister32(IRegister register) throws WrongRegisterTypeException {
         try {
             return (Register32) register;
         } catch (ClassCastException e) {
@@ -46,15 +49,67 @@ public abstract class InstructionRegexParserRegisterBase
         }
     }
 
-    protected static short parseShort(String s) throws CompilationException {
+    public static short parseShort(String s) throws CompilationException {
         try {
             long l = RegexCompiler.parseLongInteger(s);
-            if (l < Short.MIN_VALUE || Short.MAX_VALUE < l) {
+            if (l < Short.MIN_VALUE || ((long) Short.MAX_VALUE << 1) + 1 < l) {
                 throw new ImmediateTooLargeException(l);
             }
             return (short) l;
         } catch (NumberFormatException e) {
             throw new ExpectedIntegerException(s);
         }
+    }
+
+    public static int parseInt(String s) throws CompilationException {
+        try {
+            long l = RegexCompiler.parseLongInteger(s);
+            if (l < Integer.MIN_VALUE || ((long) Integer.MAX_VALUE << 1) + 1 < l) {
+                throw new ImmediateTooLargeException(l);
+            }
+            return (int) l;
+        } catch (NumberFormatException e) {
+            throw new ExpectedIntegerException(s);
+        }
+    }
+
+    public static long parseLong(String s) throws CompilationException {
+        try {
+            return RegexCompiler.parseLongInteger(s);
+        } catch (NumberFormatException e) {
+            throw new ExpectedIntegerException(s);
+        }
+    }
+
+    public static final Pattern loadStorePattern =
+        Pattern.compile(
+            "\\s*(x\\d+|\\w+)\\s*,\\s*(-?(?:0x[0-9a-f]+|0[0-7]+|0b[01]+|\\d+))\\s*\\((x\\d+|\\w+)\\)\\s*"
+        );
+
+    /**
+     * @param valueRegister rd/rs2
+     * @param addressRegister rs1 containing a base memory address
+     * @param offset extra offset to be added to the base address
+     */
+    public record LoadStoreFormatArguments(String valueRegister, String addressRegister, long offset) {}
+
+    public static LoadStoreFormatArguments tryParseLoadStoreFormat(String arguments) throws CompilationException {
+        Matcher matcher = loadStorePattern.matcher(arguments);
+        if (matcher.matches()) {
+            return new LoadStoreFormatArguments(
+                matcher.group(1),
+                matcher.group(3),
+                InstructionRegexParserRegisterBase.parseLong(matcher.group(2))
+            );
+        }
+        return null;
+    }
+
+    public static LoadStoreFormatArguments parseLoadStoreFormat(String arguments) throws CompilationException {
+        LoadStoreFormatArguments result = tryParseLoadStoreFormat(arguments);
+        if (result == null) {
+            throw new SyntaxErrorException(arguments);
+        }
+        return result;
     }
 }

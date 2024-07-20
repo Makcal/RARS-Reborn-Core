@@ -34,6 +34,7 @@ public class Simulator32 extends SimulatorBase {
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
     protected IObserver<Register32ChangeEvent> registerObserver;
     protected IObserver<Register32ChangeEvent> programCounterObserver;
+    protected IObserver<BeforeInstructionExecutionEvent> beforeInstructionExecutionObserver;
 
     public Simulator32(
         ICompiler compiler,
@@ -86,6 +87,7 @@ public class Simulator32 extends SimulatorBase {
         programCounter.removeObserver(Register32ChangeEvent.class, registerObserver);
 
         programCounter.removeObserver(Register32ChangeEvent.class, programCounterObserver);
+        this.removeObserver(BeforeInstructionExecutionEvent.class, beforeInstructionExecutionObserver);
     }
 
     private void setUpObservers() {
@@ -103,6 +105,10 @@ public class Simulator32 extends SimulatorBase {
         programCounter.addObserver(
             Register32ChangeEvent.class,
             programCounterObserver = event -> wasProgramCounterAffected = true
+        );
+        this.addObserver(
+            BeforeInstructionExecutionEvent.class,
+            beforeInstructionExecutionObserver = event -> wasProgramCounterAffected = false
         );
     }
 
@@ -148,9 +154,7 @@ public class Simulator32 extends SimulatorBase {
     }
 
     @Override
-    protected void executeOneInstruction() throws ExecutionException {
-        wasProgramCounterAffected = false;
-        super.executeOneInstruction();
+    protected void updateProgramCounter() {
         if (!wasProgramCounterAffected) {
             programCounter.setValue(programCounter.getValue() + lastInstructionSize);
         }

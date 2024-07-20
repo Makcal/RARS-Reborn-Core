@@ -123,7 +123,7 @@ public class Simulator32 extends SimulatorBase {
         backStepper.reset();
         memory.reset();
         registerFile.reset();
-        programCounter.setValue(Memory32.TEXT_SECTION_START);
+        programCounter.setValue(Memory32.TEXT_SECTION_START + (int) executable.getEntryPointOffset());
         try {
             registerFile.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);
         } catch (IllegalRegisterException e) {

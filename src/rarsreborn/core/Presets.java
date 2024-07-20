@@ -122,6 +122,10 @@ public class Presets {
                 .registerInstruction(Ble.NAME, new Ble.Parser())
                 .registerInstruction(Bgtu.NAME, new Bgtu.Parser())
                 .registerInstruction(Bleu.NAME, new Bleu.Parser())
+
+                .registerInstruction(J.NAME, new J.Parser())
+                .registerInstruction(Jr.NAME, new Jr.Parser())
+                .registerInstruction(Ret.NAME, new Ret.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()

@@ -76,6 +76,10 @@ public class Simulator32 extends SimulatorBase {
         return programCounter;
     }
 
+    public long getCurrentInstructionNumber() {
+        return (programCounter.getValue() - Memory32.TEXT_SECTION_START) / 4;
+    }
+
     protected void clearObservers() {
         if (memoryBackStepperObserver != null) {
             memory.removeObserver(MemoryChangeEvent.class, memoryBackStepperObserver);

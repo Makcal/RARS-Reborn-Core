@@ -19,7 +19,9 @@ public class Xori extends InstructionI {
     }
 
     public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() ^ imm);
+        registerFile.getRegisterByNumber(rd).setValue(
+            registerFile.getRegisterByNumber(rs1).getValue() ^ asNegative(imm, 12)
+        );
     }
 
     @Override

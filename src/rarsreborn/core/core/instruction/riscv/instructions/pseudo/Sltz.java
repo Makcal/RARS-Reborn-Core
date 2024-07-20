@@ -4,7 +4,6 @@ import rarsreborn.core.compilation.compiler.riscv.InstructionRegexParserRegister
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionR;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Slt;
-import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Sltu;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 

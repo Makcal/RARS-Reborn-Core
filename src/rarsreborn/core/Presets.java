@@ -20,6 +20,9 @@ import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.simulator.Simulator32;
 import rarsreborn.core.simulator.backstepper.BackStepper;
 
+/**
+ * @see <a href="https://github.com/jameslzhu/riscv-card/blob/master/riscv-card.pdf">Some instructions</a>
+ */
 public class Presets {
     public static Simulator32 getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
         try {
@@ -114,6 +117,9 @@ public class Presets {
                 .registerInstruction(Bgez.NAME, new Bgez.Parser())
                 .registerInstruction(Bltz.NAME, new Bltz.Parser())
                 .registerInstruction(Bgtz.NAME, new Bgtz.Parser())
+
+                .registerInstruction(Bgt.NAME, new Bgt.Parser())
+                .registerInstruction(Ble.NAME, new Ble.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()

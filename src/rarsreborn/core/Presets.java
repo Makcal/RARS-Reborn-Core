@@ -11,6 +11,7 @@ import rarsreborn.core.core.environment.riscv.ecalls.*;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
+import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Nop;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.*;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32m.Div;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32m.Mul;
@@ -86,8 +87,9 @@ public class Presets {
                 .registerInstruction(Mul.NAME, new Mul.Parser())
                 .registerInstruction(Div.NAME, new Div.Parser())
                 // Pseudo
-                .registerInstruction(Li.NAME, new Li.Parser())
                 .registerInstruction(La.NAME, new La.Parser())
+                .registerInstruction(Nop.NAME, new Nop.Parser())
+                .registerInstruction(Li.NAME, new Li.Parser())
                 .registerInstruction(Mv.NAME, new Mv.Parser())
                 .build();
 

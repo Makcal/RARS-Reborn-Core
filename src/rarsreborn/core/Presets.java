@@ -89,6 +89,7 @@ public class Presets {
                 .registerInstruction(Li.NAME, new Li.Parser())
                 .registerInstruction(Mv.NAME, new Mv.Parser())
                 .registerInstruction(Not.NAME, new Not.Parser())
+                .registerInstruction(Neg.NAME, new Neg.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()

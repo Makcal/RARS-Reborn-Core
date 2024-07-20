@@ -48,9 +48,9 @@ public class Bgez implements IInstruction, ILinkableInstruction {
             Register32 rs = castToRegister32(parseRegister(registers, split[0]));
             String label = split[1];
 
-            Bgez beqz = new Bgez((byte) rs.getNumber(), (short) 0);
-            beqz.linkRequest = new LinkRequest(label);
-            return beqz;
+            Bgez instruction = new Bgez((byte) rs.getNumber(), (short) 0);
+            instruction.linkRequest = new LinkRequest(label);
+            return instruction;
         }
     }
 }

@@ -48,9 +48,9 @@ public class Beqz implements IInstruction, ILinkableInstruction {
             Register32 rs = castToRegister32(parseRegister(registers, split[0]));
             String label = split[1];
 
-            Beqz beqz = new Beqz((byte) rs.getNumber(), (short) 0);
-            beqz.linkRequest = new LinkRequest(label);
-            return beqz;
+            Beqz instruction = new Beqz((byte) rs.getNumber(), (short) 0);
+            instruction.linkRequest = new LinkRequest(label);
+            return instruction;
         }
     }
 }

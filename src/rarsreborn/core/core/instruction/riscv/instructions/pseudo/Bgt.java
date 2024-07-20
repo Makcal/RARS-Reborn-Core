@@ -49,9 +49,9 @@ public class Bgt implements IInstruction, ILinkableInstruction {
             Register32 rs2 = castToRegister32(parseRegister(registers, split[1]));
             String label = split[2];
 
-            Bgt beqz = new Bgt((byte) rs1.getNumber(), (byte) rs2.getValue(), (short) 0);
-            beqz.linkRequest = new LinkRequest(label);
-            return beqz;
+            Bgt instruction = new Bgt((byte) rs1.getNumber(), (byte) rs2.getValue(), (short) 0);
+            instruction.linkRequest = new LinkRequest(label);
+            return instruction;
         }
     }
 }

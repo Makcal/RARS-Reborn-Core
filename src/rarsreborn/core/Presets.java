@@ -106,6 +106,9 @@ public class Presets {
                 .registerInstruction(Sltz.NAME, new Sltz.Parser())
                 .registerInstruction(Sgtz.NAME, new Sgtz.Parser())
                 .registerInstruction(Sgt.NAME, new Sgt.Parser())
+
+                .registerInstruction(Beqz.NAME, new Beqz.Parser())
+                .registerInstruction(Bnez.NAME, new Bnez.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()

@@ -102,6 +102,7 @@ public class Presets {
                 .registerInstruction(Not.NAME, new Not.Parser())
                 .registerInstruction(Neg.NAME, new Neg.Parser())
                 .registerInstruction(Seqz.NAME, new Seqz.Parser())
+                .registerInstruction(Snez.NAME, new Snez.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()

@@ -4,6 +4,7 @@ import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.register.IRegister;
 import rarsreborn.core.core.register.IRegisterCollection;
 import rarsreborn.core.core.register.Register32;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64;
 import rarsreborn.core.exceptions.compilation.*;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
@@ -47,6 +48,14 @@ public abstract class InstructionRegexParserRegisterBase
         }
     }
 
+    public static RegisterFloat64 castToRegisterFloat64(IRegister register) throws WrongRegisterTypeException {
+        try {
+            return (RegisterFloat64) register;
+        } catch (ClassCastException e) {
+            throw new WrongRegisterTypeException(RegisterFloat64.class, register.getClass());
+        }
+    }
+
     public static short parseShort(String s) throws CompilationException {
         try {
             long l = RegexCompiler.parseLongInteger(s);
@@ -81,7 +90,7 @@ public abstract class InstructionRegexParserRegisterBase
 
     public static final Pattern loadStorePattern =
         Pattern.compile(
-            "\\s*(x\\d+|\\w+)\\s*,\\s*(-?(?:0x[0-9a-f]+|0[0-7]+|0b[01]+|\\d+))\\s*\\((x\\d+|\\w+)\\)\\s*"
+            "\\s*(\\w+)\\s*,\\s*(-?(?:0x[0-9a-f]+|0[0-7]+|0b[01]+|\\d+))\\s*\\((x\\d+|\\w+)\\)\\s*"
         );
 
     /**

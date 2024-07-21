@@ -1,10 +1,9 @@
 package rarsreborn.core;
 
-import rarsreborn.core.core.environment.events.*;
 import rarsreborn.core.core.environment.ITextInputDevice;
+import rarsreborn.core.core.environment.events.*;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.memory.Memory32;
-import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.simulator.SimulatorRiscV;
@@ -46,9 +45,13 @@ public class Example {
                 ConsolePrintIntegerUnsignedEvent.class,
                 event -> System.out.print(Integer.toUnsignedString(event.value()))
             );
-            simulator.getRegisterFile().getRegisterByNumber(10).addObserver(
-                Register32ChangeEvent.class,
-                event -> {}
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintFloatEvent.class,
+                event -> System.out.println(event.value())
+            );
+            simulator.getExecutionEnvironment().addObserver(
+                ConsolePrintDoubleEvent.class,
+                event -> System.out.println(event.value())
             );
 
             Register32File registers = simulator.getRegisterFile();

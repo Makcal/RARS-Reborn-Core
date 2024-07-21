@@ -9,6 +9,7 @@ import rarsreborn.core.core.environment.mmu.LinearMemoryManagementUnit;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.environment.riscv.ecalls.*;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.*;
+import rarsreborn.core.core.instruction.riscv.instructions.rv32fd.*;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.*;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32m.*;
 import rarsreborn.core.core.memory.Memory32;
@@ -120,6 +121,9 @@ public class Presets {
                 .registerInstruction(Ret.NAME, new Ret.Parser())
                 .registerInstruction(Call.NAME, new Call.Parser())
                 .registerInstruction(Tail.NAME, new Tail.Parser())
+                // RV32FD
+                .registerInstruction(Flw.NAME, new Flw.Parser())
+                .registerInstruction(Fld.NAME, new Fld.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -175,6 +179,9 @@ public class Presets {
                 .registerRInstruction(Divu.OPCODE, Divu.FUNCT_3, Divu.FUNCT_7, Divu.class)
                 .registerRInstruction(Rem.OPCODE, Rem.FUNCT_3, Rem.FUNCT_7, Rem.class)
                 .registerRInstruction(Remu.OPCODE, Remu.FUNCT_3, Remu.FUNCT_7, Remu.class)
+                // RV32FD
+                .registerIInstruction(Flw.OPCODE, Flw.FUNCT_3, Flw.class)
+                .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -269,7 +276,11 @@ public class Presets {
                 .registerHandler(Div.class, new Div.Handler())
                 .registerHandler(Divu.class, new Divu.Handler())
                 .registerHandler(Rem.class, new Rem.Handler())
-                .registerHandler(Remu.class, new Remu.Handler());
+                .registerHandler(Remu.class, new Remu.Handler())
+                // RV32FD
+                .registerHandler(Flw.class, new Flw.Handler())
+                .registerHandler(Fld.class, new Fld.Handler())
+            ;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

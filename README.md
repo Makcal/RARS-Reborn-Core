@@ -74,7 +74,7 @@ The common scheme of executing is:
 ### [`simulator`](src/rarsreborn/core/simulator)
 
 This package contains classes for simulating the execution of instructions.
-The main class is [`Simulator32`](src/rarsreborn/core/simulator/Simulator32.java)
+The main class is [`Simulator32`](src/rarsreborn/core/simulator/SimulatorRiscV.java)
 that represents a 32-bit RISC-V simulator.
 
 A typical program ([Example](src/rarsreborn/core/Example.java)) should obtain a simulator instance,

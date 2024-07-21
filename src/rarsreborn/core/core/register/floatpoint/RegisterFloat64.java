@@ -53,6 +53,14 @@ public class RegisterFloat64 implements IRegister, IObservable {
         return buffer.getDouble(0);
     }
 
+    public int getInt() {
+        return buffer.getInt(0);
+    }
+
+    public long getLong() {
+        return buffer.getLong(0);
+    }
+
     public void setFloat(float value) {
         float oldFloatValue = getFloat();
         double oldDoubleValue = getDouble();
@@ -73,6 +81,28 @@ public class RegisterFloat64 implements IRegister, IObservable {
 
     public void setDoubleSilently(double value) {
         buffer.putDouble(0, value);
+    }
+
+    public void setInt(int value) {
+        float oldFloatValue = getFloat();
+        double oldDoubleValue = getDouble();
+        setIntSilently(value);
+        notifyObservers(new RegisterFloat64ChangeEvent(this, oldFloatValue, oldDoubleValue, getFloat(), value));
+    }
+
+    public void setIntSilently(int value) {
+        buffer.putInt(0, value);
+    }
+
+    public void setLong(long value) {
+        float oldFloatValue = getFloat();
+        double oldDoubleValue = getDouble();
+        setLongSilently(value);
+        notifyObservers(new RegisterFloat64ChangeEvent(this, oldFloatValue, oldDoubleValue, getFloat(), value));
+    }
+
+    public void setLongSilently(long value) {
+        buffer.putLong(0, value);
     }
 
     @Override

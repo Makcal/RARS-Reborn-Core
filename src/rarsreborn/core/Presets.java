@@ -8,12 +8,9 @@ import rarsreborn.core.core.environment.ITextInputDevice;
 import rarsreborn.core.core.environment.mmu.LinearMemoryManagementUnit;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.environment.riscv.ecalls.*;
-import rarsreborn.core.core.instruction.riscv.instructions.pseudo.La;
-import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Li;
-import rarsreborn.core.core.instruction.riscv.instructions.pseudo.Mv;
+import rarsreborn.core.core.instruction.riscv.instructions.pseudo.*;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.*;
-import rarsreborn.core.core.instruction.riscv.instructions.rv32m.Div;
-import rarsreborn.core.core.instruction.riscv.instructions.rv32m.Mul;
+import rarsreborn.core.core.instruction.riscv.instructions.rv32m.*;
 import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
@@ -23,6 +20,9 @@ import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.simulator.Simulator32;
 import rarsreborn.core.simulator.backstepper.BackStepper;
 
+/**
+ * @see <a href="https://github.com/jameslzhu/riscv-card/blob/master/riscv-card.pdf">Some instructions</a>
+ */
 public class Presets {
     public static Simulator32 getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
         try {
@@ -52,6 +52,8 @@ public class Presets {
                 .registerInstruction(Sll.NAME, new Sll.Parser())
                 .registerInstruction(Srl.NAME, new Srl.Parser())
                 .registerInstruction(Sra.NAME, new Sra.Parser())
+                .registerInstruction(Slt.NAME, new Slt.Parser())
+                .registerInstruction(Sltu.NAME, new Sltu.Parser())
                 // Immediate
                 .registerInstruction(Addi.NAME, new Addi.Parser())
                 .registerInstruction(Xori.NAME, new Xori.Parser())
@@ -60,12 +62,17 @@ public class Presets {
                 .registerInstruction(Slli.NAME, new Slli.Parser())
                 .registerInstruction(Srli.NAME, new Srli.Parser())
                 .registerInstruction(Srai.NAME, new Srai.Parser())
+                .registerInstruction(Slti.NAME, new Slti.Parser())
+                .registerInstruction(Sltiu.NAME, new Sltiu.Parser())
                 // Load/store
                 .registerInstruction(Lb.NAME, new Lb.Parser())
                 .registerInstruction(Lh.NAME, new Lh.Parser())
                 .registerInstruction(Lw.NAME, new Lw.Parser())
                 .registerInstruction(Lbu.NAME, new Lbu.Parser())
                 .registerInstruction(Lhu.NAME, new Lhu.Parser())
+                .registerInstruction(Sb.NAME, new Sb.Parser())
+                .registerInstruction(Sh.NAME, new Sh.Parser())
+                .registerInstruction(Sw.NAME, new Sw.Parser())
                 // Branches
                 .registerInstruction(Beq.NAME, new Beq.Parser())
                 .registerInstruction(Bne.NAME, new Bne.Parser())
@@ -73,7 +80,6 @@ public class Presets {
                 .registerInstruction(Bge.NAME, new Bge.Parser())
                 .registerInstruction(Bltu.NAME, new Bltu.Parser())
                 .registerInstruction(Bgeu.NAME, new Bgeu.Parser())
-                .registerInstruction(Sw.NAME, new Sw.Parser())
                 // Jumps
                 .registerInstruction(Jal.NAME, new Jal.Parser())
                 .registerInstruction(Jalr.NAME, new Jalr.Parser())
@@ -84,11 +90,44 @@ public class Presets {
                 .registerInstruction(Ebreak.NAME, new Ebreak.Parser())
                 // RV32M
                 .registerInstruction(Mul.NAME, new Mul.Parser())
+                .registerInstruction(Mulh.NAME, new Mulh.Parser())
+                .registerInstruction(Mulhsu.NAME, new Mulhsu.Parser())
+                .registerInstruction(Mulhu.NAME, new Mulhu.Parser())
                 .registerInstruction(Div.NAME, new Div.Parser())
+                .registerInstruction(Divu.NAME, new Divu.Parser())
+                .registerInstruction(Rem.NAME, new Rem.Parser())
+                .registerInstruction(Remu.NAME, new Remu.Parser())
                 // Pseudo
-                .registerInstruction(Li.NAME, new Li.Parser())
                 .registerInstruction(La.NAME, new La.Parser())
+                .registerInstruction(Nop.NAME, new Nop.Parser())
+                .registerInstruction(Li.NAME, new Li.Parser())
                 .registerInstruction(Mv.NAME, new Mv.Parser())
+                .registerInstruction(Not.NAME, new Not.Parser())
+                .registerInstruction(Neg.NAME, new Neg.Parser())
+                .registerInstruction(Seqz.NAME, new Seqz.Parser())
+                .registerInstruction(Snez.NAME, new Snez.Parser())
+                .registerInstruction(Sltz.NAME, new Sltz.Parser())
+                .registerInstruction(Sgtz.NAME, new Sgtz.Parser())
+                .registerInstruction(Sgt.NAME, new Sgt.Parser())
+                .registerInstruction(Sgtu.NAME, new Sgt.Parser())
+
+                .registerInstruction(Beqz.NAME, new Beqz.Parser())
+                .registerInstruction(Bnez.NAME, new Bnez.Parser())
+                .registerInstruction(Blez.NAME, new Blez.Parser())
+                .registerInstruction(Bgez.NAME, new Bgez.Parser())
+                .registerInstruction(Bltz.NAME, new Bltz.Parser())
+                .registerInstruction(Bgtz.NAME, new Bgtz.Parser())
+
+                .registerInstruction(Bgt.NAME, new Bgt.Parser())
+                .registerInstruction(Ble.NAME, new Ble.Parser())
+                .registerInstruction(Bgtu.NAME, new Bgtu.Parser())
+                .registerInstruction(Bleu.NAME, new Bleu.Parser())
+
+                .registerInstruction(J.NAME, new J.Parser())
+                .registerInstruction(Jr.NAME, new Jr.Parser())
+                .registerInstruction(Ret.NAME, new Ret.Parser())
+                .registerInstruction(Call.NAME, new Call.Parser())
+                .registerInstruction(Tail.NAME, new Tail.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -101,6 +140,8 @@ public class Presets {
                 .registerRInstruction(Sll.OPCODE, Sll.FUNCT_3, Sll.FUNCT_7, Sll.class)
                 .registerRInstruction(Srl.OPCODE, Srl.FUNCT_3, Srl.FUNCT_7, Srl.class)
                 .registerRInstruction(Sra.OPCODE, Sra.FUNCT_3, Sra.FUNCT_7, Sra.class)
+                .registerRInstruction(Slt.OPCODE, Slt.FUNCT_3, Slt.FUNCT_7, Slt.class)
+                .registerRInstruction(Sltu.OPCODE, Sltu.FUNCT_3, Sltu.FUNCT_7, Sltu.class)
                 // Immediate
                 .registerIInstruction(Addi.OPCODE, Addi.FUNCT_3, Addi.class)
                 .registerIInstruction(Xori.OPCODE, Xori.FUNCT_3, Xori.class)
@@ -108,12 +149,16 @@ public class Presets {
                 .registerIInstruction(Andi.OPCODE, Andi.FUNCT_3, Andi.class)
                 .registerIInstruction(Slli.OPCODE, Slli.FUNCT_3, Slli.class)
                 .registerIInstruction(ShiftRightImm.OPCODE, ShiftRightImm.FUNCT_3, ShiftRightImm.class)
+                .registerIInstruction(Slti.OPCODE, Slti.FUNCT_3, Slti.class)
+                .registerIInstruction(Sltiu.OPCODE, Sltiu.FUNCT_3, Sltiu.class)
                 // Load/store
                 .registerIInstruction(Lb.OPCODE, Lb.FUNCT_3, Lb.class)
                 .registerIInstruction(Lh.OPCODE, Lh.FUNCT_3, Lh.class)
                 .registerIInstruction(Lw.OPCODE, Lw.FUNCT_3, Lw.class)
                 .registerIInstruction(Lbu.OPCODE, Lbu.FUNCT_3, Lbu.class)
                 .registerIInstruction(Lhu.OPCODE, Lhu.FUNCT_3, Lhu.class)
+                .registerSInstruction(Sb.OPCODE, Sb.FUNCT_3, Sb.class)
+                .registerSInstruction(Sh.OPCODE, Sh.FUNCT_3, Sh.class)
                 .registerSInstruction(Sw.OPCODE, Sw.FUNCT_3, Sw.class)
                 // Branches
                 .registerBInstruction(Beq.OPCODE, Beq.FUNCT_3, Beq.class)
@@ -131,7 +176,13 @@ public class Presets {
                 .registerIInstruction(EcallEbreakImpl.OPCODE, EcallEbreakImpl.FUNCT_3, EcallEbreakImpl.class)
                 // RV32M
                 .registerRInstruction(Mul.OPCODE, Mul.FUNCT_3, Mul.FUNCT_7, Mul.class)
+                .registerRInstruction(Mulh.OPCODE, Mulh.FUNCT_3, Mulh.FUNCT_7, Mulh.class)
+                .registerRInstruction(Mulhsu.OPCODE, Mulhsu.FUNCT_3, Mulhsu.FUNCT_7, Mulhsu.class)
+                .registerRInstruction(Mulhu.OPCODE, Mulhu.FUNCT_3, Mulhu.FUNCT_7, Mulhu.class)
                 .registerRInstruction(Div.OPCODE, Div.FUNCT_3, Div.FUNCT_7, Div.class)
+                .registerRInstruction(Divu.OPCODE, Divu.FUNCT_3, Divu.FUNCT_7, Divu.class)
+                .registerRInstruction(Rem.OPCODE, Rem.FUNCT_3, Rem.FUNCT_7, Rem.class)
+                .registerRInstruction(Remu.OPCODE, Remu.FUNCT_3, Remu.FUNCT_7, Remu.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -180,6 +231,8 @@ public class Presets {
                 .registerHandler(Sll.class, new Sll.Handler())
                 .registerHandler(Srl.class, new Srl.Handler())
                 .registerHandler(Sra.class, new Sra.Handler())
+                .registerHandler(Slt.class, new Slt.Handler())
+                .registerHandler(Sltu.class, new Sltu.Handler())
                 // Immediate
                 .registerHandler(Addi.class, new Addi.Handler())
                 .registerHandler(Xori.class, new Xori.Handler())
@@ -187,12 +240,16 @@ public class Presets {
                 .registerHandler(Andi.class, new Andi.Handler())
                 .registerHandler(Slli.class, new Slli.Handler())
                 .registerHandler(ShiftRightImm.class, new ShiftRightImm.Handler())
+                .registerHandler(Slti.class, new Slti.Handler())
+                .registerHandler(Sltiu.class, new Sltiu.Handler())
                 // Load/store
                 .registerHandler(Lb.class, new Lb.Handler())
                 .registerHandler(Lh.class, new Lh.Handler())
                 .registerHandler(Lw.class, new Lw.Handler())
                 .registerHandler(Lbu.class, new Lbu.Handler())
                 .registerHandler(Lhu.class, new Lhu.Handler())
+                .registerHandler(Sb.class, new Sb.Handler())
+                .registerHandler(Sh.class, new Sh.Handler())
                 .registerHandler(Sw.class, new Sw.Handler())
                 // Branches
                 .registerHandler(Beq.class, new Beq.Handler())
@@ -210,7 +267,13 @@ public class Presets {
                 .registerHandler(EcallEbreakImpl.class, new EcallEbreakImpl.Handler())
                 // RV32M
                 .registerHandler(Mul.class, new Mul.Handler())
-                .registerHandler(Div.class, new Div.Handler());
+                .registerHandler(Mulh.class, new Mulh.Handler())
+                .registerHandler(Mulhsu.class, new Mulhsu.Handler())
+                .registerHandler(Mulhu.class, new Mulhu.Handler())
+                .registerHandler(Div.class, new Div.Handler())
+                .registerHandler(Divu.class, new Divu.Handler())
+                .registerHandler(Rem.class, new Rem.Handler())
+                .registerHandler(Remu.class, new Remu.Handler());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

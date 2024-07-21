@@ -20,7 +20,7 @@ public class Addi extends InstructionI implements ILinkableInstruction {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
         registerFile.getRegisterByNumber(rd).setValue(
             registerFile.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12)
         );
@@ -29,7 +29,7 @@ public class Addi extends InstructionI implements ILinkableInstruction {
     @Override
     public void link(long instructionPosition, long symbolAddress) {
         long offset = symbolAddress - instructionPosition;
-        imm = (short) (offset & 0b1111_1111_1111);
+        imm = splitImmediate((int) offset).low();
     }
 
     @Override

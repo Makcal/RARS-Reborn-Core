@@ -18,7 +18,7 @@ public class Slti extends InstructionI {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
         boolean less = registerFile.getRegisterByNumber(rs1).getValue() < asNegative(imm, 12);
         registerFile.getRegisterByNumber(rd).setValue(less ? 1 : 0);
     }

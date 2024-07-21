@@ -19,7 +19,7 @@ public class Slli extends InstructionI {
         checkFieldSize(imm, 5);
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
         registerFile.getRegisterByNumber(rd).setValue(
             registerFile.getRegisterByNumber(rs1).getValue() << (imm & 0b1_1111)
         );

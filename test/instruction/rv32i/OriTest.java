@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.Ori;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static rarsreborn.core.core.instruction.riscv.RiscVInstruction.truncateNegative;
 
 class OriTest {
     private static final Register32File register32File = new Register32File();
@@ -31,5 +33,13 @@ class OriTest {
         register32File.getRegisterByNumber(1).setValue(0b0110);
         handler.handle(ori);
         assertEquals(0b1110, register32File.getRegisterByNumber(0).getValue());
+    }
+
+    @Test
+    void orNegative() throws IllegalRegisterException, ImmediateTooLargeException {
+        Ori ori = new Ori(new InstructionI.InstructionIParams((byte) 0, (byte) 1, (short) truncateNegative(-2, 12)));
+        register32File.getRegisterByNumber(1).setValue(0b0111);
+        handler.handle(ori);
+        assertEquals(-1, register32File.getRegisterByNumber(0).getValue());
     }
 }

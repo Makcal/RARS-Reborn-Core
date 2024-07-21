@@ -28,6 +28,11 @@ public class SymbolTable implements ISymbolTable {
     }
 
     @Override
+    public boolean hasSymbol(String name) {
+        return symbolTable.containsKey(name);
+    }
+
+    @Override
     public List<Symbol> getAllSymbols() {
         return new ArrayList<>(symbolTable.values());
     }

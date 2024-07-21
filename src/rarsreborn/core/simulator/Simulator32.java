@@ -34,6 +34,7 @@ public class Simulator32 extends SimulatorBase {
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
     protected IObserver<Register32ChangeEvent> registerObserver;
     protected IObserver<Register32ChangeEvent> programCounterObserver;
+    protected IObserver<BeforeInstructionExecutionEvent> beforeInstructionExecutionObserver;
 
     public Simulator32(
         ICompiler compiler,
@@ -75,6 +76,10 @@ public class Simulator32 extends SimulatorBase {
         return programCounter;
     }
 
+    public long getCurrentInstructionNumber() {
+        return (programCounter.getValue() - Memory32.TEXT_SECTION_START) / 4;
+    }
+
     protected void clearObservers() {
         if (memoryBackStepperObserver != null) {
             memory.removeObserver(MemoryChangeEvent.class, memoryBackStepperObserver);
@@ -86,6 +91,7 @@ public class Simulator32 extends SimulatorBase {
         programCounter.removeObserver(Register32ChangeEvent.class, registerObserver);
 
         programCounter.removeObserver(Register32ChangeEvent.class, programCounterObserver);
+        this.removeObserver(BeforeInstructionExecutionEvent.class, beforeInstructionExecutionObserver);
     }
 
     private void setUpObservers() {
@@ -104,6 +110,10 @@ public class Simulator32 extends SimulatorBase {
             Register32ChangeEvent.class,
             programCounterObserver = event -> wasProgramCounterAffected = true
         );
+        this.addObserver(
+            BeforeInstructionExecutionEvent.class,
+            beforeInstructionExecutionObserver = event -> wasProgramCounterAffected = false
+        );
     }
 
     @Override
@@ -113,7 +123,7 @@ public class Simulator32 extends SimulatorBase {
         backStepper.reset();
         memory.reset();
         registerFile.reset();
-        programCounter.setValue(Memory32.TEXT_SECTION_START);
+        programCounter.setValue(Memory32.TEXT_SECTION_START + (int) executable.getEntryPointOffset());
         try {
             registerFile.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);
         } catch (IllegalRegisterException e) {
@@ -148,9 +158,7 @@ public class Simulator32 extends SimulatorBase {
     }
 
     @Override
-    protected void executeOneInstruction() throws ExecutionException {
-        wasProgramCounterAffected = false;
-        super.executeOneInstruction();
+    protected void updateProgramCounter() {
         if (!wasProgramCounterAffected) {
             programCounter.setValue(programCounter.getValue() + lastInstructionSize);
         }

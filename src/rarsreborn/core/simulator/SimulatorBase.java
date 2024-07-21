@@ -27,6 +27,7 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 import rarsreborn.core.simulator.backstepper.BackStepperStub;
 import rarsreborn.core.simulator.backstepper.IBackStepper;
+import rarsreborn.core.simulator.events.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -229,6 +230,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                 isPaused = !runImmediately;
             }
             onStartSetup();
+            notifyObservers(new StartedEvent());
             while (isRunning()) {
                 synchronized (lock) {
                     if (shouldStepBack) {

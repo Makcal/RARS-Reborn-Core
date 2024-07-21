@@ -22,6 +22,7 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 import rarsreborn.core.simulator.backstepper.IBackStepper;
 import rarsreborn.core.simulator.backstepper.MemoryChange;
 import rarsreborn.core.simulator.backstepper.Register32Change;
+import rarsreborn.core.simulator.events.BeforeInstructionExecutionEvent;
 
 public class SimulatorRiscV extends SimulatorBase {
     protected final Register32File registerFile;

@@ -4,7 +4,7 @@
 
     <groupId>swapik</groupId>
     <artifactId>rarsreborn.core</artifactId>
-    <version>1.1</version>
+    <version>1.2</version>
     <name>RARS Reborn Core</name>
 
     <repositories>

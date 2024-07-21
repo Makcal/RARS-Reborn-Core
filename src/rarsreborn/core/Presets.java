@@ -127,6 +127,14 @@ public class Presets {
                 .registerInstruction(Fld.NAME, new Fld.Parser())
                 .registerInstruction(Fsw.NAME, new Fsw.Parser())
                 .registerInstruction(Fsd.NAME, new Fsd.Parser())
+                .registerInstruction(Fadd_s.NAME, new Fadd_s.Parser())
+                .registerInstruction(Fsub_s.NAME, new Fsub_s.Parser())
+                .registerInstruction(Fmul_s.NAME, new Fmul_s.Parser())
+                .registerInstruction(Fdiv_s.NAME, new Fdiv_s.Parser())
+                .registerInstruction(Fadd_d.NAME, new Fadd_d.Parser())
+                .registerInstruction(Fsub_d.NAME, new Fsub_d.Parser())
+                .registerInstruction(Fmul_d.NAME, new Fmul_d.Parser())
+                .registerInstruction(Fdiv_d.NAME, new Fdiv_d.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -187,6 +195,14 @@ public class Presets {
                 .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
                 .registerSInstruction(Fsw.OPCODE, Fsw.FUNCT_3, Fsw.class)
                 .registerSInstruction(Fsd.OPCODE, Fsd.FUNCT_3, Fsd.class)
+                .registerRInstruction(Fadd_s.OPCODE, Fadd_s.FUNCT_3, Fadd_s.FUNCT_7, Fadd_s.class)
+                .registerRInstruction(Fsub_s.OPCODE, Fsub_s.FUNCT_3, Fsub_s.FUNCT_7, Fsub_s.class)
+                .registerRInstruction(Fmul_s.OPCODE, Fmul_s.FUNCT_3, Fmul_s.FUNCT_7, Fmul_s.class)
+                .registerRInstruction(Fdiv_s.OPCODE, Fdiv_s.FUNCT_3, Fdiv_s.FUNCT_7, Fdiv_s.class)
+                .registerRInstruction(Fadd_d.OPCODE, Fadd_d.FUNCT_3, Fadd_d.FUNCT_7, Fadd_d.class)
+                .registerRInstruction(Fsub_d.OPCODE, Fsub_d.FUNCT_3, Fsub_d.FUNCT_7, Fsub_d.class)
+                .registerRInstruction(Fmul_d.OPCODE, Fmul_d.FUNCT_3, Fmul_d.FUNCT_7, Fmul_d.class)
+                .registerRInstruction(Fdiv_d.OPCODE, Fdiv_d.FUNCT_3, Fdiv_d.FUNCT_7, Fdiv_d.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -289,6 +305,14 @@ public class Presets {
                 .registerHandler(Fld.class, new Fld.Handler())
                 .registerHandler(Fsw.class, new Fsw.Handler())
                 .registerHandler(Fsd.class, new Fsd.Handler())
+                .registerHandler(Fadd_s.class, new Fadd_s.Handler())
+                .registerHandler(Fsub_s.class, new Fsub_s.Handler())
+                .registerHandler(Fmul_s.class, new Fmul_s.Handler())
+                .registerHandler(Fdiv_s.class, new Fdiv_s.Handler())
+                .registerHandler(Fadd_d.class, new Fadd_d.Handler())
+                .registerHandler(Fsub_d.class, new Fsub_d.Handler())
+                .registerHandler(Fmul_d.class, new Fmul_d.Handler())
+                .registerHandler(Fdiv_d.class, new Fdiv_d.Handler())
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);

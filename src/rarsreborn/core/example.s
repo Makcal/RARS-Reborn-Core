@@ -2,12 +2,13 @@
     h: .space 20
     t: .string "Enter:\n"
     w: .word 42
-    fl: .double 2.3
+    fl1: .double 2.5
+    fl2: .double 2
 .text
-    la t0, fl
-    fld fa1, 0(t0)
-    fsd fa1, 4(t0)
-    fld fa0, 4(t0)
+    la t0, fl1
+    fld ft0, 0(t0)
+    fld ft1, 8(t0)
+    fmul.d fa0, ft0, ft1
     li a7, 3
     ecall
 

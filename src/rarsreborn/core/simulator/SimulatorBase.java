@@ -19,7 +19,6 @@ import rarsreborn.core.event.IObserver;
 import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.exceptions.NoBackStepsLeftException;
 import rarsreborn.core.exceptions.compilation.CompilationException;
-import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.execution.IllegalInstructionException;
@@ -184,7 +183,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         IInstructionHandler<IInstruction> handler
                 = (IInstructionHandler<IInstruction>) handlers.get(instruction.getClass());
         if (handler == null) {
-            throw new RuntimeException(new UnknownInstructionException(instruction.getName()));
+            throw new RuntimeException(new IllegalInstructionException(instruction.toString()));
         }
         handler.handle(instruction);
     }

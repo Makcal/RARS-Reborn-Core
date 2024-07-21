@@ -152,7 +152,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         if (!worker.isPaused()) {
             throw new RuntimeException("Wait until the worker is paused");
         }
-        backStepper.revert();
+        worker.stepBack();
         observableImplementation.notifyObservers(new BackStepFinishedEvent());
     }
 
@@ -215,6 +215,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         protected boolean isRunning = false;
         protected boolean isPaused = true;
         protected int instructionsToRun = 0;
+        protected boolean shouldStepBack = false;
 
         public void start() throws ExecutionException {
             start(false);
@@ -230,6 +231,13 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
             onStartSetup();
             while (isRunning()) {
                 synchronized (lock) {
+                    if (shouldStepBack) {
+                        try {
+                            backStepper.revert();
+                        } catch (NoBackStepsLeftException ignored) {}
+                        shouldStepBack = false;
+                    }
+
                     while (isPaused()) {
                         try {
                             lock.wait();
@@ -302,6 +310,17 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         public boolean isRunning() {
             synchronized (lock) {
                 return isRunning;
+            }
+        }
+
+        public void stepBack() throws NoBackStepsLeftException, ExecutionException {
+            if (isPaused()) {
+                backStepper.revert();
+                return;
+            }
+            // If requested during waiting for input
+            synchronized (lock) {
+                shouldStepBack = true;
             }
         }
     }

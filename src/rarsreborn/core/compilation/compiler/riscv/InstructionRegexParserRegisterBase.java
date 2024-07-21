@@ -23,7 +23,7 @@ public abstract class InstructionRegexParserRegisterBase
 
     public static String[] splitArguments(String line, int argumentsCount, String instructionName)
             throws WrongNumberOfArgumentsException, SyntaxErrorException {
-        String[] args = line.isEmpty() ? new String[]{} : line.split("[, ]");
+        String[] args = line.isEmpty() ? new String[]{} : line.split("(?<!')[, ](?='?)|(?='?)[, ](?!')");
         if (args.length != argumentsCount) {
             throw new WrongNumberOfArgumentsException(instructionName, args.length, argumentsCount);
         }

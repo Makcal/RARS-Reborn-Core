@@ -18,9 +18,11 @@ public class Jalr extends InstructionI {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) throws IllegalRegisterException {
+    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter)
+            throws IllegalRegisterException {
+        int base = registerFile.getRegisterByNumber(rs1).getValue();
         registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + 4);
-        programCounter.setValue(registerFile.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12));
+        programCounter.setValue(base + asNegative(imm, 12));
     }
 
     @Override

@@ -21,7 +21,7 @@ public class Sra extends InstructionR {
         super(new InstructionRData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.rs2(), FUNCT_7));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
         registerFile.getRegisterByNumber(rd).setValue(
             registerFile.getRegisterByNumber(rs1).getValue()
             >> registerFile.getRegisterByNumber(rs2).getValue()

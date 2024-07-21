@@ -18,7 +18,7 @@ public class ShiftRightImm extends InstructionI {
         checkFieldSize(imm ^ (imm & (1 << 10)), 5);
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
         if (isArithmetic()) {
             new Srai(rd, rs1, (short) (imm ^ 1 << 10)).exec(registerFile);
         }

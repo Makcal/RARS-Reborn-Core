@@ -19,17 +19,15 @@ public class Auipc extends InstructionU implements ILinkableInstruction {
         super(new InstructionUData(OPCODE, data.rd(), data.imm()));
     }
 
-    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter) throws IllegalRegisterException {
+    protected void exec(IRegisterFile<Register32> registerFile, Register32 programCounter)
+            throws IllegalRegisterException {
         registerFile.getRegisterByNumber(rd).setValue(programCounter.getValue() + imm);
     }
 
     @Override
     public void link(long instructionPosition, long symbolAddress) {
         long offset = symbolAddress - instructionPosition;
-        if ((offset & 0b1000_0000_0000) != 0) {
-            offset += 0b1_0000_0000_0000;
-        }
-        imm = (int) (offset ^ (offset & 0b1111_1111_1111));
+        imm = splitImmediate((int) offset).high();
     }
 
     @Override

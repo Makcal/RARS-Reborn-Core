@@ -5,5 +5,7 @@ public interface IRegister {
 
     String getName();
 
+    String getNumericName();
+
     void reset();
 }

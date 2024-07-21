@@ -13,6 +13,7 @@ import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
@@ -22,10 +23,11 @@ import rarsreborn.core.simulator.backstepper.IBackStepper;
 import rarsreborn.core.simulator.backstepper.MemoryChange;
 import rarsreborn.core.simulator.backstepper.Register32Change;
 
-public class Simulator32 extends SimulatorBase {
+public class SimulatorRiscV extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
     protected final Memory32 memory;
+    protected final RegisterFloat64File floatRegisterFile;
 
     protected long programLength;
     protected byte lastInstructionSize;
@@ -34,20 +36,9 @@ public class Simulator32 extends SimulatorBase {
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
     protected IObserver<Register32ChangeEvent> registerObserver;
     protected IObserver<Register32ChangeEvent> programCounterObserver;
+    protected IObserver<BeforeInstructionExecutionEvent> beforeInstructionExecutionObserver;
 
-    public Simulator32(
-        ICompiler compiler,
-        ILinker linker,
-        IBufferedDecoder decoder,
-        Register32File registerFile,
-        Register32 programCounter,
-        Memory32 memory,
-        RiscV32ExecutionEnvironment executionEnvironment
-    ) {
-        this(compiler, linker, decoder, registerFile, programCounter, memory, executionEnvironment, null);
-    }
-
-    public Simulator32(
+    public SimulatorRiscV(
         ICompiler compiler,
         ILinker linker,
         IBufferedDecoder decoder,
@@ -55,12 +46,37 @@ public class Simulator32 extends SimulatorBase {
         Register32 programCounter,
         Memory32 memory,
         RiscV32ExecutionEnvironment executionEnvironment,
-        IBackStepper backStepper
+        RegisterFloat64File floatRegisterFile
+    ) {
+        this(
+            compiler,
+            linker,
+            decoder,
+            null,
+            registerFile,
+            programCounter,
+            memory,
+            executionEnvironment,
+            floatRegisterFile
+        );
+    }
+
+    public SimulatorRiscV(
+        ICompiler compiler,
+        ILinker linker,
+        IBufferedDecoder decoder,
+        IBackStepper backStepper,
+        Register32File registerFile,
+        Register32 programCounter,
+        Memory32 memory,
+        RiscV32ExecutionEnvironment executionEnvironment,
+        RegisterFloat64File floatRegisterFile
     ) {
         super(compiler, linker, decoder, backStepper, executionEnvironment);
         this.registerFile = registerFile;
         this.memory = memory;
         this.programCounter = programCounter;
+        this.floatRegisterFile = floatRegisterFile;
     }
 
     public Register32File getRegisterFile() {
@@ -75,6 +91,14 @@ public class Simulator32 extends SimulatorBase {
         return programCounter;
     }
 
+    public RegisterFloat64File getFloatRegisterFile() {
+        return floatRegisterFile;
+    }
+
+    public long getCurrentInstructionNumber() {
+        return (programCounter.getValue() - Memory32.TEXT_SECTION_START) / 4;
+    }
+
     protected void clearObservers() {
         if (memoryBackStepperObserver != null) {
             memory.removeObserver(MemoryChangeEvent.class, memoryBackStepperObserver);
@@ -86,6 +110,7 @@ public class Simulator32 extends SimulatorBase {
         programCounter.removeObserver(Register32ChangeEvent.class, registerObserver);
 
         programCounter.removeObserver(Register32ChangeEvent.class, programCounterObserver);
+        this.removeObserver(BeforeInstructionExecutionEvent.class, beforeInstructionExecutionObserver);
     }
 
     private void setUpObservers() {
@@ -104,6 +129,10 @@ public class Simulator32 extends SimulatorBase {
             Register32ChangeEvent.class,
             programCounterObserver = event -> wasProgramCounterAffected = true
         );
+        this.addObserver(
+            BeforeInstructionExecutionEvent.class,
+            beforeInstructionExecutionObserver = event -> wasProgramCounterAffected = false
+        );
     }
 
     @Override
@@ -113,7 +142,7 @@ public class Simulator32 extends SimulatorBase {
         backStepper.reset();
         memory.reset();
         registerFile.reset();
-        programCounter.setValue(Memory32.TEXT_SECTION_START);
+        programCounter.setValue(Memory32.TEXT_SECTION_START + (int) executable.getEntryPointOffset());
         try {
             registerFile.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);
         } catch (IllegalRegisterException e) {
@@ -148,15 +177,13 @@ public class Simulator32 extends SimulatorBase {
     }
 
     @Override
-    protected void executeOneInstruction() throws ExecutionException {
-        wasProgramCounterAffected = false;
-        super.executeOneInstruction();
+    protected void updateProgramCounter() {
         if (!wasProgramCounterAffected) {
             programCounter.setValue(programCounter.getValue() + lastInstructionSize);
         }
     }
 
-    public <TInstruction extends IInstruction> Simulator32 registerHandler(
+    public <TInstruction extends IInstruction> SimulatorRiscV registerHandler(
             Class<TInstruction> instructionClass,
             RiscV32InstructionHandler<TInstruction> handler
     ) {
@@ -164,6 +191,7 @@ public class Simulator32 extends SimulatorBase {
         handler.attachProgramCounter(programCounter);
         handler.attachRegisters(registerFile);
         handler.attachExecutionEnvironment(executionEnvironment);
+        handler.attachFloatRegisters(floatRegisterFile);
         super.addHandler(instructionClass, handler);
         return this;
     }

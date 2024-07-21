@@ -56,12 +56,33 @@ public class Jal extends InstructionJ implements ILinkableInstruction {
     public static class Parser extends InstructionRegexParserRegisterBase<Jal> {
         @Override
         public Jal parse(String line) throws CompilationException {
+            try {
+                return parseFull(line);
+            } catch (WrongNumberOfArgumentsException ignored) {}
+            try {
+                return parseShorthand(line);
+            } catch (WrongNumberOfArgumentsException ignored) {}
+
+            throw new WrongNumberOfArgumentsException(NAME, line, "1 or 2");
+        }
+
+        protected Jal parseFull(String line) throws CompilationException {
             String[] split = splitArguments(line, 2, NAME);
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
 
             String label = split[1];
             Jal instruction = new Jal(new InstructionJParams((byte) rd.getNumber(), 0));
+            instruction.linkRequest = new LinkRequest(label);
+
+            return instruction;
+        }
+
+        protected Jal parseShorthand(String line) throws CompilationException {
+            String[] split = splitArguments(line, 1, NAME);
+
+            String label = split[0];
+            Jal instruction = new Jal(new InstructionJParams((byte) 1, 0));
             instruction.linkRequest = new LinkRequest(label);
 
             return instruction;

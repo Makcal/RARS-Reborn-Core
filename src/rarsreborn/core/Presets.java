@@ -17,14 +17,14 @@ import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.ZeroRegister32;
 import rarsreborn.core.core.program.riscvprogram.RiscVObjectFile;
 import rarsreborn.core.event.ObservableImplementation;
-import rarsreborn.core.simulator.Simulator32;
+import rarsreborn.core.simulator.SimulatorRiscV;
 import rarsreborn.core.simulator.backstepper.BackStepper;
 
 /**
  * @see <a href="https://github.com/jameslzhu/riscv-card/blob/master/riscv-card.pdf">Some instructions</a>
  */
 public class Presets {
-    public static Simulator32 getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
+    public static SimulatorRiscV getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
         try {
             String[] registerNames = new String[] {
                 "ra", "sp", "gp", "tp",
@@ -212,7 +212,7 @@ public class Presets {
                 .addHandler(37, new PrintIntegerOctalEcall())
                 .build();
 
-            return new Simulator32(
+            return new SimulatorRiscV(
                 compiler,
                 linker,
                 decoder,

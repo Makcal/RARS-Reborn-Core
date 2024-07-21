@@ -7,7 +7,7 @@ import rarsreborn.core.core.memory.Memory32;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.exceptions.execution.ExecutionException;
-import rarsreborn.core.simulator.Simulator32;
+import rarsreborn.core.simulator.SimulatorRiscV;
 
 import java.io.File;
 import java.util.Arrays;
@@ -17,7 +17,7 @@ import java.util.Scanner;
 public class Example {
     public static void main(String[] args) {
         try {
-            Simulator32 simulator = Presets.getClassicalRiscVSimulator(new InputDevice());
+            SimulatorRiscV simulator = Presets.getClassicalRiscVSimulator(new InputDevice());
             simulator.getExecutionEnvironment().addObserver(
                 ConsolePrintStringEvent.class,
                 event -> System.out.print(event.text())
@@ -92,19 +92,19 @@ public class Example {
         }
     }
 
-    private static void waitUntilWorkerStarted(Simulator32 simulator) {
+    private static void waitUntilWorkerStarted(SimulatorRiscV simulator) {
         while (!simulator.isRunning()) {
             Thread.onSpinWait();
         }
     }
 
-    private static void waitUntilStopped(Simulator32 simulator) {
+    private static void waitUntilStopped(SimulatorRiscV simulator) {
         while (simulator.isRunning()) {
             Thread.onSpinWait();
         }
     }
 
-    private static void waitUntilPaused(Simulator32 simulator) {
+    private static void waitUntilPaused(SimulatorRiscV simulator) {
         while (!simulator.isPaused()) {
             Thread.onSpinWait();
         }

@@ -22,7 +22,7 @@ import rarsreborn.core.simulator.backstepper.IBackStepper;
 import rarsreborn.core.simulator.backstepper.MemoryChange;
 import rarsreborn.core.simulator.backstepper.Register32Change;
 
-public class Simulator32 extends SimulatorBase {
+public class SimulatorRiscV extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
     protected final Memory32 memory;
@@ -36,7 +36,7 @@ public class Simulator32 extends SimulatorBase {
     protected IObserver<Register32ChangeEvent> programCounterObserver;
     protected IObserver<BeforeInstructionExecutionEvent> beforeInstructionExecutionObserver;
 
-    public Simulator32(
+    public SimulatorRiscV(
         ICompiler compiler,
         ILinker linker,
         IBufferedDecoder decoder,
@@ -48,7 +48,7 @@ public class Simulator32 extends SimulatorBase {
         this(compiler, linker, decoder, registerFile, programCounter, memory, executionEnvironment, null);
     }
 
-    public Simulator32(
+    public SimulatorRiscV(
         ICompiler compiler,
         ILinker linker,
         IBufferedDecoder decoder,
@@ -164,7 +164,7 @@ public class Simulator32 extends SimulatorBase {
         }
     }
 
-    public <TInstruction extends IInstruction> Simulator32 registerHandler(
+    public <TInstruction extends IInstruction> SimulatorRiscV registerHandler(
             Class<TInstruction> instructionClass,
             RiscV32InstructionHandler<TInstruction> handler
     ) {

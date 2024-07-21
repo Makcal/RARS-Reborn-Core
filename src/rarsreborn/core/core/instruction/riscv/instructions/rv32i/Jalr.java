@@ -6,6 +6,7 @@ import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
+import rarsreborn.core.exceptions.compilation.WrongNumberOfArgumentsException;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 public class Jalr extends InstructionI {
@@ -37,17 +38,32 @@ public class Jalr extends InstructionI {
     public static class Parser extends InstructionRegexParserRegisterBase<Jalr> {
         @Override
         public Jalr parse(String line) throws CompilationException {
+            try {
+                return parseFull(line);
+            } catch (WrongNumberOfArgumentsException ignored) {}
+            try {
+                return parseShorthand(line);
+            } catch (WrongNumberOfArgumentsException ignored) {}
+
+            throw new WrongNumberOfArgumentsException(NAME, line, "1 or 3");
+        }
+
+        protected Jalr parseFull(String line) throws CompilationException {
             String[] split = splitArguments(line, 3, NAME);
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
             Register32 rs1 = castToRegister32(parseRegister(registers, split[1]));
             short imm = parseShort(split[2]);
 
-            return new Jalr(new InstructionIParams(
-                (byte) rd.getNumber(),
-                (byte) rs1.getNumber(),
-                imm
-            ));
+            return new Jalr(new InstructionIParams((byte) rd.getNumber(), (byte) rs1.getNumber(), imm));
+        }
+
+        protected Jalr parseShorthand(String line) throws CompilationException {
+            String[] split = splitArguments(line, 1, NAME);
+
+            Register32 rs = castToRegister32(parseRegister(registers, split[0]));
+
+            return new Jalr(new InstructionIParams((byte) 1, (byte) rs.getNumber(), (short) 0));
         }
     }
 }

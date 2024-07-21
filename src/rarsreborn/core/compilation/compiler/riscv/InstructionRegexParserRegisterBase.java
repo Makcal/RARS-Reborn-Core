@@ -2,8 +2,9 @@ package rarsreborn.core.compilation.compiler.riscv;
 
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.register.IRegister;
-import rarsreborn.core.core.register.IRegisterFile;
+import rarsreborn.core.core.register.IRegisterCollection;
 import rarsreborn.core.core.register.Register32;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64;
 import rarsreborn.core.exceptions.compilation.*;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
@@ -14,28 +15,26 @@ public abstract class InstructionRegexParserRegisterBase
         <TInstruction extends IInstruction>
         implements IInstructionRegexParser<TInstruction> {
 
-    protected IRegisterFile<?> registers;
+    protected IRegisterCollection registers;
 
     @Override
-    public void attachRegisters(IRegisterFile<?> registers) {
+    public void attachRegisters(IRegisterCollection registers) {
         this.registers = registers;
     }
 
     public static String[] splitArguments(String line, int argumentsCount, String instructionName)
-            throws WrongNumberOfArgumentsException {
-        String[] args = line.isEmpty() ? new String[]{} : line.split(",");
+            throws WrongNumberOfArgumentsException, SyntaxErrorException {
+        String[] args = line.isEmpty() ? new String[]{} : line.split("(?<!')[, ](?='?)|(?='?)[, ](?!')");
         if (args.length != argumentsCount) {
             throw new WrongNumberOfArgumentsException(instructionName, args.length, argumentsCount);
         }
         return args;
     }
 
-    public static IRegister parseRegister(IRegisterFile<?> registers, String s)
+    public static IRegister parseRegister(IRegisterCollection registers, String s)
             throws UnknownRegisterException {
         try {
-            return s.matches("x\\d+")
-            ? registers.getRegisterByNumber(Integer.parseInt(s.substring(1)))
-            : registers.getRegisterByName(s);
+            return registers.findRegister(s);
         } catch (IllegalRegisterException e) {
             throw new UnknownRegisterException(e.getMessage());
         }
@@ -46,6 +45,14 @@ public abstract class InstructionRegexParserRegisterBase
             return (Register32) register;
         } catch (ClassCastException e) {
             throw new WrongRegisterTypeException(Register32.class, register.getClass());
+        }
+    }
+
+    public static RegisterFloat64 castToRegisterFloat64(IRegister register) throws WrongRegisterTypeException {
+        try {
+            return (RegisterFloat64) register;
+        } catch (ClassCastException e) {
+            throw new WrongRegisterTypeException(RegisterFloat64.class, register.getClass());
         }
     }
 
@@ -83,7 +90,7 @@ public abstract class InstructionRegexParserRegisterBase
 
     public static final Pattern loadStorePattern =
         Pattern.compile(
-            "\\s*(x\\d+|\\w+)\\s*,\\s*(-?(?:0x[0-9a-f]+|0[0-7]+|0b[01]+|\\d+))\\s*\\((x\\d+|\\w+)\\)\\s*"
+            "\\s*(\\w+)\\s*,\\s*(-?(?:0x[0-9a-f]+|0[0-7]+|0b[01]+|\\d+))\\s*\\((x\\d+|\\w+)\\)\\s*"
         );
 
     /**

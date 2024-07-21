@@ -5,9 +5,12 @@ import rarsreborn.core.compilation.compiler.ICompilerBuilder;
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.instruction.ILinkableInstruction;
 import rarsreborn.core.core.program.*;
+import rarsreborn.core.core.register.IRegister;
+import rarsreborn.core.core.register.IRegisterCollection;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.program.riscvprogram.DataBlock;
 import rarsreborn.core.exceptions.compilation.*;
+import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -171,7 +174,7 @@ public class RegexCompiler implements ICompiler {
     }
 
     public static class RegexCompilerBuilder implements ICompilerBuilder {
-        private IRegisterFile<?> registers;
+        private final RegisterCollection registers = new RegisterCollection();
         private final Map<String, IInstructionRegexParser<?>> parsers = new HashMap<>();
         private IProgramBuilder programBuilder;
 
@@ -188,7 +191,7 @@ public class RegexCompiler implements ICompiler {
 
         @Override
         public RegexCompilerBuilder registerRegistersFromFile(IRegisterFile<?> registerFile) {
-            registers = registerFile;
+            registerFile.getAllRegisters().forEach(registers::addRegister);
             return this;
         }
 
@@ -201,6 +204,23 @@ public class RegexCompiler implements ICompiler {
             parser.attachRegisters(registers);
             parsers.put(instructionName, parser);
             return this;
+        }
+
+        public static class RegisterCollection implements IRegisterCollection {
+            protected final HashMap<String, IRegister> registerMap = new HashMap<>();
+
+            @Override
+            public IRegister findRegister(String name) throws IllegalRegisterException {
+                IRegister register = registerMap.get(name);
+                if (register != null)
+                    return register;
+                throw new IllegalRegisterException(name);
+            }
+
+            public void addRegister(IRegister register) {
+                registerMap.put(register.getName(), register);
+                registerMap.put(register.getNumericName(), register);
+            }
         }
     }
 

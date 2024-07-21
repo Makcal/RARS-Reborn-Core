@@ -12,8 +12,8 @@ public class Mv implements IInstruction {
 
     private final Addi base;
 
-    public Mv(byte rd, byte rs2) {
-        base = new Addi(new InstructionI.InstructionIParams(rd, rs2, (short) 0));
+    public Mv(byte rd, byte rs) {
+        base = new Addi(new InstructionI.InstructionIParams(rd, rs, (short) 0));
     }
 
     @Override
@@ -32,9 +32,9 @@ public class Mv implements IInstruction {
             String[] split = splitArguments(line, 2, NAME);
 
             Register32 rd = castToRegister32(parseRegister(registers, split[0]));
-            Register32 rs2 = castToRegister32(parseRegister(registers, split[1]));
+            Register32 rs = castToRegister32(parseRegister(registers, split[1]));
 
-            return new Mv((byte) rd.getNumber(), (byte) rs2.getNumber());
+            return new Mv((byte) rd.getNumber(), (byte) rs.getNumber());
         }
     }
 }

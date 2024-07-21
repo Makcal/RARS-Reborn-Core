@@ -10,5 +10,7 @@ public interface ISymbolTable {
 
     Symbol getSymbol(String name) throws LabelNotFoundException;
 
+    boolean hasSymbol(String name);
+
     List<Symbol> getAllSymbols();
 }

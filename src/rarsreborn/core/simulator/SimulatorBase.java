@@ -169,11 +169,15 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
 
     protected void executeOneInstruction() throws ExecutionException {
         backStepper.addStep();
+        notifyObservers(new BeforeInstructionExecutionEvent());
         executeInstruction(getNextInstruction());
+        updateProgramCounter();
         notifyObservers(new InstructionExecutedEvent());
     }
 
-    protected void executeInstruction(IInstruction instruction) throws ExecutionException {
+    protected abstract void updateProgramCounter();
+
+    public void executeInstruction(IInstruction instruction) throws ExecutionException {
         // This cast should always work due to the fact that handles are registered exceptionally for the corresponding
         // type of instruction
         //noinspection unchecked

@@ -18,7 +18,7 @@ public class Sltiu extends InstructionI {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
         long val1 = Integer.toUnsignedLong(registerFile.getRegisterByNumber(rs1).getValue());
         long val2 = Integer.toUnsignedLong(asNegative(imm, 12));
         registerFile.getRegisterByNumber(rd).setValue(val1 < val2 ? 1 : 0);

@@ -8,6 +8,7 @@ import rarsreborn.core.core.environment.mmu.IMemoryManagementUnit;
 import rarsreborn.core.core.memory.IMemory;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.event.IObservable;
 import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.execution.ExecutionException;
@@ -20,6 +21,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
     protected final Register32File registers;
     protected final Register32 programCounter;
     protected final IMemory memory;
+    protected final RegisterFloat64File floatRegisters;
     protected final Map<Integer, ISystemCall> handlers;
     protected final IObservable observableImplementation;
     protected final ITextInputDevice consoleReader;
@@ -29,6 +31,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
         Register32File registers,
         Register32 programCounter,
         IMemory memory,
+        RegisterFloat64File floatRegisters,
         Map<Integer, ISystemCall> handlers,
         IObservable observableImplementation,
         ITextInputDevice consoleReader,
@@ -37,6 +40,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
         this.registers = registers;
         this.programCounter = programCounter;
         this.memory = memory;
+        this.floatRegisters = floatRegisters;
         this.handlers = handlers;
         for (ISystemCall systemCall : handlers.values()) {
             if (systemCall instanceof RiscVSystemCall) {
@@ -87,6 +91,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
         protected Register32File registers;
         protected Register32 programCounter;
         protected IMemory memory;
+        protected RegisterFloat64File floatRegisters;
         protected IObservable observableImplementation;
         protected ITextInputDevice consoleReader;
         private final Map<Integer, ISystemCall> handlers = new HashMap<>();
@@ -104,6 +109,11 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
 
         public Builder setMemory(IMemory memory) {
             this.memory = memory;
+            return this;
+        }
+
+        public Builder setFloatRegisters(RegisterFloat64File floatRegisters) {
+            this.floatRegisters = floatRegisters;
             return this;
         }
 
@@ -131,13 +141,21 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
             handler.setRegisters(registers);
             handler.setProgramCounter(programCounter);
             handler.setMemory(memory);
+            handler.setFloatRegisters(floatRegisters);
             handler.setMmu(mmu);
             return this.addHandler(number, (ISystemCall) handler);
         }
 
         public RiscV32ExecutionEnvironment build() {
             return new RiscV32ExecutionEnvironment(
-                registers, programCounter, memory, handlers, observableImplementation, consoleReader, mmu
+                registers,
+                programCounter,
+                memory,
+                floatRegisters,
+                handlers,
+                observableImplementation,
+                consoleReader,
+                mmu
             );
         }
     }

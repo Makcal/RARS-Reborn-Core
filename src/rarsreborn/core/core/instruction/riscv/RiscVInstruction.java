@@ -76,4 +76,21 @@ public abstract class RiscVInstruction implements IInstruction {
             (byte) value
         };
     }
+
+    public static byte[] concatArrays(byte[] part1, byte[] part2) {
+        byte[] res = new byte[part1.length + part2.length];
+        System.arraycopy(part1, 0, res, 0, part1.length);
+        System.arraycopy(part2, 0, res, part1.length, part2.length);
+        return res;
+    }
+
+    public record ImmediateSignedSplit(int high, short low) {}
+
+    public static ImmediateSignedSplit splitImmediate(int imm) {
+        int high = imm >> 12 << 12;
+        if ((imm & 0b1000_0000_0000) != 0) {
+            high += 0b1_0000_0000_0000;
+        }
+        return new ImmediateSignedSplit(high, (short) (imm & 0b1111_1111_1111));
+    }
 }

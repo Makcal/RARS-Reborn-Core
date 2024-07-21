@@ -18,7 +18,7 @@ public class Mulh extends InstructionR {
         super(new InstructionRData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.rs2(), FUNCT_7));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
         long val1 = registerFile.getRegisterByNumber(rs1).getValue();
         long val2 = registerFile.getRegisterByNumber(rs2).getValue();
         registerFile.getRegisterByNumber(rd).setValue((int) (val1 * val2 >> 32));

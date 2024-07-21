@@ -18,8 +18,10 @@ public class Andi extends InstructionI {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
 
-    private void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        registerFile.getRegisterByNumber(rd).setValue(registerFile.getRegisterByNumber(rs1).getValue() & imm);
+    public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
+        registerFile.getRegisterByNumber(rd).setValue(
+            registerFile.getRegisterByNumber(rs1).getValue() & asNegative(imm, 12)
+        );
     }
 
     @Override

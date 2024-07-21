@@ -11,6 +11,8 @@ import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 
+import static rarsreborn.core.core.instruction.riscv.RiscVInstruction.*;
+
 public class La implements IInstruction, ILinkableInstruction {
     public static final String NAME = "la";
 
@@ -19,8 +21,9 @@ public class La implements IInstruction, ILinkableInstruction {
     protected LinkRequest linkRequest = null;
 
     public La(byte rd, int imm) {
-        firstBase = new Auipc(new InstructionU.InstructionUParams(rd, imm ^ (imm & 0b1111_1111_1111)));
-        secondBase = new Addi(new InstructionI.InstructionIParams(rd, rd, (short) (imm & 0b1111_1111_1111)));
+        ImmediateSignedSplit split = splitImmediate(imm);
+        firstBase = new Auipc(new InstructionU.InstructionUParams(rd, split.high()));
+        secondBase = new Addi(new InstructionI.InstructionIParams(rd, rd, split.low()));
     }
 
     @Override
@@ -41,17 +44,7 @@ public class La implements IInstruction, ILinkableInstruction {
 
     @Override
     public byte[] serialize() {
-        byte[] part1 = firstBase.serialize();
-        byte[] part2 = secondBase.serialize();
-        byte[] res = new byte[part1.length + part2.length];
-        int i = 0;
-        for (; i < part1.length; i++) {
-            res[i] = part1[i];
-        }
-        for (int j = 0; j < part2.length; j++, i++) {
-            res[i] = part2[j];
-        }
-        return res;
+        return concatArrays(firstBase.serialize(), secondBase.serialize());
     }
 
     public static class Parser extends InstructionRegexParserRegisterBase<La> {

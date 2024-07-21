@@ -29,7 +29,7 @@ public class Addi extends InstructionI implements ILinkableInstruction {
     @Override
     public void link(long instructionPosition, long symbolAddress) {
         long offset = symbolAddress - instructionPosition;
-        imm = (short) (offset & 0b1111_1111_1111);
+        imm = splitImmediate((int) offset).low();
     }
 
     @Override

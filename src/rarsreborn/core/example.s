@@ -5,7 +5,9 @@
     fl: .double 2.3
 .text
     la t0, fl
-    fld fa0, 0(t0)
+    fld fa1, 0(t0)
+    fsd fa1, 4(t0)
+    fld fa0, 4(t0)
     li a7, 3
     ecall
 

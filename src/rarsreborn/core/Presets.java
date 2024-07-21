@@ -124,6 +124,8 @@ public class Presets {
                 // RV32FD
                 .registerInstruction(Flw.NAME, new Flw.Parser())
                 .registerInstruction(Fld.NAME, new Fld.Parser())
+                .registerInstruction(Fsw.NAME, new Fsw.Parser())
+                .registerInstruction(Fsd.NAME, new Fsd.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -182,6 +184,8 @@ public class Presets {
                 // RV32FD
                 .registerIInstruction(Flw.OPCODE, Flw.FUNCT_3, Flw.class)
                 .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
+                .registerSInstruction(Fsw.OPCODE, Fsw.FUNCT_3, Fsw.class)
+                .registerSInstruction(Fsd.OPCODE, Fsd.FUNCT_3, Fsd.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -282,6 +286,8 @@ public class Presets {
                 // RV32FD
                 .registerHandler(Flw.class, new Flw.Handler())
                 .registerHandler(Fld.class, new Fld.Handler())
+                .registerHandler(Fsw.class, new Fsw.Handler())
+                .registerHandler(Fsd.class, new Fsd.Handler())
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);

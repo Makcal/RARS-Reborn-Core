@@ -201,6 +201,8 @@ public class Presets {
                 .addHandler(3, new PrintDoubleEcall())
                 .addHandler(4, new PrintStringEcall())
                 .addHandler(5, new ReadIntegerEcall())
+                .addHandler(6, new ReadFloatEcall())
+                .addHandler(7, new ReadDoubleEcall())
                 .addHandler(8, new ReadStringEcall())
                 .addHandler(9, new MallocEcall())
                 .addHandler(10, new ExitEcall())

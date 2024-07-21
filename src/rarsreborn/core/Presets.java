@@ -190,6 +190,8 @@ public class Presets {
                 .setConsoleReader(consoleReader)
                 .setMmu(new LinearMemoryManagementUnit(memory, Memory32.HEAP_SECTION_START, Memory32.HEAP_SECTION_SIZE))
                 .addHandler(1, new PrintIntegerEcall())
+                .addHandler(2, new PrintFloatEcall())
+                .addHandler(3, new PrintDoubleEcall())
                 .addHandler(4, new PrintStringEcall())
                 .addHandler(5, new ReadIntegerEcall())
                 .addHandler(8, new ReadStringEcall())

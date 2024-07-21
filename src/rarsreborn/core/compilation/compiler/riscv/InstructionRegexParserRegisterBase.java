@@ -2,7 +2,7 @@ package rarsreborn.core.compilation.compiler.riscv;
 
 import rarsreborn.core.core.instruction.IInstruction;
 import rarsreborn.core.core.register.IRegister;
-import rarsreborn.core.core.register.IRegisterFile;
+import rarsreborn.core.core.register.IRegisterCollection;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.*;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
@@ -14,10 +14,10 @@ public abstract class InstructionRegexParserRegisterBase
         <TInstruction extends IInstruction>
         implements IInstructionRegexParser<TInstruction> {
 
-    protected IRegisterFile<?> registers;
+    protected IRegisterCollection registers;
 
     @Override
-    public void attachRegisters(IRegisterFile<?> registers) {
+    public void attachRegisters(IRegisterCollection registers) {
         this.registers = registers;
     }
 
@@ -30,12 +30,10 @@ public abstract class InstructionRegexParserRegisterBase
         return args;
     }
 
-    public static IRegister parseRegister(IRegisterFile<?> registers, String s)
+    public static IRegister parseRegister(IRegisterCollection registers, String s)
             throws UnknownRegisterException {
         try {
-            return s.matches("x\\d+")
-            ? registers.getRegisterByNumber(Integer.parseInt(s.substring(1)))
-            : registers.getRegisterByName(s);
+            return registers.findRegister(s);
         } catch (IllegalRegisterException e) {
             throw new UnknownRegisterException(e.getMessage());
         }

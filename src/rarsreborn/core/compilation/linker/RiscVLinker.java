@@ -67,7 +67,12 @@ public class RiscVLinker implements ILinker {
         } catch (IllegalInstructionException | MemoryAccessException e) {
             throw new RuntimeException(e);
         }
-        return new RiscVExecutable(listToArray(context.data), text);
+
+        long entryPointOffset = 0;
+        if (context.symbolTable.hasSymbol("main")) {
+            entryPointOffset = context.symbolTable.getSymbol("main").address() - textSectionStart;
+        }
+        return new RiscVExecutable(listToArray(context.data), text, entryPointOffset);
     }
 
     protected byte[] listToArray(ArrayList<Byte> list) {

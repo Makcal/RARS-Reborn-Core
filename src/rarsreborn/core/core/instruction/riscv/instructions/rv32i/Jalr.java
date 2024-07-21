@@ -1,18 +1,22 @@
 package rarsreborn.core.core.instruction.riscv.instructions.rv32i;
 
 import rarsreborn.core.compilation.compiler.riscv.InstructionRegexParserRegisterBase;
+import rarsreborn.core.core.instruction.ILinkableInstruction;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
 import rarsreborn.core.core.instruction.riscv.formats.InstructionI;
+import rarsreborn.core.core.program.LinkRequest;
 import rarsreborn.core.core.register.IRegisterFile;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.exceptions.compilation.CompilationException;
 import rarsreborn.core.exceptions.compilation.WrongNumberOfArgumentsException;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 
-public class Jalr extends InstructionI {
+public class Jalr extends InstructionI implements ILinkableInstruction {
     public static final String NAME = "jalr";
     public static final byte OPCODE = 0b1100111;
     public static final byte FUNCT_3 = 0x0;
+
+    protected LinkRequest linkRequest = null;
 
     public Jalr(InstructionIParams data) {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
@@ -28,6 +32,17 @@ public class Jalr extends InstructionI {
     @Override
     public String getName() {
         return NAME;
+    }
+
+    @Override
+    public void link(long instructionPosition, long symbolAddress) {
+        long offset = symbolAddress - instructionPosition;
+        imm = splitImmediate((int) offset).low();
+    }
+
+    @Override
+    public LinkRequest getLinkRequest() {
+        return linkRequest;
     }
 
     public static class Handler extends RiscV32InstructionHandler<Jalr> {

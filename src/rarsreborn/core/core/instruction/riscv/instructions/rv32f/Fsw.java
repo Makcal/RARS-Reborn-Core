@@ -1,4 +1,4 @@
-package rarsreborn.core.core.instruction.riscv.instructions.rv32fd;
+package rarsreborn.core.core.instruction.riscv.instructions.rv32f;
 
 import rarsreborn.core.compilation.compiler.riscv.InstructionRegexParserRegisterBase;
 import rarsreborn.core.core.instruction.riscv.RiscV32InstructionHandler;
@@ -12,12 +12,12 @@ import rarsreborn.core.exceptions.compilation.ImmediateTooLargeException;
 import rarsreborn.core.exceptions.execution.IllegalRegisterException;
 import rarsreborn.core.exceptions.memory.MemoryAccessException;
 
-public class Fsd extends InstructionS {
-    public static final String NAME = "fsd";
+public class Fsw extends InstructionS {
+    public static final String NAME = "fsw";
     public static final byte OPCODE = 0b0100111;
     public static final byte FUNCT_3 = 0x2;
 
-    public Fsd(InstructionSParams params) {
+    public Fsw(InstructionSParams params) {
         super(new InstructionSData(OPCODE, params.imm(), FUNCT_3, params.rs1(), params.rs2()));
     }
 
@@ -25,8 +25,8 @@ public class Fsd extends InstructionS {
             throws MemoryAccessException, IllegalRegisterException {
         memory.setMultiple(
             registers.getRegisterByNumber(rs1).getValue() + asNegative(imm, 12),
-            floatRegisters.getRegisterByNumber(rs2).getLong(),
-            8
+            floatRegisters.getRegisterByNumber(rs2).getInt(),
+            4
         );
     }
 
@@ -35,16 +35,16 @@ public class Fsd extends InstructionS {
         return NAME;
     }
 
-    public static class Handler extends RiscV32InstructionHandler<Fsd> {
+    public static class Handler extends RiscV32InstructionHandler<Fsw> {
         @Override
-        public void handle(Fsd instruction) throws MemoryAccessException, IllegalRegisterException {
+        public void handle(Fsw instruction) throws MemoryAccessException, IllegalRegisterException {
             instruction.exec(registerFile, floatRegisterFile, memory);
         }
     }
 
-    public static class Parser extends InstructionRegexParserRegisterBase<Fsd> {
+    public static class Parser extends InstructionRegexParserRegisterBase<Fsw> {
         @Override
-        public Fsd parse(String line) throws CompilationException {
+        public Fsw parse(String line) throws CompilationException {
             LoadStoreFormatArguments args = parseLoadStoreFormat(line);
 
             RegisterFloat64 rs2 = castToRegisterFloat64(parseRegister(registers, args.valueRegister()));
@@ -52,7 +52,7 @@ public class Fsd extends InstructionS {
             short imm = (short) truncateNegative(args.offset(), 12);
 
             try {
-                return new Fsd(new InstructionSParams((byte) rs1.getNumber(), (byte) rs2.getNumber(), imm));
+                return new Fsw(new InstructionSParams((byte) rs1.getNumber(), (byte) rs2.getNumber(), imm));
             } catch (IllegalArgumentException e) {
                 throw new ImmediateTooLargeException(imm);
             }

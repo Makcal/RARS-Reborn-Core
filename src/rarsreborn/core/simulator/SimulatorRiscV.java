@@ -13,6 +13,7 @@ import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
@@ -26,6 +27,7 @@ public class SimulatorRiscV extends SimulatorBase {
     protected final Register32File registerFile;
     protected final Register32 programCounter;
     protected final Memory32 memory;
+    protected final RegisterFloat64File floatRegisterFile;
 
     protected long programLength;
     protected byte lastInstructionSize;
@@ -43,25 +45,38 @@ public class SimulatorRiscV extends SimulatorBase {
         Register32File registerFile,
         Register32 programCounter,
         Memory32 memory,
-        RiscV32ExecutionEnvironment executionEnvironment
+        RiscV32ExecutionEnvironment executionEnvironment,
+        RegisterFloat64File floatRegisterFile
     ) {
-        this(compiler, linker, decoder, registerFile, programCounter, memory, executionEnvironment, null);
+        this(
+            compiler,
+            linker,
+            decoder,
+            null,
+            registerFile,
+            programCounter,
+            memory,
+            executionEnvironment,
+            floatRegisterFile
+        );
     }
 
     public SimulatorRiscV(
         ICompiler compiler,
         ILinker linker,
         IBufferedDecoder decoder,
+        IBackStepper backStepper,
         Register32File registerFile,
         Register32 programCounter,
         Memory32 memory,
         RiscV32ExecutionEnvironment executionEnvironment,
-        IBackStepper backStepper
+        RegisterFloat64File floatRegisterFile
     ) {
         super(compiler, linker, decoder, backStepper, executionEnvironment);
         this.registerFile = registerFile;
         this.memory = memory;
         this.programCounter = programCounter;
+        this.floatRegisterFile = floatRegisterFile;
     }
 
     public Register32File getRegisterFile() {
@@ -74,6 +89,10 @@ public class SimulatorRiscV extends SimulatorBase {
 
     public Register32 getProgramCounter() {
         return programCounter;
+    }
+
+    public RegisterFloat64File getFloatRegisterFile() {
+        return floatRegisterFile;
     }
 
     public long getCurrentInstructionNumber() {
@@ -172,6 +191,7 @@ public class SimulatorRiscV extends SimulatorBase {
         handler.attachProgramCounter(programCounter);
         handler.attachRegisters(registerFile);
         handler.attachExecutionEnvironment(executionEnvironment);
+        handler.attachFloatRegisters(floatRegisterFile);
         super.addHandler(instructionClass, handler);
         return this;
     }

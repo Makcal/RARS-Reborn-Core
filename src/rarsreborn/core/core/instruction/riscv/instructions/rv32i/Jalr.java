@@ -16,8 +16,6 @@ public class Jalr extends InstructionI implements ILinkableInstruction {
     public static final byte OPCODE = 0b1100111;
     public static final byte FUNCT_3 = 0x0;
 
-    protected LinkRequest linkRequest = null;
-
     public Jalr(InstructionIParams data) {
         super(new InstructionIData(OPCODE, data.rd(), FUNCT_3, data.rs1(), data.imm()));
     }
@@ -42,7 +40,7 @@ public class Jalr extends InstructionI implements ILinkableInstruction {
 
     @Override
     public LinkRequest getLinkRequest() {
-        return linkRequest;
+        return null;
     }
 
     public static class Handler extends RiscV32InstructionHandler<Jalr> {

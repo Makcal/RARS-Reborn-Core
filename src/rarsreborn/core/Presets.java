@@ -16,6 +16,7 @@ import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32File;
 import rarsreborn.core.core.register.ZeroRegister32;
 import rarsreborn.core.core.program.riscvprogram.RiscVObjectFile;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.simulator.SimulatorRiscV;
 import rarsreborn.core.simulator.backstepper.BackStepper;
@@ -26,23 +27,14 @@ import rarsreborn.core.simulator.backstepper.BackStepper;
 public class Presets {
     public static SimulatorRiscV getClassicalRiscVSimulator(ITextInputDevice consoleReader) {
         try {
-            String[] registerNames = new String[] {
-                "ra", "sp", "gp", "tp",
-                "t0", "t1", "t2",
-                "s0", "s1",
-                "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
-                "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11",
-                "t3", "t4", "t5", "t6"
-            };
-            Register32File registers = new Register32File();
-            registers.addRegister(new ZeroRegister32(0, "zero"));
-            registers.createRegistersFromNames(registerNames);
-
+            Register32File registers = getRegisters();
             Register32 programCounter = new Register32(32, "pc");
+            RegisterFloat64File floatRegisters = getFloatRegisters();
 
             ICompiler compiler = new RegexCompiler.RegexCompilerBuilder()
                 .setProgramBuilder(new RiscVObjectFile.ProgramBuilder())
                 .registerRegistersFromFile(registers)
+                .registerRegistersFromFile(floatRegisters)
                 // Arithmetic and logic
                 .registerInstruction(Add.NAME, new Add.Parser())
                 .registerInstruction(Sub.NAME, new Sub.Parser())
@@ -193,6 +185,7 @@ public class Presets {
                 .setRegisters(registers)
                 .setProgramCounter(programCounter)
                 .setMemory(memory)
+                .setFloatRegisters(floatRegisters)
                 .setObservableImplementation(new ObservableImplementation())
                 .setConsoleReader(consoleReader)
                 .setMmu(new LinearMemoryManagementUnit(memory, Memory32.HEAP_SECTION_START, Memory32.HEAP_SECTION_SIZE))
@@ -216,11 +209,12 @@ public class Presets {
                 compiler,
                 linker,
                 decoder,
+                new BackStepper(200),
                 registers,
                 programCounter,
                 memory,
                 executionEnvironment,
-                new BackStepper(200)
+                floatRegisters
             )
                 // Arithmetic and logic
                 .registerHandler(Add.class, new Add.Handler())
@@ -277,5 +271,33 @@ public class Presets {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static Register32File getRegisters() {
+        String[] registerNames = new String[] {
+            "ra", "sp", "gp", "tp",
+            "t0", "t1", "t2",
+            "s0", "s1",
+            "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7",
+            "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10", "s11",
+            "t3", "t4", "t5", "t6"
+        };
+        Register32File registers = new Register32File();
+        registers.addRegister(new ZeroRegister32(0, "zero"));
+        registers.createRegistersFromNames(registerNames);
+        return registers;
+    }
+
+    private static RegisterFloat64File getFloatRegisters() {
+        String[] floatRegisterNames = new String[] {
+            "ft0", "ft1", "ft2", "ft3", "ft4", "ft5", "ft6", "ft7",
+            "fs0", "fs1",
+            "fa0", "fa1", "fa2", "fa3", "fa4", "fa5", "fa6", "fa7",
+            "fs2", "fs3", "fs4", "fs5", "fs6", "fs7", "fs8", "fs9", "fs10", "fs11",
+            "ft8", "ft9", "ft10", "ft11"
+        };
+        RegisterFloat64File floatRegisters = new RegisterFloat64File();
+        floatRegisters.createRegistersFromNames(floatRegisterNames);
+        return floatRegisters;
     }
 }

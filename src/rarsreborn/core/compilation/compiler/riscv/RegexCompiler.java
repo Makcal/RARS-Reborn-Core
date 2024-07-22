@@ -38,7 +38,8 @@ public class RegexCompiler implements ICompiler {
             .replaceAll("\t", " ")
             .replaceAll(" *\n+ *", "\n")
             .replaceAll(" +", " ")
-            .replaceAll(" ?, ?", ",");
+            .replaceAll(" ?, ?", ",")
+            .replaceAll("(?:(?<!')#(?='?)|(?<='?)#(?!')).*\n", "\n");
 
         CompilingContext context = new CompilingContext();
 

@@ -142,6 +142,8 @@ public class Presets {
                 .registerInstruction(Fcvt_s_wu.NAME, new Fcvt_s_wu.Parser())
                 .registerInstruction(Fcvt_w_s.NAME, new Fcvt_w_s.Parser())
                 .registerInstruction(Fcvt_wu_s.NAME, new Fcvt_wu_s.Parser())
+                .registerInstruction(Fmv_x_w.NAME, new Fmv_x_w.Parser())
+                .registerInstruction(Fmv_w_x.NAME, new Fmv_w_x.Parser())
                 // RV32D
                 .registerInstruction(Fld.NAME, new Fld.Parser())
                 .registerInstruction(Fsd.NAME, new Fsd.Parser())
@@ -235,6 +237,8 @@ public class Presets {
                 .registerRInstruction(
                     Fcvt_w_s_Impl.OPCODE, Fcvt_w_s_Impl.FUNCT_3, Fcvt_w_s_Impl.FUNCT_7, Fcvt_w_s_Impl.class
                 )
+                .registerRInstruction(Fmv_x_w.OPCODE, Fmv_x_w.FUNCT_3, Fmv_x_w.FUNCT_7, Fmv_x_w.class)
+                .registerRInstruction(Fmv_w_x.OPCODE, Fmv_w_x.FUNCT_3, Fmv_w_x.FUNCT_7, Fmv_w_x.class)
                 // RV32D
                 .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
                 .registerSInstruction(Fsd.OPCODE, Fsd.FUNCT_3, Fsd.class)
@@ -368,6 +372,8 @@ public class Presets {
                 .registerHandler(Fsqrt_s.class, new Fsqrt_s.Handler())
                 .registerHandler(Fcvt_s_w_Impl.class, new Fcvt_s_w_Impl.Handler())
                 .registerHandler(Fcvt_w_s_Impl.class, new Fcvt_w_s_Impl.Handler())
+                .registerHandler(Fmv_x_w.class, new Fmv_x_w.Handler())
+                .registerHandler(Fmv_w_x.class, new Fmv_w_x.Handler())
                 // RV32D
                 .registerHandler(Fld.class, new Fld.Handler())
                 .registerHandler(Fsd.class, new Fsd.Handler())

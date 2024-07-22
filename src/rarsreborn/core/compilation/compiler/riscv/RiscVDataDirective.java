@@ -54,12 +54,7 @@ public enum RiscVDataDirective {
                 n = RegexCompiler.parseLongInteger(s);
                 return longToBytes(n);
             case FLOAT:
-                int floatBits;
-                try {
-                    floatBits = Float.floatToIntBits(Float.parseFloat(s));
-                } catch (NumberFormatException e) {
-                    throw new SyntaxErrorException(s);
-                }
+                int floatBits = Float.floatToRawIntBits(RegexCompiler.parseFloat(s));
                 return new byte[] {
                     (byte) (floatBits & 0xFF),
                     (byte) ((floatBits >> 8) & 0xFF),
@@ -69,7 +64,7 @@ public enum RiscVDataDirective {
             case DOUBLE:
                 long doubleBits;
                 try {
-                    doubleBits = Double.doubleToLongBits(Double.parseDouble(s));
+                    doubleBits = Double.doubleToLongBits(RegexCompiler.parseDouble(s));
                 } catch (NumberFormatException e) {
                     throw new SyntaxErrorException(s);
                 }

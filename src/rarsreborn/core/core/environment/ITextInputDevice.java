@@ -12,5 +12,9 @@ public interface ITextInputDevice extends IInputDevice {
 
     int requestInt();
 
+    float requestFloat();
+
+    double requestDouble();
+
     byte requestChar();
 }

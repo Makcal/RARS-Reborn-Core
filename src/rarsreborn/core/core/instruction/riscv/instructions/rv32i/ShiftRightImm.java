@@ -19,17 +19,15 @@ public class ShiftRightImm extends InstructionI {
     }
 
     public void exec(IRegisterFile<Register32> registerFile) throws IllegalRegisterException {
-        if (isArithmetic()) {
+        if (isArithmetic())
             new Srai(rd, rs1, (short) (imm ^ 1 << 10)).exec(registerFile);
-        }
-        else {
+        else
             new Srli(new InstructionIParams(rd, rs1, imm)).exec(registerFile);
-        }
     }
 
     @Override
     public String getName() {
-        return isArithmetic() ? "srai" : "srli";
+        return isArithmetic() ? Srai.NAME : Srli.NAME;
     }
 
     @Override

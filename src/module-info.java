@@ -29,4 +29,5 @@ module rarsreborn.core {
     exports rarsreborn.core.core.program;
     exports rarsreborn.core.compilation.compiler;
     exports rarsreborn.core.core.register.floatpoint;
+    exports rarsreborn.core.simulator.events;
 }

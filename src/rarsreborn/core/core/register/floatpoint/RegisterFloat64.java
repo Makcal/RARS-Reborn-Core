@@ -6,27 +6,29 @@ import rarsreborn.core.event.IObserver;
 import rarsreborn.core.event.ObservableImplementation;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 public class RegisterFloat64 implements IRegister, IObservable {
     private final int number;
     private final String name;
-    private final ByteBuffer buffer = ByteBuffer.allocate(8);
+    private final ByteBuffer buffer;
 
     private final ObservableImplementation observableImplementation = new ObservableImplementation();
 
     public RegisterFloat64(int number, String name) {
-        this(number, name, 0);
+        this.number = number;
+        this.name = name;
+        buffer = ByteBuffer.allocate(8);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
     }
 
     public RegisterFloat64(int number, String name, float value) {
-        this.number = number;
-        this.name = name;
+        this(number, name);
         buffer.putFloat(0, value);
     }
 
     public RegisterFloat64(int number, String name, double value) {
-        this.number = number;
-        this.name = name;
+        this(number, name);
         buffer.putDouble(0, value);
     }
 

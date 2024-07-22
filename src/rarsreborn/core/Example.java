@@ -132,6 +132,24 @@ public class Example {
         }
 
         @Override
+        public float requestFloat() {
+            try {
+                return scanner.nextFloat();
+            } catch (InputMismatchException e) {
+                return 0;
+            }
+        }
+
+        @Override
+        public double requestDouble() {
+            try {
+                return scanner.nextDouble();
+            } catch (InputMismatchException e) {
+                return 0;
+            }
+        }
+
+        @Override
         public byte requestChar() {
             return (byte) scanner.next().charAt(0);
         }

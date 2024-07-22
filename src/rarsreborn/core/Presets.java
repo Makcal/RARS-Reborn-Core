@@ -125,6 +125,12 @@ public class Presets {
                 // Pseudo float
                 .registerInstruction(Fmv_s.NAME, new Fmv_s.Parser())
                 .registerInstruction(Fmv_d.NAME, new Fmv_d.Parser())
+                .registerInstruction(Fne_s.NAME, new Fne_s.Parser())
+                .registerInstruction(Fgt_s.NAME, new Fgt_s.Parser())
+                .registerInstruction(Fge_s.NAME, new Fge_s.Parser())
+                .registerInstruction(Fne_d.NAME, new Fne_d.Parser())
+                .registerInstruction(Fgt_d.NAME, new Fgt_d.Parser())
+                .registerInstruction(Fge_d.NAME, new Fge_d.Parser())
                 // RV32F
                 .registerInstruction(Flw.NAME, new Flw.Parser())
                 .registerInstruction(Fsw.NAME, new Fsw.Parser())
@@ -144,6 +150,9 @@ public class Presets {
                 .registerInstruction(Fcvt_wu_s.NAME, new Fcvt_wu_s.Parser())
                 .registerInstruction(Fmv_x_w.NAME, new Fmv_x_w.Parser())
                 .registerInstruction(Fmv_w_x.NAME, new Fmv_w_x.Parser())
+                .registerInstruction(Feq_s.NAME, new Feq_s.Parser())
+                .registerInstruction(Flt_s.NAME, new Flt_s.Parser())
+                .registerInstruction(Fle_s.NAME, new Fle_s.Parser())
                 // RV32D
                 .registerInstruction(Fld.NAME, new Fld.Parser())
                 .registerInstruction(Fsd.NAME, new Fsd.Parser())
@@ -163,6 +172,9 @@ public class Presets {
                 .registerInstruction(Fcvt_wu_d.NAME, new Fcvt_wu_d.Parser())
                 .registerInstruction(Fcvt_d_s.NAME, new Fcvt_d_s.Parser())
                 .registerInstruction(Fcvt_s_d.NAME, new Fcvt_s_d.Parser())
+                .registerInstruction(Feq_d.NAME, new Feq_d.Parser())
+                .registerInstruction(Flt_d.NAME, new Flt_d.Parser())
+                .registerInstruction(Fle_d.NAME, new Fle_d.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -239,6 +251,9 @@ public class Presets {
                 )
                 .registerRInstruction(Fmv_x_w.OPCODE, Fmv_x_w.FUNCT_3, Fmv_x_w.FUNCT_7, Fmv_x_w.class)
                 .registerRInstruction(Fmv_w_x.OPCODE, Fmv_w_x.FUNCT_3, Fmv_w_x.FUNCT_7, Fmv_w_x.class)
+                .registerRInstruction(Feq_s.OPCODE, Feq_s.FUNCT_3, Feq_s.FUNCT_7, Feq_s.class)
+                .registerRInstruction(Flt_s.OPCODE, Flt_s.FUNCT_3, Flt_s.FUNCT_7, Flt_s.class)
+                .registerRInstruction(Fle_s.OPCODE, Fle_s.FUNCT_3, Fle_s.FUNCT_7, Fle_s.class)
                 // RV32D
                 .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
                 .registerSInstruction(Fsd.OPCODE, Fsd.FUNCT_3, Fsd.class)
@@ -260,6 +275,9 @@ public class Presets {
                 )
                 .registerRInstruction(Fcvt_d_s.OPCODE, Fcvt_d_s.FUNCT_3, Fcvt_d_s.FUNCT_7, Fcvt_d_s.class)
                 .registerRInstruction(Fcvt_s_d.OPCODE, Fcvt_s_d.FUNCT_3, Fcvt_s_d.FUNCT_7, Fcvt_s_d.class)
+                .registerRInstruction(Feq_d.OPCODE, Feq_d.FUNCT_3, Feq_d.FUNCT_7, Feq_d.class)
+                .registerRInstruction(Flt_d.OPCODE, Flt_d.FUNCT_3, Flt_d.FUNCT_7, Flt_d.class)
+                .registerRInstruction(Fle_d.OPCODE, Fle_d.FUNCT_3, Fle_d.FUNCT_7, Fle_d.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -374,6 +392,9 @@ public class Presets {
                 .registerHandler(Fcvt_w_s_Impl.class, new Fcvt_w_s_Impl.Handler())
                 .registerHandler(Fmv_x_w.class, new Fmv_x_w.Handler())
                 .registerHandler(Fmv_w_x.class, new Fmv_w_x.Handler())
+                .registerHandler(Feq_s.class, new Feq_s.Handler())
+                .registerHandler(Flt_s.class, new Flt_s.Handler())
+                .registerHandler(Fle_s.class, new Fle_s.Handler())
                 // RV32D
                 .registerHandler(Fld.class, new Fld.Handler())
                 .registerHandler(Fsd.class, new Fsd.Handler())
@@ -391,6 +412,9 @@ public class Presets {
                 .registerHandler(Fcvt_w_d_Impl.class, new Fcvt_w_d_Impl.Handler())
                 .registerHandler(Fcvt_d_s.class, new Fcvt_d_s.Handler())
                 .registerHandler(Fcvt_s_d.class, new Fcvt_s_d.Handler())
+                .registerHandler(Feq_d.class, new Feq_d.Handler())
+                .registerHandler(Flt_d.class, new Flt_d.Handler())
+                .registerHandler(Fle_d.class, new Fle_d.Handler())
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);

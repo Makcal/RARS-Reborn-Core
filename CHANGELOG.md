@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.1] - 2024-07-22
+
+### Added
+
+- Add end-line commentaries
+
+### Changed
+
+- Improve syntax error exceptions
+- Update version to 1.3.1
+
 ## [1.3] - 2024-07-22
 
 ### Added
@@ -58,6 +69,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Split rv32fd in two dirs
 - Rollback changes in float registers
 - Update version to 1.3
+- Update changelog
 
 ### Fixed
 
@@ -312,6 +324,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix .gitlab-ci.yml
 - Fix .gitlab-ci.yml
 
+[1.3.1]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/v1.3...v1.3.1
 [1.3]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/v1.1...v1.3
 [1.1]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/v1.0...v1.1
 [1.0]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/MVP-v2...v1.0

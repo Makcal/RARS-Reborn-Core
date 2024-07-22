@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 public class RegexCompiler implements ICompiler {
     public static final Pattern DATA_STATEMENT_PATTERN =
         Pattern.compile("(?:([a-zA-Z_]\\w*) *: *)?(\\.\\w+) +(.*)");
-    public static final Pattern LABEL_PATTERN = Pattern.compile("([a-zA-Z_]\\w*) *:");
+    public static final Pattern LABEL_PATTERN = Pattern.compile("([a-zA-Z_]\\w*) *: *");
 
     protected final IProgramBuilder programBuilder;
     protected final Map<String, IInstructionRegexParser<?>> parsers;
@@ -39,7 +39,7 @@ public class RegexCompiler implements ICompiler {
             .replaceAll(" *\n+ *", "\n")
             .replaceAll(" +", " ")
             .replaceAll(" ?, ?", ",")
-            .replaceAll("(?:(?<!')#(?='?)|(?<='?)#(?!')).*\n", "\n");
+            .replaceAll("(?:(?<!')#(?='?)|(?<='?)#(?!'))(?!.*\").*\n", "\n");
 
         CompilingContext context = new CompilingContext();
 

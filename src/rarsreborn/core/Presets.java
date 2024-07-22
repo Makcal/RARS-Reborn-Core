@@ -122,6 +122,9 @@ public class Presets {
                 .registerInstruction(Ret.NAME, new Ret.Parser())
                 .registerInstruction(Call.NAME, new Call.Parser())
                 .registerInstruction(Tail.NAME, new Tail.Parser())
+                // Pseudo float
+                .registerInstruction(Fmv_s.NAME, new Fmv_s.Parser())
+                .registerInstruction(Fmv_d.NAME, new Fmv_d.Parser())
                 // RV32F
                 .registerInstruction(Flw.NAME, new Flw.Parser())
                 .registerInstruction(Fsw.NAME, new Fsw.Parser())

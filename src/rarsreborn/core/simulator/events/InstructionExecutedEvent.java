@@ -1,3 +1,3 @@
-package rarsreborn.core.simulator;
+package rarsreborn.core.simulator.events;
 
 public record InstructionExecutedEvent() {}

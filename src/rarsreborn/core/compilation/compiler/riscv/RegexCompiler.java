@@ -269,6 +269,40 @@ public class RegexCompiler implements ICompiler {
             throw new SyntaxErrorException(s);
         }
     }
+    
+    public static float parseFloat(String s) throws SyntaxErrorException {
+        s = s.toLowerCase();
+        if (s.equals("nan")) {
+            return Float.NaN;
+        } else if (s.matches("\\+?\\s*inf(inity)?")) {
+            return Float.POSITIVE_INFINITY;
+        } else if (s.matches("-\\s*inf(inity)?")) {
+            return Float.NEGATIVE_INFINITY;
+        } else {
+            try {
+                return Float.parseFloat(s);
+            } catch (NumberFormatException e) {
+                throw new SyntaxErrorException(s);
+            }
+        }
+    }
+    
+    public static double parseDouble(String s) throws SyntaxErrorException {
+        s = s.toLowerCase();
+        if (s.equals("nan")) {
+            return Double.NaN;
+        } else if (s.matches("\\+?\\s*inf(inity)?")) {
+            return Double.POSITIVE_INFINITY;
+        } else if (s.matches("-\\s*inf(inity)?")) {
+            return Double.NEGATIVE_INFINITY;
+        } else {
+            try {
+                return Double.parseDouble(s);
+            } catch (NumberFormatException e) {
+                throw new SyntaxErrorException(s);
+            }
+        }
+    }
 
     public static String parseString(String s) throws SyntaxErrorException {
         if (s.charAt(0) == '"' && s.charAt(s.length() - 1) == '"') {

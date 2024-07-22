@@ -19,7 +19,6 @@ import rarsreborn.core.event.IObserver;
 import rarsreborn.core.event.ObservableImplementation;
 import rarsreborn.core.exceptions.NoBackStepsLeftException;
 import rarsreborn.core.exceptions.compilation.CompilationException;
-import rarsreborn.core.exceptions.compilation.UnknownInstructionException;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
 import rarsreborn.core.exceptions.execution.ExecutionException;
 import rarsreborn.core.exceptions.execution.IllegalInstructionException;
@@ -28,6 +27,7 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 import rarsreborn.core.simulator.backstepper.BackStepFinishedEvent;
 import rarsreborn.core.simulator.backstepper.BackStepperStub;
 import rarsreborn.core.simulator.backstepper.IBackStepper;
+import rarsreborn.core.simulator.events.*;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -153,7 +153,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         if (!worker.isPaused()) {
             throw new RuntimeException("Wait until the worker is paused");
         }
-        backStepper.revert();
+        worker.stepBack();
         observableImplementation.notifyObservers(new BackStepFinishedEvent());
     }
 
@@ -184,7 +184,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         IInstructionHandler<IInstruction> handler
                 = (IInstructionHandler<IInstruction>) handlers.get(instruction.getClass());
         if (handler == null) {
-            throw new RuntimeException(new UnknownInstructionException(instruction.getName()));
+            throw new RuntimeException(new IllegalInstructionException(instruction.toString()));
         }
         handler.handle(instruction);
     }
@@ -216,6 +216,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         protected boolean isRunning = false;
         protected boolean isPaused = true;
         protected int instructionsToRun = 0;
+        protected boolean shouldStepBack = false;
 
         public void start() throws ExecutionException {
             start(false);
@@ -229,8 +230,16 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                 isPaused = !runImmediately;
             }
             onStartSetup();
+            notifyObservers(new StartedEvent());
             while (isRunning()) {
                 synchronized (lock) {
+                    if (shouldStepBack) {
+                        try {
+                            backStepper.revert();
+                        } catch (NoBackStepsLeftException ignored) {}
+                        shouldStepBack = false;
+                    }
+
                     while (isPaused()) {
                         try {
                             lock.wait();
@@ -303,6 +312,17 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         public boolean isRunning() {
             synchronized (lock) {
                 return isRunning;
+            }
+        }
+
+        public void stepBack() throws NoBackStepsLeftException, ExecutionException {
+            if (isPaused()) {
+                backStepper.revert();
+                return;
+            }
+            // If requested during waiting for input
+            synchronized (lock) {
+                shouldStepBack = true;
             }
         }
     }

@@ -9,7 +9,8 @@ import rarsreborn.core.core.environment.mmu.LinearMemoryManagementUnit;
 import rarsreborn.core.core.environment.riscv.RiscV32ExecutionEnvironment;
 import rarsreborn.core.core.environment.riscv.ecalls.*;
 import rarsreborn.core.core.instruction.riscv.instructions.pseudo.*;
-import rarsreborn.core.core.instruction.riscv.instructions.rv32fd.*;
+import rarsreborn.core.core.instruction.riscv.instructions.rv32f.*;
+import rarsreborn.core.core.instruction.riscv.instructions.rv32d.*;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32i.*;
 import rarsreborn.core.core.instruction.riscv.instructions.rv32m.*;
 import rarsreborn.core.core.memory.Memory32;
@@ -121,9 +122,61 @@ public class Presets {
                 .registerInstruction(Ret.NAME, new Ret.Parser())
                 .registerInstruction(Call.NAME, new Call.Parser())
                 .registerInstruction(Tail.NAME, new Tail.Parser())
-                // RV32FD
+                // Pseudo float
+                .registerInstruction(Fmv_s.NAME, new Fmv_s.Parser())
+                .registerInstruction(Fmv_d.NAME, new Fmv_d.Parser())
+                .registerInstruction(Fne_s.NAME, new Fne_s.Parser())
+                .registerInstruction(Fgt_s.NAME, new Fgt_s.Parser())
+                .registerInstruction(Fge_s.NAME, new Fge_s.Parser())
+                .registerInstruction(Fne_d.NAME, new Fne_d.Parser())
+                .registerInstruction(Fgt_d.NAME, new Fgt_d.Parser())
+                .registerInstruction(Fge_d.NAME, new Fge_d.Parser())
+                // RV32F
                 .registerInstruction(Flw.NAME, new Flw.Parser())
+                .registerInstruction(Fsw.NAME, new Fsw.Parser())
+                .registerInstruction(Fadd_s.NAME, new Fadd_s.Parser())
+                .registerInstruction(Fsub_s.NAME, new Fsub_s.Parser())
+                .registerInstruction(Fmul_s.NAME, new Fmul_s.Parser())
+                .registerInstruction(Fdiv_s.NAME, new Fdiv_s.Parser())
+                .registerInstruction(Fsgnj_s.NAME, new Fsgnj_s.Parser())
+                .registerInstruction(Fsgnjn_s.NAME, new Fsgnjn_s.Parser())
+                .registerInstruction(Fsgnjx_s.NAME, new Fsgnjx_s.Parser())
+                .registerInstruction(Fmin_s.NAME, new Fmin_s.Parser())
+                .registerInstruction(Fmax_s.NAME, new Fmax_s.Parser())
+                .registerInstruction(Fsqrt_s.NAME, new Fsqrt_s.Parser())
+                .registerInstruction(Fcvt_s_w.NAME, new Fcvt_s_w.Parser())
+                .registerInstruction(Fcvt_s_wu.NAME, new Fcvt_s_wu.Parser())
+                .registerInstruction(Fcvt_w_s.NAME, new Fcvt_w_s.Parser())
+                .registerInstruction(Fcvt_wu_s.NAME, new Fcvt_wu_s.Parser())
+                .registerInstruction(Fmv_x_w.NAME, new Fmv_x_w.Parser())
+                .registerInstruction(Fmv_w_x.NAME, new Fmv_w_x.Parser())
+                .registerInstruction(Feq_s.NAME, new Feq_s.Parser())
+                .registerInstruction(Flt_s.NAME, new Flt_s.Parser())
+                .registerInstruction(Fle_s.NAME, new Fle_s.Parser())
+                .registerInstruction(Fclass_s.NAME, new Fclass_s.Parser())
+                // RV32D
                 .registerInstruction(Fld.NAME, new Fld.Parser())
+                .registerInstruction(Fsd.NAME, new Fsd.Parser())
+                .registerInstruction(Fadd_d.NAME, new Fadd_d.Parser())
+                .registerInstruction(Fsub_d.NAME, new Fsub_d.Parser())
+                .registerInstruction(Fmul_d.NAME, new Fmul_d.Parser())
+                .registerInstruction(Fdiv_d.NAME, new Fdiv_d.Parser())
+                .registerInstruction(Fsgnj_d.NAME, new Fsgnj_d.Parser())
+                .registerInstruction(Fsgnjn_d.NAME, new Fsgnjn_d.Parser())
+                .registerInstruction(Fsgnjx_d.NAME, new Fsgnjx_d.Parser())
+                .registerInstruction(Fmin_d.NAME, new Fmin_d.Parser())
+                .registerInstruction(Fmax_d.NAME, new Fmax_d.Parser())
+                .registerInstruction(Fsqrt_d.NAME, new Fsqrt_d.Parser())
+                .registerInstruction(Fcvt_d_w.NAME, new Fcvt_d_w.Parser())
+                .registerInstruction(Fcvt_d_wu.NAME, new Fcvt_d_wu.Parser())
+                .registerInstruction(Fcvt_w_d.NAME, new Fcvt_w_d.Parser())
+                .registerInstruction(Fcvt_wu_d.NAME, new Fcvt_wu_d.Parser())
+                .registerInstruction(Fcvt_d_s.NAME, new Fcvt_d_s.Parser())
+                .registerInstruction(Fcvt_s_d.NAME, new Fcvt_s_d.Parser())
+                .registerInstruction(Feq_d.NAME, new Feq_d.Parser())
+                .registerInstruction(Flt_d.NAME, new Flt_d.Parser())
+                .registerInstruction(Fle_d.NAME, new Fle_d.Parser())
+                .registerInstruction(Fclass_d.NAME, new Fclass_d.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -179,9 +232,56 @@ public class Presets {
                 .registerRInstruction(Divu.OPCODE, Divu.FUNCT_3, Divu.FUNCT_7, Divu.class)
                 .registerRInstruction(Rem.OPCODE, Rem.FUNCT_3, Rem.FUNCT_7, Rem.class)
                 .registerRInstruction(Remu.OPCODE, Remu.FUNCT_3, Remu.FUNCT_7, Remu.class)
-                // RV32FD
+                // RV32F
                 .registerIInstruction(Flw.OPCODE, Flw.FUNCT_3, Flw.class)
+                .registerSInstruction(Fsw.OPCODE, Fsw.FUNCT_3, Fsw.class)
+                .registerRInstruction(Fadd_s.OPCODE, Fadd_s.FUNCT_3, Fadd_s.FUNCT_7, Fadd_s.class)
+                .registerRInstruction(Fsub_s.OPCODE, Fsub_s.FUNCT_3, Fsub_s.FUNCT_7, Fsub_s.class)
+                .registerRInstruction(Fmul_s.OPCODE, Fmul_s.FUNCT_3, Fmul_s.FUNCT_7, Fmul_s.class)
+                .registerRInstruction(Fdiv_s.OPCODE, Fdiv_s.FUNCT_3, Fdiv_s.FUNCT_7, Fdiv_s.class)
+                .registerRInstruction(Fsgnj_s.OPCODE, Fsgnj_s.FUNCT_3, Fsgnj_s.FUNCT_7, Fsgnj_s.class)
+                .registerRInstruction(Fsgnjn_s.OPCODE, Fsgnjn_s.FUNCT_3, Fsgnjn_s.FUNCT_7, Fsgnjn_s.class)
+                .registerRInstruction(Fsgnjx_s.OPCODE, Fsgnjx_s.FUNCT_3, Fsgnjx_s.FUNCT_7, Fsgnjx_s.class)
+                .registerRInstruction(Fmin_s.OPCODE, Fmin_s.FUNCT_3, Fmin_s.FUNCT_7, Fmin_s.class)
+                .registerRInstruction(Fmax_s.OPCODE, Fmax_s.FUNCT_3, Fmax_s.FUNCT_7, Fmax_s.class)
+                .registerRInstruction(Fsqrt_s.OPCODE, Fsqrt_s.FUNCT_3, Fsqrt_s.FUNCT_7, Fsqrt_s.class)
+                .registerRInstruction(
+                    Fcvt_s_w_Impl.OPCODE, Fcvt_s_w_Impl.FUNCT_3, Fcvt_s_w_Impl.FUNCT_7, Fcvt_s_w_Impl.class
+                )
+                .registerRInstruction(
+                    Fcvt_w_s_Impl.OPCODE, Fcvt_w_s_Impl.FUNCT_3, Fcvt_w_s_Impl.FUNCT_7, Fcvt_w_s_Impl.class
+                )
+                .registerRInstruction(Fmv_x_w.OPCODE, Fmv_x_w.FUNCT_3, Fmv_x_w.FUNCT_7, Fmv_x_w.class)
+                .registerRInstruction(Fmv_w_x.OPCODE, Fmv_w_x.FUNCT_3, Fmv_w_x.FUNCT_7, Fmv_w_x.class)
+                .registerRInstruction(Feq_s.OPCODE, Feq_s.FUNCT_3, Feq_s.FUNCT_7, Feq_s.class)
+                .registerRInstruction(Flt_s.OPCODE, Flt_s.FUNCT_3, Flt_s.FUNCT_7, Flt_s.class)
+                .registerRInstruction(Fle_s.OPCODE, Fle_s.FUNCT_3, Fle_s.FUNCT_7, Fle_s.class)
+                .registerRInstruction(Fclass_s.OPCODE, Fclass_s.FUNCT_3, Fclass_s.FUNCT_7, Fclass_s.class)
+                // RV32D
                 .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
+                .registerSInstruction(Fsd.OPCODE, Fsd.FUNCT_3, Fsd.class)
+                .registerRInstruction(Fadd_d.OPCODE, Fadd_d.FUNCT_3, Fadd_d.FUNCT_7, Fadd_d.class)
+                .registerRInstruction(Fsub_d.OPCODE, Fsub_d.FUNCT_3, Fsub_d.FUNCT_7, Fsub_d.class)
+                .registerRInstruction(Fmul_d.OPCODE, Fmul_d.FUNCT_3, Fmul_d.FUNCT_7, Fmul_d.class)
+                .registerRInstruction(Fdiv_d.OPCODE, Fdiv_d.FUNCT_3, Fdiv_d.FUNCT_7, Fdiv_d.class)
+                .registerRInstruction(Fsgnj_d.OPCODE, Fsgnj_d.FUNCT_3, Fsgnj_d.FUNCT_7, Fsgnj_d.class)
+                .registerRInstruction(Fsgnjn_d.OPCODE, Fsgnjn_d.FUNCT_3, Fsgnjn_d.FUNCT_7, Fsgnjn_d.class)
+                .registerRInstruction(Fsgnjx_d.OPCODE, Fsgnjx_d.FUNCT_3, Fsgnjx_d.FUNCT_7, Fsgnjx_d.class)
+                .registerRInstruction(Fmin_d.OPCODE, Fmin_d.FUNCT_3, Fmin_d.FUNCT_7, Fmin_d.class)
+                .registerRInstruction(Fmax_d.OPCODE, Fmax_d.FUNCT_3, Fmax_d.FUNCT_7, Fmax_d.class)
+                .registerRInstruction(Fsqrt_d.OPCODE, Fsqrt_d.FUNCT_3, Fsqrt_d.FUNCT_7, Fsqrt_d.class)
+                .registerRInstruction(
+                    Fcvt_d_w_Impl.OPCODE, Fcvt_d_w_Impl.FUNCT_3, Fcvt_d_w_Impl.FUNCT_7, Fcvt_d_w_Impl.class
+                )
+                .registerRInstruction(
+                    Fcvt_w_d_Impl.OPCODE, Fcvt_w_d_Impl.FUNCT_3, Fcvt_w_d_Impl.FUNCT_7, Fcvt_w_d_Impl.class
+                )
+                .registerRInstruction(Fcvt_d_s.OPCODE, Fcvt_d_s.FUNCT_3, Fcvt_d_s.FUNCT_7, Fcvt_d_s.class)
+                .registerRInstruction(Fcvt_s_d.OPCODE, Fcvt_s_d.FUNCT_3, Fcvt_s_d.FUNCT_7, Fcvt_s_d.class)
+                .registerRInstruction(Feq_d.OPCODE, Feq_d.FUNCT_3, Feq_d.FUNCT_7, Feq_d.class)
+                .registerRInstruction(Flt_d.OPCODE, Flt_d.FUNCT_3, Flt_d.FUNCT_7, Flt_d.class)
+                .registerRInstruction(Fle_d.OPCODE, Fle_d.FUNCT_3, Fle_d.FUNCT_7, Fle_d.class)
+                .registerRInstruction(Fclass_d.OPCODE, Fclass_d.FUNCT_3, Fclass_d.FUNCT_7, Fclass_d.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -201,6 +301,8 @@ public class Presets {
                 .addHandler(3, new PrintDoubleEcall())
                 .addHandler(4, new PrintStringEcall())
                 .addHandler(5, new ReadIntegerEcall())
+                .addHandler(6, new ReadFloatEcall())
+                .addHandler(7, new ReadDoubleEcall())
                 .addHandler(8, new ReadStringEcall())
                 .addHandler(9, new MallocEcall())
                 .addHandler(10, new ExitEcall())
@@ -277,9 +379,48 @@ public class Presets {
                 .registerHandler(Divu.class, new Divu.Handler())
                 .registerHandler(Rem.class, new Rem.Handler())
                 .registerHandler(Remu.class, new Remu.Handler())
-                // RV32FD
+                // RV32F
                 .registerHandler(Flw.class, new Flw.Handler())
+                .registerHandler(Fsw.class, new Fsw.Handler())
+                .registerHandler(Fadd_s.class, new Fadd_s.Handler())
+                .registerHandler(Fsub_s.class, new Fsub_s.Handler())
+                .registerHandler(Fmul_s.class, new Fmul_s.Handler())
+                .registerHandler(Fdiv_s.class, new Fdiv_s.Handler())
+                .registerHandler(Fsgnj_s.class, new Fsgnj_s.Handler())
+                .registerHandler(Fsgnjn_s.class, new Fsgnjn_s.Handler())
+                .registerHandler(Fsgnjx_s.class, new Fsgnjx_s.Handler())
+                .registerHandler(Fmin_s.class, new Fmin_s.Handler())
+                .registerHandler(Fmax_s.class, new Fmax_s.Handler())
+                .registerHandler(Fsqrt_s.class, new Fsqrt_s.Handler())
+                .registerHandler(Fcvt_s_w_Impl.class, new Fcvt_s_w_Impl.Handler())
+                .registerHandler(Fcvt_w_s_Impl.class, new Fcvt_w_s_Impl.Handler())
+                .registerHandler(Fmv_x_w.class, new Fmv_x_w.Handler())
+                .registerHandler(Fmv_w_x.class, new Fmv_w_x.Handler())
+                .registerHandler(Feq_s.class, new Feq_s.Handler())
+                .registerHandler(Flt_s.class, new Flt_s.Handler())
+                .registerHandler(Fle_s.class, new Fle_s.Handler())
+                .registerHandler(Fclass_s.class, new Fclass_s.Handler())
+                // RV32D
                 .registerHandler(Fld.class, new Fld.Handler())
+                .registerHandler(Fsd.class, new Fsd.Handler())
+                .registerHandler(Fadd_d.class, new Fadd_d.Handler())
+                .registerHandler(Fsub_d.class, new Fsub_d.Handler())
+                .registerHandler(Fmul_d.class, new Fmul_d.Handler())
+                .registerHandler(Fdiv_d.class, new Fdiv_d.Handler())
+                .registerHandler(Fsgnj_d.class, new Fsgnj_d.Handler())
+                .registerHandler(Fsgnjn_d.class, new Fsgnjn_d.Handler())
+                .registerHandler(Fsgnjx_d.class, new Fsgnjx_d.Handler())
+                .registerHandler(Fmin_d.class, new Fmin_d.Handler())
+                .registerHandler(Fmax_d.class, new Fmax_d.Handler())
+                .registerHandler(Fsqrt_d.class, new Fsqrt_d.Handler())
+                .registerHandler(Fcvt_d_w_Impl.class, new Fcvt_d_w_Impl.Handler())
+                .registerHandler(Fcvt_w_d_Impl.class, new Fcvt_w_d_Impl.Handler())
+                .registerHandler(Fcvt_d_s.class, new Fcvt_d_s.Handler())
+                .registerHandler(Fcvt_s_d.class, new Fcvt_s_d.Handler())
+                .registerHandler(Feq_d.class, new Feq_d.Handler())
+                .registerHandler(Flt_d.class, new Flt_d.Handler())
+                .registerHandler(Fle_d.class, new Fle_d.Handler())
+                .registerHandler(Fclass_d.class, new Fclass_d.Handler())
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);

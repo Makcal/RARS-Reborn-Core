@@ -13,6 +13,7 @@ import rarsreborn.core.core.program.IExecutable;
 import rarsreborn.core.core.register.Register32;
 import rarsreborn.core.core.register.Register32ChangeEvent;
 import rarsreborn.core.core.register.Register32File;
+import rarsreborn.core.core.register.floatpoint.RegisterFloat64ChangeEvent;
 import rarsreborn.core.core.register.floatpoint.RegisterFloat64File;
 import rarsreborn.core.event.IObserver;
 import rarsreborn.core.exceptions.execution.EndOfExecutionException;
@@ -22,6 +23,7 @@ import rarsreborn.core.exceptions.memory.MemoryAccessException;
 import rarsreborn.core.simulator.backstepper.IBackStepper;
 import rarsreborn.core.simulator.backstepper.MemoryChange;
 import rarsreborn.core.simulator.backstepper.Register32Change;
+import rarsreborn.core.simulator.backstepper.RegisterFloat64Change;
 import rarsreborn.core.simulator.events.BeforeInstructionExecutionEvent;
 
 public class SimulatorRiscV extends SimulatorBase {
@@ -36,6 +38,7 @@ public class SimulatorRiscV extends SimulatorBase {
 
     protected IObserver<MemoryChangeEvent> memoryBackStepperObserver;
     protected IObserver<Register32ChangeEvent> registerObserver;
+    protected IObserver<RegisterFloat64ChangeEvent> floatRegisterObserver;
     protected IObserver<Register32ChangeEvent> programCounterObserver;
     protected IObserver<BeforeInstructionExecutionEvent> beforeInstructionExecutionObserver;
 
@@ -108,6 +111,9 @@ public class SimulatorRiscV extends SimulatorBase {
         registerFile.getAllRegisters().forEach(
             register -> register.removeObserver(Register32ChangeEvent.class, registerObserver)
         );
+        floatRegisterFile.getAllRegisters().forEach(
+            register -> register.removeObserver(RegisterFloat64ChangeEvent.class, floatRegisterObserver)
+        );
         programCounter.removeObserver(Register32ChangeEvent.class, registerObserver);
 
         programCounter.removeObserver(Register32ChangeEvent.class, programCounterObserver);
@@ -121,8 +127,12 @@ public class SimulatorRiscV extends SimulatorBase {
         );
 
         registerObserver = event -> this.backStepper.addChange(new Register32Change(event));
+        floatRegisterObserver = event -> this.backStepper.addChange(new RegisterFloat64Change(event));
         registerFile.getAllRegisters().forEach(
             register -> register.addObserver(Register32ChangeEvent.class, registerObserver)
+        );
+        floatRegisterFile.getAllRegisters().forEach(
+            register -> register.addObserver(RegisterFloat64ChangeEvent.class, floatRegisterObserver)
         );
         programCounter.addObserver(Register32ChangeEvent.class, registerObserver);
 

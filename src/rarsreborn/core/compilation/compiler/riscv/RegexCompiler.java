@@ -44,36 +44,40 @@ public class RegexCompiler implements ICompiler {
         CompilingContext context = new CompilingContext();
 
         for (String line : source.split("\n")) {
-            if (line.isEmpty() || line.charAt(0) == '#') continue;
+            try {
+                if (line.isEmpty() || line.charAt(0) == '#') continue;
 
-            if (line.charAt(0) == '.') {
-                processDirective(line);
-                continue;
-            }
-
-            if (parsingState == ParsingState.TEXT) {
-                Matcher labelMatcher = LABEL_PATTERN.matcher(line);
-                if (labelMatcher.matches()) {
-                    context.symbolTable.addSymbol(
-                        new Symbol(
-                            SymbolType.INSTRUCTION_LABEL,
-                            labelMatcher.group(1),
-                            context.instructions.size()
-                        )
-                    );
+                if (line.charAt(0) == '.') {
+                    processDirective(line);
                     continue;
                 }
-            }
 
-            switch (parsingState) {
-                case TEXT -> {
-                    IInstruction instruction = parseInstruction(line);
-                    loadInstruction(context, instruction);
+                if (parsingState == ParsingState.TEXT) {
+                    Matcher labelMatcher = LABEL_PATTERN.matcher(line);
+                    if (labelMatcher.matches()) {
+                        context.symbolTable.addSymbol(
+                            new Symbol(
+                                SymbolType.INSTRUCTION_LABEL,
+                                labelMatcher.group(1),
+                                context.instructions.size()
+                            )
+                        );
+                        continue;
+                    }
                 }
-                case DATA -> {
-                    DataBlock dataBlock = parseDataBlock(line);
-                    loadDataBlock(context, dataBlock);
+
+                switch (parsingState) {
+                    case TEXT -> {
+                        IInstruction instruction = parseInstruction(line);
+                        loadInstruction(context, instruction);
+                    }
+                    case DATA -> {
+                        DataBlock dataBlock = parseDataBlock(line);
+                        loadDataBlock(context, dataBlock);
+                    }
                 }
+            } catch (SyntaxErrorException e) {
+                throw new SyntaxErrorException(line, e);
             }
         }
 
@@ -227,6 +231,8 @@ public class RegexCompiler implements ICompiler {
 
     public static long parseLongInteger(String s) throws SyntaxErrorException {
         if (s.charAt(0) == '\'' && s.charAt(s.length() - 1) == '\'') {
+            if (s.length() == 1)
+                throw new SyntaxErrorException(s);
             String middle = s.substring(1, s.length() - 1);
             if (middle.charAt(0) == '\\') {
                 if (middle.length() != 2)

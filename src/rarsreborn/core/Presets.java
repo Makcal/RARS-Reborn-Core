@@ -132,6 +132,10 @@ public class Presets {
                 .registerInstruction(Fmin_s.NAME, new Fmin_s.Parser())
                 .registerInstruction(Fmax_s.NAME, new Fmax_s.Parser())
                 .registerInstruction(Fsqrt_s.NAME, new Fsqrt_s.Parser())
+                .registerInstruction(Fcvt_s_w.NAME, new Fcvt_s_w.Parser())
+                .registerInstruction(Fcvt_s_wu.NAME, new Fcvt_s_wu.Parser())
+                .registerInstruction(Fcvt_w_s.NAME, new Fcvt_w_s.Parser())
+                .registerInstruction(Fcvt_wu_s.NAME, new Fcvt_wu_s.Parser())
                 // RV32D
                 .registerInstruction(Fld.NAME, new Fld.Parser())
                 .registerInstruction(Fsd.NAME, new Fsd.Parser())
@@ -142,6 +146,12 @@ public class Presets {
                 .registerInstruction(Fmin_d.NAME, new Fmin_d.Parser())
                 .registerInstruction(Fmax_d.NAME, new Fmax_d.Parser())
                 .registerInstruction(Fsqrt_d.NAME, new Fsqrt_d.Parser())
+                .registerInstruction(Fcvt_d_w.NAME, new Fcvt_d_w.Parser())
+                .registerInstruction(Fcvt_d_wu.NAME, new Fcvt_d_wu.Parser())
+                .registerInstruction(Fcvt_w_d.NAME, new Fcvt_w_d.Parser())
+                .registerInstruction(Fcvt_wu_d.NAME, new Fcvt_wu_d.Parser())
+                .registerInstruction(Fcvt_d_s.NAME, new Fcvt_d_s.Parser())
+                .registerInstruction(Fcvt_s_d.NAME, new Fcvt_s_d.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -207,6 +217,12 @@ public class Presets {
                 .registerRInstruction(Fmin_s.OPCODE, Fmin_s.FUNCT_3, Fmin_s.FUNCT_7, Fmin_s.class)
                 .registerRInstruction(Fmax_s.OPCODE, Fmax_s.FUNCT_3, Fmax_s.FUNCT_7, Fmax_s.class)
                 .registerRInstruction(Fsqrt_s.OPCODE, Fsqrt_s.FUNCT_3, Fsqrt_s.FUNCT_7, Fsqrt_s.class)
+                .registerRInstruction(
+                    Fcvt_s_w_Impl.OPCODE, Fcvt_s_w_Impl.FUNCT_3, Fcvt_s_w_Impl.FUNCT_7, Fcvt_s_w_Impl.class
+                )
+                .registerRInstruction(
+                    Fcvt_w_s_Impl.OPCODE, Fcvt_w_s_Impl.FUNCT_3, Fcvt_w_s_Impl.FUNCT_7, Fcvt_w_s_Impl.class
+                )
                 // RV32D
                 .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
                 .registerSInstruction(Fsd.OPCODE, Fsd.FUNCT_3, Fsd.class)
@@ -217,6 +233,14 @@ public class Presets {
                 .registerRInstruction(Fmin_d.OPCODE, Fmin_d.FUNCT_3, Fmin_d.FUNCT_7, Fmin_d.class)
                 .registerRInstruction(Fmax_d.OPCODE, Fmax_d.FUNCT_3, Fmax_d.FUNCT_7, Fmax_d.class)
                 .registerRInstruction(Fsqrt_d.OPCODE, Fsqrt_d.FUNCT_3, Fsqrt_d.FUNCT_7, Fsqrt_d.class)
+                .registerRInstruction(
+                    Fcvt_d_w_Impl.OPCODE, Fcvt_d_w_Impl.FUNCT_3, Fcvt_d_w_Impl.FUNCT_7, Fcvt_d_w_Impl.class
+                )
+                .registerRInstruction(
+                    Fcvt_w_d_Impl.OPCODE, Fcvt_w_d_Impl.FUNCT_3, Fcvt_w_d_Impl.FUNCT_7, Fcvt_w_d_Impl.class
+                )
+                .registerRInstruction(Fcvt_d_s.OPCODE, Fcvt_d_s.FUNCT_3, Fcvt_d_s.FUNCT_7, Fcvt_d_s.class)
+                .registerRInstruction(Fcvt_s_d.OPCODE, Fcvt_s_d.FUNCT_3, Fcvt_s_d.FUNCT_7, Fcvt_s_d.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -324,6 +348,8 @@ public class Presets {
                 .registerHandler(Fmin_s.class, new Fmin_s.Handler())
                 .registerHandler(Fmax_s.class, new Fmax_s.Handler())
                 .registerHandler(Fsqrt_s.class, new Fsqrt_s.Handler())
+                .registerHandler(Fcvt_s_w_Impl.class, new Fcvt_s_w_Impl.Handler())
+                .registerHandler(Fcvt_w_s_Impl.class, new Fcvt_w_s_Impl.Handler())
                 // RV32D
                 .registerHandler(Fld.class, new Fld.Handler())
                 .registerHandler(Fsd.class, new Fsd.Handler())
@@ -334,6 +360,10 @@ public class Presets {
                 .registerHandler(Fmin_d.class, new Fmin_d.Handler())
                 .registerHandler(Fmax_d.class, new Fmax_d.Handler())
                 .registerHandler(Fsqrt_d.class, new Fsqrt_d.Handler())
+                .registerHandler(Fcvt_d_w_Impl.class, new Fcvt_d_w_Impl.Handler())
+                .registerHandler(Fcvt_w_d_Impl.class, new Fcvt_w_d_Impl.Handler())
+                .registerHandler(Fcvt_d_s.class, new Fcvt_d_s.Handler())
+                .registerHandler(Fcvt_s_d.class, new Fcvt_s_d.Handler())
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);

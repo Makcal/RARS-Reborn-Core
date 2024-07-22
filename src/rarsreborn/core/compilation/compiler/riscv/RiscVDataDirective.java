@@ -54,7 +54,7 @@ public enum RiscVDataDirective {
                 n = RegexCompiler.parseLongInteger(s);
                 return longToBytes(n);
             case FLOAT:
-                int floatBits = Float.floatToIntBits(RegexCompiler.parseFloat(s));
+                int floatBits = Float.floatToRawIntBits(RegexCompiler.parseFloat(s));
                 return new byte[] {
                     (byte) (floatBits & 0xFF),
                     (byte) ((floatBits >> 8) & 0xFF),

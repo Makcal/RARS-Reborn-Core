@@ -26,7 +26,7 @@ public class Fmv_x_w extends InstructionR {
     public void exec(IRegisterFile<RegisterFloat64> floatRegisters, IRegisterFile<Register32> registers)
             throws IllegalRegisterException {
         registers.getRegisterByNumber(rd).setValue(
-            Float.floatToIntBits(floatRegisters.getRegisterByNumber(rs1).getFloat())
+            Float.floatToRawIntBits(floatRegisters.getRegisterByNumber(rs1).getFloat())
         );
     }
 

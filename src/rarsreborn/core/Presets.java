@@ -153,6 +153,7 @@ public class Presets {
                 .registerInstruction(Feq_s.NAME, new Feq_s.Parser())
                 .registerInstruction(Flt_s.NAME, new Flt_s.Parser())
                 .registerInstruction(Fle_s.NAME, new Fle_s.Parser())
+                .registerInstruction(Fclass_s.NAME, new Fclass_s.Parser())
                 // RV32D
                 .registerInstruction(Fld.NAME, new Fld.Parser())
                 .registerInstruction(Fsd.NAME, new Fsd.Parser())
@@ -175,6 +176,7 @@ public class Presets {
                 .registerInstruction(Feq_d.NAME, new Feq_d.Parser())
                 .registerInstruction(Flt_d.NAME, new Flt_d.Parser())
                 .registerInstruction(Fle_d.NAME, new Fle_d.Parser())
+                .registerInstruction(Fclass_d.NAME, new Fclass_d.Parser())
                 .build();
 
             RiscVDecoder decoder = new RiscVDecoder.RiscVDecoderBuilder()
@@ -254,6 +256,7 @@ public class Presets {
                 .registerRInstruction(Feq_s.OPCODE, Feq_s.FUNCT_3, Feq_s.FUNCT_7, Feq_s.class)
                 .registerRInstruction(Flt_s.OPCODE, Flt_s.FUNCT_3, Flt_s.FUNCT_7, Flt_s.class)
                 .registerRInstruction(Fle_s.OPCODE, Fle_s.FUNCT_3, Fle_s.FUNCT_7, Fle_s.class)
+                .registerRInstruction(Fclass_s.OPCODE, Fclass_s.FUNCT_3, Fclass_s.FUNCT_7, Fclass_s.class)
                 // RV32D
                 .registerIInstruction(Fld.OPCODE, Fld.FUNCT_3, Fld.class)
                 .registerSInstruction(Fsd.OPCODE, Fsd.FUNCT_3, Fsd.class)
@@ -278,6 +281,7 @@ public class Presets {
                 .registerRInstruction(Feq_d.OPCODE, Feq_d.FUNCT_3, Feq_d.FUNCT_7, Feq_d.class)
                 .registerRInstruction(Flt_d.OPCODE, Flt_d.FUNCT_3, Flt_d.FUNCT_7, Flt_d.class)
                 .registerRInstruction(Fle_d.OPCODE, Fle_d.FUNCT_3, Fle_d.FUNCT_7, Fle_d.class)
+                .registerRInstruction(Fclass_d.OPCODE, Fclass_d.FUNCT_3, Fclass_d.FUNCT_7, Fclass_d.class)
                 .build();
 
             RiscVLinker linker = new RiscVLinker(decoder, Memory32.DATA_SECTION_START, Memory32.TEXT_SECTION_START);
@@ -395,6 +399,7 @@ public class Presets {
                 .registerHandler(Feq_s.class, new Feq_s.Handler())
                 .registerHandler(Flt_s.class, new Flt_s.Handler())
                 .registerHandler(Fle_s.class, new Fle_s.Handler())
+                .registerHandler(Fclass_s.class, new Fclass_s.Handler())
                 // RV32D
                 .registerHandler(Fld.class, new Fld.Handler())
                 .registerHandler(Fsd.class, new Fsd.Handler())
@@ -415,6 +420,7 @@ public class Presets {
                 .registerHandler(Feq_d.class, new Feq_d.Handler())
                 .registerHandler(Flt_d.class, new Flt_d.Handler())
                 .registerHandler(Fle_d.class, new Fle_d.Handler())
+                .registerHandler(Fclass_d.class, new Fclass_d.Handler())
             ;
         } catch (Exception e) {
             throw new RuntimeException(e);

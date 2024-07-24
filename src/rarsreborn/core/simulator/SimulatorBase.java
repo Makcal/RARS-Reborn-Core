@@ -272,8 +272,12 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         }
 
         public void pause() {
+            if (!isRunning()) {
+                return;
+            }
             synchronized (lock) {
                 isPaused = true;
+                instructionsToRun = 0;
                 lock.notify();
             }
             notifyObservers(new PausedEvent());

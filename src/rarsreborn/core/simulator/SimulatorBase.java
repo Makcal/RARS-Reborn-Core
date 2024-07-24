@@ -240,7 +240,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                         shouldStepBack = false;
                     }
 
-                    while (isPaused()) {
+                    while (isPaused() && isRunning()) {
                         try {
                             lock.wait();
                         } catch (InterruptedException e) {
@@ -249,6 +249,9 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                         }
                     }
                 }
+
+                if (!isRunning())
+                    return;
 
                 try {
                     executeOneInstruction();
@@ -271,6 +274,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
         public void pause() {
             synchronized (lock) {
                 isPaused = true;
+                lock.notify();
             }
             notifyObservers(new PausedEvent());
         }
@@ -280,6 +284,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                 isRunning = false;
                 isPaused = true;
                 instructionsToRun = 0;
+                lock.notify();
             }
             notifyObservers(new StoppedEvent());
         }
@@ -289,7 +294,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                 if (!isRunning) throw new RuntimeException("The worker has not been initialized");
                 isPaused = false;
                 instructionsToRun = -1;
-                lock.notifyAll();
+                lock.notify();
             }
         }
 
@@ -299,7 +304,7 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
                 if (instructionsToRun == -1) return;
                 isPaused = false;
                 instructionsToRun += n;
-                lock.notifyAll();
+                lock.notify();
             }
         }
 

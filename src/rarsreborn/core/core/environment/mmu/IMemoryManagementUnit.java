@@ -8,4 +8,6 @@ public interface IMemoryManagementUnit {
     void free(long address) throws MemoryAccessException;
 
     void freeAll();
+
+    void reset();
 }

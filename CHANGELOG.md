@@ -5,7 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.4] - 2024-07-24
+
+### Fixed
+
+- Worker is locked on pause when is told to stop
+
 ## [1.3.3] - 2024-07-24
+
+### Changed
+
+- Update version to 1.3.3
 
 ### Fixed
 
@@ -342,6 +352,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix .gitlab-ci.yml
 - Fix .gitlab-ci.yml
 
+[1.3.4]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/v1.3.3...v1.3.4
 [1.3.3]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/v1.3.2...v1.3.3
 [1.3.2]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/v1.3.1...v1.3.2
 [1.3.1]: https://gitlab.pg.innopolis.university/swapik/rars-reborn-core/compare/v1.3...v1.3.1

@@ -17,7 +17,7 @@ public class LinearMemoryManagementUnit implements IMemoryManagementUnit {
         this.memory = memory;
         this.heapStartAddress = heapStartAddress;
         this.heapSize = heapSize;
-        freeAll();
+        reset();
     }
 
     @Override
@@ -88,6 +88,11 @@ public class LinearMemoryManagementUnit implements IMemoryManagementUnit {
     public void freeAll() {
         blocks.clear();
         blocks.add(new HeapBlock(heapStartAddress, heapSize));
+    }
+
+    @Override
+    public void reset() {
+        freeAll();
     }
 
     protected static class HeapBlock {

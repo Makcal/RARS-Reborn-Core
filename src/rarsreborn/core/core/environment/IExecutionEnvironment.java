@@ -7,4 +7,6 @@ public interface IExecutionEnvironment extends IObservable {
     void call() throws ExecutionException;
 
     void break_() throws ExecutionException;
+
+    void reset();
 }

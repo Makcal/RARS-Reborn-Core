@@ -252,20 +252,20 @@ public abstract class SimulatorBase implements IMultiFileSimulator, IObservable 
 
                 try {
                     executeOneInstruction();
-                    if (instructionsToRun > 0) {
-                        instructionsToRun--;
-                    }
-                    if (instructionsToRun == 0) {
-                        pause();
+                    synchronized (lock) {
+                        if (instructionsToRun > 0) {
+                            instructionsToRun--;
+                        }
+                        if (instructionsToRun == 0) {
+                            pause();
+                        }
                     }
                 } catch (EndOfExecutionException ignored) {
                     stop();
                 }
             }
 
-            synchronized (lock) {
-                stop();
-            }
+            stop();
         }
 
         public void pause() {

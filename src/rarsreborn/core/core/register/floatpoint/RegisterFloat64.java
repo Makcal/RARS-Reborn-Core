@@ -109,7 +109,7 @@ public class RegisterFloat64 implements IRegister, IObservable {
 
     @Override
     public void reset() {
-        buffer.putDouble(0);
+        setLongSilently(0);
     }
 
     @Override

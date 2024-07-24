@@ -22,6 +22,7 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
     protected final Register32 programCounter;
     protected final IMemory memory;
     protected final RegisterFloat64File floatRegisters;
+
     protected final Map<Integer, ISystemCall> handlers;
     protected final IObservable observableImplementation;
     protected final ITextInputDevice consoleReader;
@@ -70,6 +71,11 @@ public class RiscV32ExecutionEnvironment implements IExecutionEnvironment {
     @Override
     public void break_() {
         notifyObservers(new BreakpointEvent());
+    }
+
+    @Override
+    public void reset() {
+        mmu.reset();
     }
 
     @Override

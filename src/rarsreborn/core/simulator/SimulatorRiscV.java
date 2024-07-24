@@ -154,6 +154,7 @@ public class SimulatorRiscV extends SimulatorBase {
         memory.reset();
         registerFile.reset();
         floatRegisterFile.reset();
+        executionEnvironment.reset();
         programCounter.setValue(Memory32.TEXT_SECTION_START + (int) executable.getEntryPointOffset());
         try {
             registerFile.getRegisterByName("sp").setValue(Memory32.INITIAL_STACK_POINTER);
